@@ -17,4 +17,5 @@ You can then access the application through the following URL:
     http://127.0.0.1:8080
 
 On next terminal Run:
-npm run watch
+
+    npm run watch
