@@ -152,15 +152,13 @@ class SignUp {
   registerUser() {
     const { model } = this;
     const data = {
-      firstName: model[0].value,
-      lastName: model[1].value,
-      phoneNumber: model[2].value,
+      first_name: model[0].value,
+      last_name: model[1].value,
+      phone_number: model[2].value,
       password: model[3].value,
       email: model[4].value,
-      userType: $("input#gridRadios1:checked").val() ? "DONAR" : "RECEIVER",
+      user_role: $("input#gridRadios1:checked").val() ? 0 : 1,
     };
-    console.log(data);
-    console.log("this is the data");
   }
 }
 
