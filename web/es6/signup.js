@@ -76,12 +76,20 @@ class SignUp {
     this.model = this.getModel();
     this.onSignUpConfirmClick = this.onSignUpConfirmClick.bind(this);
     this.checkValidation = this.checkValidation.bind(this);
+    this.setModalListeners = this.setModalListeners.bind(this);
     this.setUpListeners();
   }
 
   setUpListeners() {
     $(".confirm-signup").click(this.onSignUpConfirmClick);
     this.setUpOnBlurListeners();
+    this.setModalListeners();
+  }
+
+  setModalListeners() {
+    $("#signupModal").on("hidden.bs.modal", function () {
+      this.resetForm();
+    });
   }
 
   setUpOnBlurListeners() {
@@ -139,11 +147,16 @@ class SignUp {
     return retrunVal;
   }
 
+  resetForm() {
+    this.model.map((v) => {
+      const { selector } = v;
+      $(`#${selector}`).val("");
+    });
+  }
+
   onSignUpConfirmClick() {
     this.clicked = true;
     const valid = this.checkValidation();
-    console.log(valid);
-    console.log("is it valid");
     if (valid) {
       this.registerUser();
     }
@@ -156,9 +169,33 @@ class SignUp {
       last_name: model[1].value,
       phone_number: model[2].value,
       password: model[3].value,
-      email: model[4].value,
+      email: model[5].value,
       user_role: $("input#gridRadios1:checked").val() ? 0 : 1,
     };
+
+    axios.defaults.headers.post["X-CSRF-Token"] = $(
+      'meta[name="csrf-token"]'
+    ).attr("content");
+
+    axios
+      .post("/user/save", data)
+      .then(({ data: response }) => {
+        if (response && response.success) {
+          this.resetForm();
+          alert("Successfully saved.");
+        } else if (
+          response &&
+          response.error &&
+          response.error === "exist already"
+        ) {
+          const errorElement = $("#phoneNumber").next();
+          errorElement.text("User already exists with this phone number");
+          errorElement.show();
+        }
+      })
+      .catch(function (error) {
+        alert("Error while saving the data");
+      });
   }
 }
 

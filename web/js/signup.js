@@ -79,6 +79,7 @@ var SignUp = function () {
     this.model = this.getModel();
     this.onSignUpConfirmClick = this.onSignUpConfirmClick.bind(this);
     this.checkValidation = this.checkValidation.bind(this);
+    this.setModalListeners = this.setModalListeners.bind(this);
     this.setUpListeners();
   }
 
@@ -87,6 +88,14 @@ var SignUp = function () {
     value: function setUpListeners() {
       $(".confirm-signup").click(this.onSignUpConfirmClick);
       this.setUpOnBlurListeners();
+      this.setModalListeners();
+    }
+  }, {
+    key: "setModalListeners",
+    value: function setModalListeners() {
+      $("#signupModal").on("hidden.bs.modal", function () {
+        this.resetForm();
+      });
     }
   }, {
     key: "setUpOnBlurListeners",
@@ -154,12 +163,19 @@ var SignUp = function () {
       return retrunVal;
     }
   }, {
+    key: "resetForm",
+    value: function resetForm() {
+      this.model.map(function (v) {
+        var selector = v.selector;
+
+        $("#" + selector).val("");
+      });
+    }
+  }, {
     key: "onSignUpConfirmClick",
     value: function onSignUpConfirmClick() {
       this.clicked = true;
       var valid = this.checkValidation();
-      console.log(valid);
-      console.log("is it valid");
       if (valid) {
         this.registerUser();
       }
@@ -167,18 +183,35 @@ var SignUp = function () {
   }, {
     key: "registerUser",
     value: function registerUser() {
+      var _this2 = this;
+
       var model = this.model;
 
       var data = {
-        firstName: model[0].value,
-        lastName: model[1].value,
-        phoneNumber: model[2].value,
+        first_name: model[0].value,
+        last_name: model[1].value,
+        phone_number: model[2].value,
         password: model[3].value,
-        email: model[4].value,
-        userType: $("input#gridRadios1:checked").val() ? "DONAR" : "RECEIVER"
+        email: model[5].value,
+        user_role: $("input#gridRadios1:checked").val() ? 0 : 1
       };
-      console.log(data);
-      console.log("this is the data");
+
+      axios.defaults.headers.post["X-CSRF-Token"] = $('meta[name="csrf-token"]').attr("content");
+
+      axios.post("/user/save", data).then(function (_ref) {
+        var response = _ref.data;
+
+        if (response && response.success) {
+          _this2.resetForm();
+          alert("Successfully saved.");
+        } else if (response && response.error && response.error === "exist already") {
+          var errorElement = $("#phoneNumber").next();
+          errorElement.text("User already exists with this phone number");
+          errorElement.show();
+        }
+      }).catch(function (error) {
+        alert("Error while saving the data");
+      });
     }
   }]);
 
