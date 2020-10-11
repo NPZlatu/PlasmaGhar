@@ -31,7 +31,7 @@ AppAsset::register($this);
         <?php echo $this->render('partials/_header.php');  ?>
         <?= $content ?>
         <?php echo $this->render('partials/_footer.php');  ?>
-    </div>
+</div>
 
 <?php $this->endBody() ?>
 <?php echo $this->render('modals/_signinmodal.php');  ?>

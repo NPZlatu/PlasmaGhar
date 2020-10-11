@@ -13,3 +13,9 @@
                 </div>
             </div>
 </header>
+<div class="nav-scroller">
+    <div class="nav-scroller py-1 mb-2 cus-banner">
+                <nav class="nav d-flex justify-content-between">
+                    <p>LET'S FIGHT TOGETHER AGAINST COVID-19</p>
+                </nav>
+    </div>
