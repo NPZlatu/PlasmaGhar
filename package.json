@@ -17,7 +17,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:js": "babel web/es6 -d web/js",
-    "watch": "watch 'npm run build:js' ./web/es6"
+    "watch": "watch 'npm run build:js' ./web/es6",
+    "watch:windows": "watch \"npm run build:js \" ./web/es6"
   },
   "author": "",
   "license": "ISC"
