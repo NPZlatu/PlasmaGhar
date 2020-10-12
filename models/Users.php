@@ -1,6 +1,8 @@
 <?php
 
 namespace app\models;
+// use app\models\ReceiverRequestLog;
+
 
 use Yii;
 
@@ -26,10 +28,19 @@ use Yii;
  * @property string|null $remember_me_token
  * @property int|null $email_confirmation_status
  *
+ * @property ReceiverRequestLog[] $receiverRequestLogs
+ * @property ReceiverRequestLog[] $receiverRequestLogs0
  * @property UsersAdditionalInfo[] $usersAdditionalInfos
  */
 class Users extends \yii\db\ActiveRecord
 {
+    const USER_STATUS_ACTIVATED = 0;
+    const USER_STATUS_DEACTIVATED = 1;
+    const TEST_ENV = 0;
+    const PRODUCTION_ENV=1;
+
+
+
     /**
      * {@inheritdoc}
      */
@@ -83,6 +94,26 @@ class Users extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[getReceiverRequestLogByDonorId]].
+     *
+     * @return \yii\db\ActiveQuery|ReceiverRequestLogQuery
+     */
+    public function getReceiverRequestLogByDonorId()
+    {
+        return $this->hasMany(ReceiverRequestLog::className(), ['donor_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[getReceiverRequestByReceiverId]].
+     *
+     * @return \yii\db\ActiveQuery|ReceiverRequestLogQuery
+     */
+    public function getReceiverRequestByReceiverId()
+    {
+        return $this->hasMany(ReceiverRequestLog::className(), ['receiver_id' => 'id']);
+    }
+
+    /**
      * Gets query for [[UsersAdditionalInfos]].
      *
      * @return \yii\db\ActiveQuery|UsersAdditionalInfoQuery
@@ -99,5 +130,36 @@ class Users extends \yii\db\ActiveRecord
     public static function find()
     {
         return new UsersQuery(get_called_class());
+    }
+
+
+    public static function getRequesterList($id){
+
+        $sql = 'select u.*, r.* from users u
+                left join receiver_request_log r on r.receiver_id = u.id
+                where r.donor_id='.$id;
+        
+        $requester_list=Users::findBySql($sql)->all();
+
+
+        // $requester_list = Users::find()
+        // ->leftJoin('receiver_request_log', '`receiver_request_log`.`donor_id` = `users`.`id`')
+        // ->where(['donor_id' => $id])
+        // ->with('receiver_request_log')
+        // ->all();
+                        
+        
+                        // ->joinWith('receiver_request_log')
+                        // ->where(['receiver_request_log.donor_id'=>$id])
+                        // ->all();
+                        
+                        // ->leftJoin('receiver_request_log', '`receiver_request_log`.`donor_id` = `users`.`id`')
+                        // ->where(['donor_id' => $id])
+                        // ->with('receiver_request_log')
+                        // ->all();
+
+        // dd($requester_list);
+        return $requester_list;
+
     }
 }
