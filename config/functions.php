@@ -25,3 +25,24 @@ function dd($var)
         }
     die();
 }
+
+
+function rq($requestQuery){
+    dd($requestQuery);
+    echo '
+    <pre>';
+     
+     yii\helpers\VarDumper::dump($requestQuery
+                                    ->prepare(Yii::$app->db->queryBuilder)
+                                    ->createCommand()
+                                    ->rawSql,
+                                    10,
+                                    true
+                                );
+     
+     echo '</pre>
+    ';
+    // var_dump($request->prepare(Yii::$app->db->queryBuilder)->createCommand()->rawSql);
+    // exit();
+    die();
+}

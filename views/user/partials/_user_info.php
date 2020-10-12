@@ -12,11 +12,11 @@
         </h4>
         <p><button type="button" class="btn btn-sm btn-outline-danger">Edit My Info</button></p>
         <p>Status : <span class="badge badge-sm badge-secondary badge-pill">Available</span> Change</p>
-        <p>Name : <?= $res['model']['first_name']." ".$res['model']['last_name']?></p>
-        <p>Blood Group : A positive</p>
-        <p>Location : Khumaltar, Lalitpur</p>
-        <p>Phone Number : <?= $res['model']['phone_number']?></p>
-        <p>Role: <?=$res['role_value'] ?></p>
+        <p>Name : <strong><?= $res['model']['first_name']." ".$res['model']['last_name']?></strong></p>
+        <p>Blood Group : <strong>A positive</strong></p>
+        <p>Location : <strong>Khumaltar, Lalitpur</strong></p>
+        <p>Phone Number : <strong><?= $res['model']['phone_number']?></strong></p>
+        <p>Role: <strong><?=$res['role_value'] ?></strong></p>
         <hr/>
         <small id="nameHelp" class="form-text text-muted">* Donor's
             information will be confidential. Unless you wish to donate to

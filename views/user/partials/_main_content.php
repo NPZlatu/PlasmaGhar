@@ -17,9 +17,12 @@
                 </tr>
             </thead>
             <tbody>
+                <?php 
+                $id=1;
+                foreach($request_list as $receiver) {?>
                 <tr>
-                    <td>1,001</td>
-                    <td>Lionel Messi</td>
+                    <td><?= $id ?></td>
+                    <td><?= $receiver['last_name'] ?></td>
                     <td>2 km</td>
                     <td>A positive</td>
                     <td>
@@ -28,28 +31,9 @@
 
                     </td>
                 </tr>
-                <tr>
-                    <td>1,002</td>
-                    <td>Cristiano Ronaldo</td>
-                    <td>2 km</td>
-                    <td>A positive</td>
-                    <td>
-                        <button type="button" class="btn btn-sm btn-outline-success">Accept</button>
-                        <button type="button" class="btn btn-sm btn-outline-danger">Reject</button>
-
-                    </td>
-                </tr>
-                <tr>
-                    <td>1,003</td>
-                    <td>Kylian Mbappe</td>
-                    <td>2 km</td>
-                    <td>B positive</td>
-                    <td>
-                        <button type="button" class="btn btn-sm btn-outline-success">Accept</button>
-                        <button type="button" class="btn btn-sm btn-outline-danger">Reject</button>
-
-                    </td>
-                </tr>
+                <?php
+                    $id+=1;
+                } ?>
             </tbody>
         </table>
         <hr/>

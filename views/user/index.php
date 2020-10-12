@@ -16,7 +16,7 @@
                 <?php 
                 
                 echo $this->render('partials/_user_info.php',['res'=>$res]); 
-                echo $this->render('partials/_main_content.php');
+                echo $this->render('partials/_main_content.php',['request_list'=>$res['request_log']]);
 
                 ?>
             </div>
