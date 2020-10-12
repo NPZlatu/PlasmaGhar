@@ -4,59 +4,40 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-/**
- * Class to handle signup actions
- */
-var SignUp = function () {
-  _createClass(SignUp, [{
-    key: "getModel",
-    value: function getModel() {
-      return [{
-        selector: "phoneNumber",
-        rules: {
-          regex: {
-            value: /^[0-9]{10}$/,
-            error: "Phone Number must have 10 digits."
-          }
-        },
-        value: ""
-      }, {
-        selector: "password",
-        rules: {
-          regex: {
-            value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
-            error: "Password must be minimum eight characters, at least one letter and one number"
-          }
-        },
-        value: ""
-      }, {
-        selector: "confirm-password",
-        rules: {
-          match: {
-            value: "password",
-            error: "Confirm Password does not match."
-          }
-        },
-        value: ""
-      }];
-    }
-  }]);
-
-  function SignUp() {
-    _classCallCheck(this, SignUp);
+var SignIn = function () {
+  function SignIn() {
+    _classCallCheck(this, SignIn);
 
     this.clicked = false;
-    this.model = this.getModel();
-    this.onSignUpConfirmClick = this.onSignUpConfirmClick.bind(this);
+    this.model = [{
+      selector: "loginPhone",
+      rules: {
+        regex: {
+          value: /^[0-9]{10}$/,
+          error: "Phone Number must have 10 digits."
+        }
+      },
+      value: ""
+    }, {
+      selector: "loginPassword",
+      rules: {
+        required: {
+          value: true,
+          error: "Password is required."
+        }
+      },
+      value: ""
+    }];
+    this.onSignInConfirmClick = this.onSignInConfirmClick.bind(this);
     this.checkValidation = this.checkValidation.bind(this);
     this.setModalListeners = this.setModalListeners.bind(this);
     this.setUpListeners();
   }
 
-  _createClass(SignUp, [{
+  _createClass(SignIn, [{
     key: "setUpListeners",
     value: function setUpListeners() {
-      $(".confirm-signup").click(this.onSignUpConfirmClick);
+      $(".confirm-signin").click(this.onSignInConfirmClick);
       this.setUpOnBlurListeners();
       this.setModalListeners();
     }
@@ -65,7 +46,7 @@ var SignUp = function () {
     value: function setModalListeners() {
       var _this = this;
 
-      $("#signupModal").on("hidden.bs.modal", function () {
+      $("#signinModal").on("hidden.bs.modal", function () {
         _this.resetForm();
       });
     }
@@ -82,6 +63,15 @@ var SignUp = function () {
         $("#" + selector).blur(function () {
           if (self.clicked) self.showError(selector, rules, index);
         });
+      });
+    }
+  }, {
+    key: "resetForm",
+    value: function resetForm() {
+      this.model.map(function (v) {
+        var selector = v.selector;
+
+        $("#" + selector).val("");
       });
     }
   }, {
@@ -102,13 +92,8 @@ var SignUp = function () {
           valid = !value || valid;
         }
         if (!valid) message = rules.regex.error;
-      } else if (rules.match) {
-        var matchSelectorVal = $("#" + rules.match.value).val();
-        if (value !== matchSelectorVal) {
-          valid = false;
-          message = rules.match.error;
-        }
       }
+
       if (!valid && message) {
         errorElement.text(message);
         errorElement.show();
@@ -135,48 +120,35 @@ var SignUp = function () {
       return retrunVal;
     }
   }, {
-    key: "resetForm",
-    value: function resetForm() {
-      this.model.map(function (v) {
-        var selector = v.selector;
-
-        $("#" + selector).val("");
-      });
-    }
-  }, {
-    key: "onSignUpConfirmClick",
-    value: function onSignUpConfirmClick() {
+    key: "onSignInConfirmClick",
+    value: function onSignInConfirmClick() {
       this.clicked = true;
       var valid = this.checkValidation();
       if (valid) {
-        this.registerUser();
+        this.loginUser();
       }
     }
   }, {
-    key: "registerUser",
-    value: function registerUser() {
-      var _this3 = this;
-
+    key: "loginUser",
+    value: function loginUser() {
       var model = this.model;
 
       var data = {
         phone_number: model[0].value,
-        password: model[1].value,
-        user_role: $("input#gridRadios1:checked").val() ? 0 : 1
+        password: model[1].value
       };
 
       axios.defaults.headers.post["X-CSRF-Token"] = $('meta[name="csrf-token"]').attr("content");
       axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
-      axios.post("/user/save", data).then(function (_ref) {
+      axios.post("/user/login", data).then(function (_ref) {
         var response = _ref.data;
 
         if (response && response.success) {
-          _this3.resetForm();
-          alert("Successfully saved.");
-        } else if (response && response.error && response.error === "exist already") {
-          var errorElement = $("#phoneNumber").next();
-          errorElement.text("User already exists with this phone number");
+          console.log("here we are");
+        } else {
+          var errorElement = $("#loginPassword").next();
+          errorElement.text("Invalid phone/password.");
           errorElement.show();
         }
       }).catch(function (error) {
@@ -185,9 +157,9 @@ var SignUp = function () {
     }
   }]);
 
-  return SignUp;
+  return SignIn;
 }();
 
 $(document).ready(function () {
-  new SignUp();
+  new SignIn();
 });

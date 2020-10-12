@@ -29,7 +29,6 @@
                                     </div>
                                     <input type="text" class="form-control" id="loginPhone" placeholder="">
                                     <div class="invalid-feedback">
-                                        Phone Number must have 10 digits.
                                       </div>
                                   </div>
     
@@ -37,7 +36,6 @@
                                     <label for="loginPassword">Password</label>
                                     <input type="password" class="form-control" id="loginPassword" >
                                     <div class="invalid-feedback">
-                                      Password should have atleast 1 capital letter and 1 number.
                                     </div>
                                   </div>
                                   

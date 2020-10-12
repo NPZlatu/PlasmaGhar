@@ -1,11 +1,9 @@
-/**
- * Class to handle signup actions
- */
-class SignUp {
-  getModel() {
-    return [
+class SignIn {
+  constructor() {
+    this.clicked = false;
+    this.model = [
       {
-        selector: "phoneNumber",
+        selector: "loginPhone",
         rules: {
           regex: {
             value: /^[0-9]{10}$/,
@@ -15,46 +13,30 @@ class SignUp {
         value: "",
       },
       {
-        selector: "password",
+        selector: "loginPassword",
         rules: {
-          regex: {
-            value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
-            error:
-              "Password must be minimum eight characters, at least one letter and one number",
-          },
-        },
-        value: "",
-      },
-      {
-        selector: "confirm-password",
-        rules: {
-          match: {
-            value: "password",
-            error: "Confirm Password does not match.",
+          required: {
+            value: true,
+            error: "Password is required.",
           },
         },
         value: "",
       },
     ];
-  }
-
-  constructor() {
-    this.clicked = false;
-    this.model = this.getModel();
-    this.onSignUpConfirmClick = this.onSignUpConfirmClick.bind(this);
+    this.onSignInConfirmClick = this.onSignInConfirmClick.bind(this);
     this.checkValidation = this.checkValidation.bind(this);
     this.setModalListeners = this.setModalListeners.bind(this);
     this.setUpListeners();
   }
 
   setUpListeners() {
-    $(".confirm-signup").click(this.onSignUpConfirmClick);
+    $(".confirm-signin").click(this.onSignInConfirmClick);
     this.setUpOnBlurListeners();
     this.setModalListeners();
   }
 
   setModalListeners() {
-    $("#signupModal").on("hidden.bs.modal", () => {
+    $("#signinModal").on("hidden.bs.modal", () => {
       this.resetForm();
     });
   }
@@ -66,6 +48,13 @@ class SignUp {
       $(`#${selector}`).blur(function () {
         if (self.clicked) self.showError(selector, rules, index);
       });
+    });
+  }
+
+  resetForm() {
+    this.model.map((v) => {
+      const { selector } = v;
+      $(`#${selector}`).val("");
     });
   }
 
@@ -85,13 +74,8 @@ class SignUp {
         valid = !value || valid;
       }
       if (!valid) message = rules.regex.error;
-    } else if (rules.match) {
-      const matchSelectorVal = $(`#${rules.match.value}`).val();
-      if (value !== matchSelectorVal) {
-        valid = false;
-        message = rules.match.error;
-      }
     }
+
     if (!valid && message) {
       errorElement.text(message);
       errorElement.show();
@@ -114,27 +98,19 @@ class SignUp {
     return retrunVal;
   }
 
-  resetForm() {
-    this.model.map((v) => {
-      const { selector } = v;
-      $(`#${selector}`).val("");
-    });
-  }
-
-  onSignUpConfirmClick() {
+  onSignInConfirmClick() {
     this.clicked = true;
     const valid = this.checkValidation();
     if (valid) {
-      this.registerUser();
+      this.loginUser();
     }
   }
 
-  registerUser() {
+  loginUser() {
     const { model } = this;
     const data = {
       phone_number: model[0].value,
       password: model[1].value,
-      user_role: $("input#gridRadios1:checked").val() ? 0 : 1,
     };
 
     axios.defaults.headers.post["X-CSRF-Token"] = $(
@@ -143,18 +119,13 @@ class SignUp {
     axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
     axios
-      .post("/user/save", data)
+      .post("/user/login", data)
       .then(({ data: response }) => {
         if (response && response.success) {
-          this.resetForm();
-          alert("Successfully saved.");
-        } else if (
-          response &&
-          response.error &&
-          response.error === "exist already"
-        ) {
-          const errorElement = $("#phoneNumber").next();
-          errorElement.text("User already exists with this phone number");
+          console.log("here we are");
+        } else {
+          const errorElement = $("#loginPassword").next();
+          errorElement.text("Invalid phone/password.");
           errorElement.show();
         }
       })
@@ -165,5 +136,5 @@ class SignUp {
 }
 
 $(document).ready(function () {
-  new SignUp();
+  new SignIn();
 });

@@ -4,15 +4,14 @@
  * Debug function
  * d($var);
  */
-function d($var,$caller=null)
-{
-    if(!isset($caller)){
-        $caller = array_shift(debug_backtrace(1));
-    }
-    echo '<code>File: '.$caller['file'].' / Line: '.$caller['line'].'</code>';
-    echo '<pre>';
-    yii\helpers\VarDumper::dump($var, 10, true);
-    echo '</pre>';
+function d() {
+    echo '
+    <pre>';
+     for ($i = 0; $i < func_num_args(); $i++) {
+     yii\helpers\VarDumper::dump(func_get_arg($i), 10, true);
+     }
+     echo '</pre>
+    ';
 }
 
 /**
@@ -21,7 +20,27 @@ function d($var,$caller=null)
  */
 function dd($var)
 {
-    $caller = array_shift(debug_backtrace(1));
-    d($var,$caller);
+    for ($i = 0; $i < func_num_args(); $i++) {
+        d(func_get_arg($i));
+        }
+    die();
+}
+
+
+function rq($requestQuery){
+    dd($requestQuery);
+    echo '
+    <pre>';
+     
+     yii\helpers\VarDumper::dump($requestQuery
+                                    ->prepare(Yii::$app->db->queryBuilder)
+                                    ->createCommand()
+                                    ->rawSql,
+                                    10,
+                                    true
+                                );
+     
+     echo '</pre>
+    ';
     die();
 }

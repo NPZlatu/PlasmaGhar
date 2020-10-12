@@ -31,7 +31,8 @@ class AppAsset extends AssetBundle
         '//cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js',
         'js/bootstrap/bootstrap.min.js',
         '//unpkg.com/axios/dist/axios.min.js',
-        'js/signup.js'
+        'js/signup.js',
+        'js/signin.js'
     ];
  
 }
