@@ -176,6 +176,7 @@ class SignUp {
     axios.defaults.headers.post["X-CSRF-Token"] = $(
       'meta[name="csrf-token"]'
     ).attr("content");
+    axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
     axios
       .post("/user/save", data)

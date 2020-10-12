@@ -12,12 +12,19 @@ class UserController extends \yii\web\Controller
 
     public function actionSave()
     {        
-        try {   
-        $rawUserData = \Yii::$app->request->getRawBody();
-        $user = json_decode($rawUserData);
+        try {  
+        $request = \Yii::$app->request;
+
+        if(!$request->isAjax) {
+            die;
+        }
+
+        $user = $request->post();
+
         $model = new \app\models\Users();
 
-        $countOfPhones = $model->find()->where(['phone_number' => $user->phone_number])->count();
+        $countOfPhones = $model->find()->where(['phone_number' => $user['phone_number']])->count();
+        
         if($countOfPhones > 0) {
             return $this->asJson(array(
                 'success' => false,
@@ -26,12 +33,13 @@ class UserController extends \yii\web\Controller
         }
         $result = [];
 
-        $model->first_name = $user->first_name;
-        $model->last_name = $user->last_name;
-        $model->phone_number = $user->phone_number;
-        $model->password = \Yii::$app->security->generatePasswordHash($user->password);
-        $model->user_role = $user->user_role;
-        $model->email = $user->email ? $user->email : null;
+        $model->first_name = $user['first_name'];
+        $model->last_name = $user['last_name'];
+        $model->phone_number = $user['phone_number'];
+        $model->password = \Yii::$app->security->generatePasswordHash($user['password']);
+        $model->user_role = $user['user_role'];
+        $model->email = $user['email'] ? $user['email'] : null;
+
         if($model->save()) {
             $result = array(
                 'success' => true,
@@ -45,13 +53,28 @@ class UserController extends \yii\web\Controller
         }
         return $this->asJson($result);
 
-        } catch(\Exception $exception) {
+    } catch(\Exception $exception) {
             return $this->asJson(array(
                 'success' => false,
-                'error' => $exception
+                'error' => $exception->getMessage()
             ));
-        }  
-      
+    }  
+
+    }
+
+    public function actionLogin(){
+        $user = array(
+        'phone_number' => '9841025133',
+        'password' => 'niraj'
+        );
+        $model = new \app\models\LoginForm();
+        $model->phone_number = $user['phone_number'];
+        $model->password = $user['password'];
+        if($model->login()) {
+            dd('yes');
+        } else {
+            dd('no');
+        }
 
     }
 
