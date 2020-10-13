@@ -6,16 +6,18 @@ use Yii;
 use app\models\Users;
 use app\models\ReceiverRequestLog;
 use yii\web\NotFoundHttpException;
+use yii\data\Pagination;
 
 class UserController extends \yii\web\Controller
 {
     public function actionIndex()
     {
         $res=[];
-        $id=6;
+        $id=5;
 
 
         $users = Users::findOne($id);
+        
         if ($users === null) {
             throw new NotFoundHttpException;
         }else{
@@ -25,46 +27,16 @@ class UserController extends \yii\web\Controller
                 $role='Plasma Receiver';
             }
         }
-
         
-        /*
-        //select * from receiver_request_log where donor_id=id order by requested_date
-        $receiver_request_log = $users->getReceiverRequestLogByDonorId()
-                            ->orderBy('requested_date')
-                            ->all();
-        // rq($receiver_request_log);
-        // dd($receiver_request_log);
-
-        foreach($receiver_request_log as $receiver_request){
-            // dd(gettype($receiver_request));
-            $receiver_detail = $receiver_request->getReceiver();
-            
-            // rq($receiver_detail);
-            dd($receiver_detail);
-            $receiver_detail['phone_number'];
-        }
+        $request_log=$users->getRequesterList($users->id);
         
-        //  dd($receiver_request_log[0]);  
-        
-        */
-        
-        
-          
-
-          $request_log=$users->getRequesterList($users->id);
-        //  dd($request_log);
-        
-        
-        // $request_log=ReceiverRequestLog::find()->with('users')->all();
-        
-        // $request_log=ReceiverRequestLog::find()
 
         $res['model']=$users;
         $res['role_value']=$role;
 
         $res['request_log']=$request_log;
 
-        // dd($res['request_log']);
+        // dd($res['model']);
         
         
         
