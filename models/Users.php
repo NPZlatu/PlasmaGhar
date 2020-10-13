@@ -5,32 +5,35 @@ namespace app\models;
 
 
 use Yii;
-
 /**
  * This is the model class for table "users".
  *
  * @property int $id
  * @property string $phone_number
- * @property string $first_name
- * @property string $last_name
- * @property string $email
- * @property string|null $password
+ * @property string $password
+ * @property string|null $blood_group
+ * @property string|null $state
+ * @property string|null $district
+ * @property string|null $municipality
+ * @property int|null $ward_no
+ * @property float|null $marker_lat
+ * @property float|null $marker_lng
  * @property int|null $user_role
  * @property int|null $user_status
  * @property int|null $env
- * @property string|null $password_salt
- * @property string|null $password_hash_algorithm
  * @property string $created_date
  * @property string $updated_date
- * @property string|null $email_confirmation_token
+ * @property string|null $password_salt
+ * @property string|null $password_hash_algorithm
+ * @property string|null $phone_confirmation_token
  * @property string|null $password_reminder_token
  * @property string|null $password_reminder_expire
  * @property string|null $remember_me_token
- * @property int|null $email_confirmation_status
+ * @property int|null $phone_confirmation_status
+ * @property string|null $auth_key
  *
  * @property ReceiverRequestLog[] $receiverRequestLogs
  * @property ReceiverRequestLog[] $receiverRequestLogs0
- * @property UsersAdditionalInfo[] $usersAdditionalInfos
  */
 class Users extends \yii\db\ActiveRecord
 {
@@ -55,16 +58,17 @@ class Users extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['phone_number', 'first_name', 'last_name', 'email'], 'required'],
-            [['user_role', 'user_status', 'env', 'email_confirmation_status'], 'integer'],
+            [['phone_number', 'password'], 'required'],
+            [['ward_no', 'user_role', 'user_status', 'env', 'phone_confirmation_status'], 'integer'],
+            [['marker_lat', 'marker_lng'], 'number'],
             [['created_date', 'updated_date', 'password_reminder_expire'], 'safe'],
             [['phone_number'], 'string', 'max' => 10],
-            [['first_name', 'last_name', 'email_confirmation_token', 'password_reminder_token', 'remember_me_token'], 'string', 'max' => 100],
-            [['email'], 'string', 'max' => 254],
             [['password'], 'string', 'max' => 200],
-            [['password_salt', 'password_hash_algorithm'], 'string', 'max' => 50],
+            [['blood_group', 'state', 'district', 'password_salt', 'password_hash_algorithm', 'auth_key'], 'string', 'max' => 50],
+            [['municipality', 'phone_confirmation_token', 'password_reminder_token', 'remember_me_token'], 'string', 'max' => 100],
         ];
     }
+
 
     /**
      * {@inheritdoc}
@@ -74,22 +78,27 @@ class Users extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'phone_number' => 'Phone Number',
-            'first_name' => 'First Name',
-            'last_name' => 'Last Name',
-            'email' => 'Email',
             'password' => 'Password',
+            'blood_group' => 'Blood Group',
+            'state' => 'State',
+            'district' => 'District',
+            'municipality' => 'Municipality',
+            'ward_no' => 'Ward No',
+            'marker_lat' => 'Marker Lat',
+            'marker_lng' => 'Marker Lng',
             'user_role' => 'User Role',
             'user_status' => 'User Status',
             'env' => 'Env',
-            'password_salt' => 'Password Salt',
-            'password_hash_algorithm' => 'Password Hash Algorithm',
             'created_date' => 'Created Date',
             'updated_date' => 'Updated Date',
-            'email_confirmation_token' => 'Email Confirmation Token',
+            'password_salt' => 'Password Salt',
+            'password_hash_algorithm' => 'Password Hash Algorithm',
+            'phone_confirmation_token' => 'Phone Confirmation Token',
             'password_reminder_token' => 'Password Reminder Token',
             'password_reminder_expire' => 'Password Reminder Expire',
             'remember_me_token' => 'Remember Me Token',
-            'email_confirmation_status' => 'Email Confirmation Status',
+            'phone_confirmation_status' => 'Phone Confirmation Status',
+            'auth_key' => 'Auth Key',
         ];
     }
 
@@ -118,10 +127,7 @@ class Users extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|UsersAdditionalInfoQuery
      */
-    public function getUsersAdditionalInfos()
-    {
-        return $this->hasMany(UsersAdditionalInfo::className(), ['user_id' => 'id']);
-    }
+    
 
     /**
      * {@inheritdoc}
@@ -135,30 +141,12 @@ class Users extends \yii\db\ActiveRecord
 
     public static function getRequesterList($id){
 
-        $sql = 'select u.*, r.* from users u
-                left join receiver_request_log r on r.receiver_id = u.id
-                where r.donor_id='.$id;
-        
-        $requester_list=Users::findBySql($sql)->all();
-
-
-        // $requester_list = Users::find()
-        // ->leftJoin('receiver_request_log', '`receiver_request_log`.`donor_id` = `users`.`id`')
-        // ->where(['donor_id' => $id])
-        // ->with('receiver_request_log')
-        // ->all();
-                        
-        
-                        // ->joinWith('receiver_request_log')
-                        // ->where(['receiver_request_log.donor_id'=>$id])
-                        // ->all();
-                        
-                        // ->leftJoin('receiver_request_log', '`receiver_request_log`.`donor_id` = `users`.`id`')
-                        // ->where(['donor_id' => $id])
-                        // ->with('receiver_request_log')
-                        // ->all();
-
-        // dd($requester_list);
+        $requester_list = Users::find()
+                ->select(['*'])
+                ->innerJoin('receiver_request_log', 'receiver_request_log.donor_id=users.id')
+                ->where(['receiver_request_log.donor_id'=>$id])
+                ->asArray()
+                ->all();
         return $requester_list;
 
     }
