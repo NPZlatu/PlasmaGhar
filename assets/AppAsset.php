@@ -27,11 +27,13 @@ class AppAsset extends AssetBundle
     ];
 
     public $js = [
-        '//code.jquery.com/jquery-3.4.1.slim.min.js',
+        '//code.jquery.com/jquery-3.2.1.min.js',
         'js/bootstrap/bootstrap.min.js',
         '//cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js',
         '//unpkg.com/axios/dist/axios.min.js',
-        'js/signup.js'
+        'js/bootstrap/toaster.js',
+        'js/signup.js',
+        'js/signin.js'
     ];
  
 }

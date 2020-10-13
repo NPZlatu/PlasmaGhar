@@ -42,7 +42,5 @@ function rq($requestQuery){
      
      echo '</pre>
     ';
-    // var_dump($request->prepare(Yii::$app->db->queryBuilder)->createCommand()->rawSql);
-    // exit();
     die();
 }

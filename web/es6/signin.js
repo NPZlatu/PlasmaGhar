@@ -1,11 +1,9 @@
-/**
- * Class to handle signup actions
- */
-class SignUp {
-  getModel() {
-    return [
+class SignIn {
+  constructor() {
+    this.clicked = false;
+    this.model = [
       {
-        selector: "phoneNumber",
+        selector: "loginPhone",
         rules: {
           regex: {
             value: /^[0-9]{10}$/,
@@ -15,46 +13,30 @@ class SignUp {
         value: "",
       },
       {
-        selector: "password",
+        selector: "loginPassword",
         rules: {
-          regex: {
-            value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
-            error:
-              "Password must be minimum eight characters, at least one letter and one number",
-          },
-        },
-        value: "",
-      },
-      {
-        selector: "confirm-password",
-        rules: {
-          match: {
-            value: "password",
-            error: "Confirm Password does not match.",
+          required: {
+            value: true,
+            error: "Password is required.",
           },
         },
         value: "",
       },
     ];
-  }
-
-  constructor() {
-    this.clicked = false;
-    this.model = this.getModel();
-    this.onSignUpConfirmClick = this.onSignUpConfirmClick.bind(this);
+    this.onSignInConfirmClick = this.onSignInConfirmClick.bind(this);
     this.checkValidation = this.checkValidation.bind(this);
     this.setModalListeners = this.setModalListeners.bind(this);
     this.setUpListeners();
   }
 
   setUpListeners() {
-    $(".confirm-signup").click(this.onSignUpConfirmClick);
+    $(".confirm-signin").click(this.onSignInConfirmClick);
     this.setUpOnBlurListeners();
     this.setModalListeners();
   }
 
   setModalListeners() {
-    $("#signupModal").on("hidden.bs.modal", () => {
+    $("#signinModal").on("hidden.bs.modal", () => {
       this.resetForm();
     });
   }
@@ -67,6 +49,14 @@ class SignUp {
         if (self.clicked) self.showError(selector, rules, index);
       });
     });
+  }
+
+  resetForm() {
+    this.model.map((v) => {
+      const { selector } = v;
+      $(`#${selector}`).val("");
+    });
+    $("invalid-feedback").hide();
   }
 
   showError(selector, rules, index) {
@@ -85,13 +75,8 @@ class SignUp {
         valid = !value || valid;
       }
       if (!valid) message = rules.regex.error;
-    } else if (rules.match) {
-      const matchSelectorVal = $(`#${rules.match.value}`).val();
-      if (value !== matchSelectorVal) {
-        valid = false;
-        message = rules.match.error;
-      }
     }
+
     if (!valid && message) {
       errorElement.text(message);
       errorElement.show();
@@ -114,28 +99,19 @@ class SignUp {
     return retrunVal;
   }
 
-  resetForm() {
-    this.model.map((v) => {
-      const { selector } = v;
-      $(`#${selector}`).val("");
-    });
-    $("invalid-feedback").hide();
-  }
-
-  onSignUpConfirmClick() {
+  onSignInConfirmClick() {
     this.clicked = true;
     const valid = this.checkValidation();
     if (valid) {
-      this.registerUser();
+      this.loginUser();
     }
   }
 
-  registerUser() {
+  loginUser() {
     const { model } = this;
     const data = {
       phone_number: model[0].value,
       password: model[1].value,
-      user_role: $("input#gridRadios1:checked").val() ? 0 : 1,
     };
 
     axios.defaults.headers.post["X-CSRF-Token"] = $(
@@ -144,42 +120,25 @@ class SignUp {
     axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
     axios
-      .post("/user/save", data)
+      .post("/user/login", data)
       .then(({ data: response }) => {
-        console.log(response);
         if (response && response.success) {
-          this.resetForm();
-          $("#signupModal").modal("hide");
-          $.toaster({ settings: { timeout: 15000 } });
-
+          window.location.href = "/dashboard";
+        } else {
+          $.toaster({ settings: { timeout: 5000 } });
           $.toaster({
-            priority: "success",
-            title: "Success",
-            message: `You are successfully registered, we have sent a confirmation link on your phone. 
-          Please click on that link to verify your phone.`,
+            priority: "danger",
+            title: "Error",
+            message: `Invalid phone and/or password`,
           });
-        } else if (
-          response &&
-          response.error &&
-          response.error === "exist already"
-        ) {
-          const errorElement = $("#phoneNumber").next();
-          errorElement.text("User already exists with this phone number");
-          errorElement.show();
         }
       })
       .catch(function (error) {
-        console.log(error);
-        $.toaster({ settings: { timeout: 5000 } });
-        $.toaster({
-          priority: "danger",
-          title: "Error",
-          message: `Something is wrong. Please try later`,
-        });
+        alert("Error while saving the data");
       });
   }
 }
 
 $(document).ready(function () {
-  new SignUp();
+  new SignIn();
 });
