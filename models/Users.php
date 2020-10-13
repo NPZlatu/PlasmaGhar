@@ -147,6 +147,8 @@ class Users extends \yii\db\ActiveRecord
                 ->where(['receiver_request_log.donor_id'=>$id])
                 ->asArray()
                 ->all();
+        
+                
         return $requester_list;
 
     }
