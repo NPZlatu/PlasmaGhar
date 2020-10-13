@@ -11,10 +11,12 @@
             <span class="text-muted">Your info</span>
         </h4>
         <p><button type="button" class="btn btn-sm btn-outline-danger">Edit My Info</button></p>
-        <p>Status : <span class="badge badge-sm badge-secondary badge-pill">Available</span> Change</p>
-        <p>Name : <strong><?= $res['model']['first_name']." ".$res['model']['last_name']?></strong></p>
-        <p>Blood Group : <strong>A positive</strong></p>
-        <p>Location : <strong>Khumaltar, Lalitpur</strong></p>
+        <p>User Status : <span class="badge badge-sm badge-secondary badge-pill">Available</span> Change</p>
+        <p>Blood Group : <strong><?=$res['model']['blood_group'] ?></strong></p>
+        <p>Location : <br/><br/><strong><?= 
+                            strtoupper($res['model']['municipality']).",<br/> WARD NO.". $res['model']['ward_no'].", <br/>".
+                            strtoupper($res['model']['district']).",<br/>". strtoupper($res['model']['state']);
+                        ?></strong></p>
         <p>Phone Number : <strong><?= $res['model']['phone_number']?></strong></p>
         <p>Role: <strong><?=$res['role_value'] ?></strong></p>
         <hr/>

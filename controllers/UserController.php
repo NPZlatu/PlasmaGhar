@@ -18,11 +18,9 @@ class UserController extends \yii\web\Controller
             throw new NotFoundHttpException;
         }  
 
-        $donor = Yii::$app->user->identity->user_role === '0';
-        $receiver = Yii::$app->user->identity->user_role === '1';
-        dd($donar);
+        $donor = Yii::$app->user->identity->user_role === 0;
+        $receiver = Yii::$app->user->identity->user_role === 1;
 
-        
         /*
         //select * from receiver_request_log where donor_id=id order by requested_date
         $receiver_request_log = $users->getReceiverRequestLogByDonorId()

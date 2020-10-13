@@ -9,9 +9,9 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Name</th>
-                    <th>Distance (km)</th>
-                    <th>Blood Group Requested</th>
+                    <th>Requested Blood Group</th>
+                    <th colspan=3>Requested Location</th>
+                    <th>Requested Date</th>
                     <th>Options</th>
 
                 </tr>
@@ -22,9 +22,12 @@
                 foreach($request_list as $receiver) {?>
                 <tr>
                     <td><?= $id ?></td>
-                    <td><?= $receiver['last_name'] ?></td>
-                    <td>2 km</td>
-                    <td>A positive</td>
+                    <td><?= $receiver['requested_blood_group'] ?></td>
+                    <td colspan=3><?= 
+                            strtoupper($receiver['requested_municipality']).",<br/> WARD NO.". $receiver['requested_ward_no'].", <br/>".
+                            strtoupper($receiver['requested_district']).",<br/>". strtoupper($receiver['requested_state']);
+                        ?></td>
+                    <td><?= $receiver['requested_date'] ?></td>
                     <td>
                         <button type="button" class="btn btn-sm btn-outline-success">Accept</button>
                         <button type="button" class="btn btn-sm btn-outline-danger">Reject</button>

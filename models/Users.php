@@ -3,7 +3,6 @@
 namespace app\models;
 
 use Yii;
-
 /**
  * This is the model class for table "users".
  *
@@ -66,6 +65,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             [['municipality', 'phone_confirmation_token', 'password_reminder_token', 'remember_me_token'], 'string', 'max' => 100],
         ];
     }
+
 
     /**
      * {@inheritdoc}
@@ -135,10 +135,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      *
      * @return \yii\db\ActiveQuery|UsersAdditionalInfoQuery
      */
-    public function getUsersAdditionalInfos()
-    {
-        return $this->hasMany(UsersAdditionalInfo::className(), ['user_id' => 'id']);
-    }
+    
 
     public function validateAuthKey($authKey) {
         return $this->auth_key == $authKey;
@@ -191,30 +188,12 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 
     public static function getRequesterList($id){
 
-        $sql = 'select u.*, r.* from users u
-                left join receiver_request_log r on r.receiver_id = u.id
-                where r.donor_id='.$id;
-        
-        $requester_list=Users::findBySql($sql)->all();
-
-
-        // $requester_list = Users::find()
-        // ->leftJoin('receiver_request_log', '`receiver_request_log`.`donor_id` = `users`.`id`')
-        // ->where(['donor_id' => $id])
-        // ->with('receiver_request_log')
-        // ->all();
-                        
-        
-                        // ->joinWith('receiver_request_log')
-                        // ->where(['receiver_request_log.donor_id'=>$id])
-                        // ->all();
-                        
-                        // ->leftJoin('receiver_request_log', '`receiver_request_log`.`donor_id` = `users`.`id`')
-                        // ->where(['donor_id' => $id])
-                        // ->with('receiver_request_log')
-                        // ->all();
-
-        // dd($requester_list);
+        $requester_list = Users::find()
+                ->select(['*'])
+                ->innerJoin('receiver_request_log', 'receiver_request_log.donor_id=users.id')
+                ->where(['receiver_request_log.donor_id'=>$id])
+                ->asArray()
+                ->all();
         return $requester_list;
 
     }
