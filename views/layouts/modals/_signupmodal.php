@@ -19,20 +19,7 @@
                                     <br/>
                                 </div>
                               <div class="row">
-                                
-                                <div class="col-md-6 mb-1">
-                                  <label for="firstName">First name</label>
-                                  <input type="text" class="form-control" id="firstName" placeholder="" value="" required="">
-                                  <div class="invalid-feedback">
-                                  </div>
-                                  
-                                </div>
-                                <div class="col-md-6 mb-1">
-                                  <label for="lastName">Last name</label>
-                                  <input type="text" class="form-control" id="lastName" placeholder="" value="" required="">
-                                  <div class="invalid-feedback">
-                                  </div>
-                                </div>
+                           
                                 
                             </div>
                               <div class=" mb-1">
@@ -60,12 +47,7 @@
                                 </div>
                               </div>
                       
-                              <div class="mb-1">
-                                <label for="email">Email <span class="">(Optional)</span></label>
-                                <input type="email" class="form-control" id="email" placeholder="abc@gmail.com">
-                                <div class="invalid-feedback">
-                                </div>
-                              </div>
+                              
                               <br/>
                               <fieldset class="form-group">
                                 <div class="row">

@@ -1,8 +1,6 @@
 <?php
 
 namespace app\models;
-// use app\models\ReceiverRequestLog;
-
 
 use Yii;
 /**
@@ -35,13 +33,12 @@ use Yii;
  * @property ReceiverRequestLog[] $receiverRequestLogs
  * @property ReceiverRequestLog[] $receiverRequestLogs0
  */
-class Users extends \yii\db\ActiveRecord
+class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
     const USER_STATUS_ACTIVATED = 0;
     const USER_STATUS_DEACTIVATED = 1;
     const TEST_ENV = 0;
     const PRODUCTION_ENV=1;
-
 
 
     /**
@@ -102,22 +99,33 @@ class Users extends \yii\db\ActiveRecord
         ];
     }
 
+    public function beforeSave($insert){
+        if (parent::beforeSave($insert)) {
+            if ($this->isNewRecord) {
+                $this->auth_key = \Yii::$app->security->generateRandomString();
+                $this->password = \Yii::$app->security->generatePasswordHash($this->password);
+            }
+            return true;
+        }
+        return false;
+    }
+
     /**
-     * Gets query for [[getReceiverRequestLogByDonorId]].
+     * Gets query for [[ReceiverRequestLogs]].
      *
-     * @return \yii\db\ActiveQuery|ReceiverRequestLogQuery
+     * @return \yii\db\ActiveQuery
      */
-    public function getReceiverRequestLogByDonorId()
+    public function getReceiverRequestLogs()
     {
         return $this->hasMany(ReceiverRequestLog::className(), ['donor_id' => 'id']);
     }
 
     /**
-     * Gets query for [[getReceiverRequestByReceiverId]].
+     * Gets query for [[ReceiverRequestLogs0]].
      *
-     * @return \yii\db\ActiveQuery|ReceiverRequestLogQuery
+     * @return \yii\db\ActiveQuery
      */
-    public function getReceiverRequestByReceiverId()
+    public function getReceiverRequestLogs0()
     {
         return $this->hasMany(ReceiverRequestLog::className(), ['receiver_id' => 'id']);
     }
@@ -129,13 +137,52 @@ class Users extends \yii\db\ActiveRecord
      */
     
 
+    public function validateAuthKey($authKey) {
+        return $this->auth_key == $authKey;
+
+    }
+
+    public static function findIdentity($id) {
+        return self::findOne($id);
+    }
+
+    public static function findIdentityByAccessToken($token, $type = null) {
+        throw new \yii\base\NotSupportedException();
+    }
+
+    public static function findByPhoneNumber($phone) {
+        return self::findOne(['phone_number' => $phone]);
+    }
+
+    public function validatePassword($password) {
+        if(Yii::$app->getSecurity()->validatePassword($password, $this->password)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getAuthKey() {
+        return $this->auth_key;
+    } 
+
+
+    public function getId() {
+        return $this->id;
+    }
+
+    public function getUser_Role() {
+        return $this->user_role;;
+    }
+
     /**
-     * {@inheritdoc}
-     * @return UsersQuery the active query used by this AR class.
+     * Checks if user with the phone already exist
      */
-    public static function find()
-    {
-        return new UsersQuery(get_called_class());
+    public static function isUnique($phone) {
+        $unique = true;
+        $count = self::find()->where(['phone_number' => $phone])->count();
+        if($count > 0) $unique = false;
+        return $unique;
     }
 
 
