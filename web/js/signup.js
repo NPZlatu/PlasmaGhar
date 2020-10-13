@@ -142,6 +142,7 @@ var SignUp = function () {
 
         $("#" + selector).val("");
       });
+      $("invalid-feedback").hide();
     }
   }, {
     key: "onSignUpConfirmClick",
@@ -171,16 +172,30 @@ var SignUp = function () {
       axios.post("/user/save", data).then(function (_ref) {
         var response = _ref.data;
 
+        console.log(response);
         if (response && response.success) {
           _this3.resetForm();
-          alert("Successfully saved.");
+          $("#signupModal").modal("hide");
+          $.toaster({ settings: { timeout: 15000 } });
+
+          $.toaster({
+            priority: "success",
+            title: "Success",
+            message: "You are successfully registered, we have sent a confirmation link on your phone. \n          Please click on that link to verify your phone."
+          });
         } else if (response && response.error && response.error === "exist already") {
           var errorElement = $("#phoneNumber").next();
           errorElement.text("User already exists with this phone number");
           errorElement.show();
         }
       }).catch(function (error) {
-        alert("Error while saving the data");
+        console.log(error);
+        $.toaster({ settings: { timeout: 5000 } });
+        $.toaster({
+          priority: "danger",
+          title: "Error",
+          message: "Something is wrong. Please try later"
+        });
       });
     }
   }]);

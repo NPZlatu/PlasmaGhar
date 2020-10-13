@@ -13,20 +13,14 @@ class UserController extends \yii\web\Controller
 {
     public function actionIndex()
     {
-        $res=[];
-        $id=6;
-
-
-        $users = Users::findOne($id);
-        if ($users === null) {
+        //check if user is not logged in
+        if(Yii::$app->user->isGuest) {
             throw new NotFoundHttpException;
-        }else{
-            if($users->user_role==0){
-                $role='Plasma Donor';
-            }else{
-                $role='Plasma Receiver';
-            }
-        }
+        }  
+
+        $donor = Yii::$app->user->identity->user_role === '0';
+        $receiver = Yii::$app->user->identity->user_role === '1';
+        dd($donar);
 
         
         /*
@@ -83,8 +77,7 @@ class UserController extends \yii\web\Controller
             $request = \Yii::$app->request;
 
             if(!$request->isAjax) {
-                //TODO: DIRECT TO PAGE NOT FOUND
-                die;
+                throw new NotFoundHttpException;
             }
 
             $result = [];
@@ -134,8 +127,7 @@ class UserController extends \yii\web\Controller
             $request = \Yii::$app->request;            
         
             if(!$request->isAjax) {
-                //TODO: DIRECT TO PAGE NOT FOUND
-                die;
+                throw new NotFoundHttpException;
             }
 
             //check if already logged in

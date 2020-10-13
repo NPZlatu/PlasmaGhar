@@ -56,6 +56,7 @@ class SignIn {
       const { selector } = v;
       $(`#${selector}`).val("");
     });
+    $("invalid-feedback").hide();
   }
 
   showError(selector, rules, index) {
@@ -122,11 +123,14 @@ class SignIn {
       .post("/user/login", data)
       .then(({ data: response }) => {
         if (response && response.success) {
-          console.log("here we are");
+          window.location.href = "/dashboard";
         } else {
-          const errorElement = $("#loginPassword").next();
-          errorElement.text("Invalid phone/password.");
-          errorElement.show();
+          $.toaster({ settings: { timeout: 5000 } });
+          $.toaster({
+            priority: "danger",
+            title: "Error",
+            message: `Invalid phone and/or password`,
+          });
         }
       })
       .catch(function (error) {

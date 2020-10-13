@@ -73,6 +73,7 @@ var SignIn = function () {
 
         $("#" + selector).val("");
       });
+      $("invalid-feedback").hide();
     }
   }, {
     key: "showError",
@@ -145,11 +146,14 @@ var SignIn = function () {
         var response = _ref.data;
 
         if (response && response.success) {
-          console.log("here we are");
+          window.location.href = "/dashboard";
         } else {
-          var errorElement = $("#loginPassword").next();
-          errorElement.text("Invalid phone/password.");
-          errorElement.show();
+          $.toaster({ settings: { timeout: 5000 } });
+          $.toaster({
+            priority: "danger",
+            title: "Error",
+            message: "Invalid phone and/or password"
+          });
         }
       }).catch(function (error) {
         alert("Error while saving the data");

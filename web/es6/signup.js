@@ -119,6 +119,7 @@ class SignUp {
       const { selector } = v;
       $(`#${selector}`).val("");
     });
+    $("invalid-feedback").hide();
   }
 
   onSignUpConfirmClick() {
@@ -145,9 +146,18 @@ class SignUp {
     axios
       .post("/user/save", data)
       .then(({ data: response }) => {
+        console.log(response);
         if (response && response.success) {
           this.resetForm();
-          alert("Successfully saved.");
+          $("#signupModal").modal("hide");
+          $.toaster({ settings: { timeout: 15000 } });
+
+          $.toaster({
+            priority: "success",
+            title: "Success",
+            message: `You are successfully registered, we have sent a confirmation link on your phone. 
+          Please click on that link to verify your phone.`,
+          });
         } else if (
           response &&
           response.error &&
@@ -159,7 +169,13 @@ class SignUp {
         }
       })
       .catch(function (error) {
-        alert("Error while saving the data");
+        console.log(error);
+        $.toaster({ settings: { timeout: 5000 } });
+        $.toaster({
+          priority: "danger",
+          title: "Error",
+          message: `Something is wrong. Please try later`,
+        });
       });
   }
 }
