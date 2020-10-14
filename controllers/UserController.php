@@ -3,6 +3,9 @@
 namespace app\controllers;
 use Yii;
 
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
+
 use app\models\Users;
 use app\models\LoginForm;
 use app\models\ReceiverRequestLog;
@@ -11,15 +14,71 @@ use yii\web\NotFoundHttpException;
 
 class UserController extends \yii\web\Controller
 {
+
+     /**
+     * {@inheritdoc}
+     */
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['logout', 'index', 'save', 'login'],
+                'rules' => [
+                    [
+                        'actions' => ['logout'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => ['index'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => ['save'],
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'actions' => ['login'],
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ]
+                ],
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'logout' => ['post']
+                ],
+            ],
+        ];
+    }
+
+       /**
+     * {@inheritdoc}
+     */
+    public function actions()
+    {
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ],
+            'captcha' => [
+                'class' => 'yii\captcha\CaptchaAction',
+                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+            ],
+        ];
+    }
+
+
     public function actionIndex()
     {
-        //check if user is not logged in
-        if(Yii::$app->user->isGuest) {
-            throw new NotFoundHttpException;
-        }  
+        
+        $donor = Yii::$app->user->identity->user_role == 0;
+        $receiver = Yii::$app->user->identity->user_role == 1;
 
-        $donor = Yii::$app->user->identity->user_role === 0;
-        $receiver = Yii::$app->user->identity->user_role === 1;
 
         /*
         //select * from receiver_request_log where donor_id=id order by requested_date
@@ -45,23 +104,23 @@ class UserController extends \yii\web\Controller
         
           
 
-          $request_log=$users->getRequesterList($users->id);
-        //  dd($request_log);
+        //   $request_log=$users->getRequesterList($users->id);
+        // //  dd($request_log);
         
         
-        // $request_log=ReceiverRequestLog::find()->with('users')->all();
+        // // $request_log=ReceiverRequestLog::find()->with('users')->all();
         
-        // $request_log=ReceiverRequestLog::find()
+        // // $request_log=ReceiverRequestLog::find()
 
-        $res['model']=$users;
-        $res['role_value']=$role;
+        // $res['model']=$users;
+        // $res['role_value']=$role;
 
-        $res['request_log']=$request_log;
+        // $res['request_log']=$request_log;
 
-        // dd($res['request_log']);
+        // // dd($res['request_log']);
         
         
-        return $this->render('index' , ['res'=>$res]);
+        return $this->render('index' , ['res'=>[]]);
         
 
     }
@@ -91,8 +150,11 @@ class UserController extends \yii\web\Controller
             }
 
             $model->phone_number = $user['phone_number'];
-            $model->password = $user['password'];
+            $model->blood_group = $user['blood_group'];
+            $model->state = $user['state'];
+            $model->district = $user['district'];
             $model->user_role = $user['user_role'];
+            $model->password = $user['password'];
 
             if($model->save()) {
                 $result = array(
@@ -125,7 +187,7 @@ class UserController extends \yii\web\Controller
             $request = \Yii::$app->request;            
         
             if(!$request->isAjax) {
-                throw new NotFoundHttpException;
+                return $this->render('login');
             }
 
             //check if already logged in
@@ -142,6 +204,7 @@ class UserController extends \yii\web\Controller
             $model = new LoginForm();
             $model->phone_number = $user['phone_number'];
             $model->password = $user['password'];
+            $model->remember_me = $user['remember_me'];
             
             if($model->login()) {
                 $result = array(
@@ -163,6 +226,19 @@ class UserController extends \yii\web\Controller
         }  
        
 
+    }
+
+
+    /**
+     * Logout action.
+     *
+     * @return Response
+     */
+    public function actionLogout()
+    {
+        Yii::$app->user->logout();
+
+        return $this->goHome();
     }
 
 }

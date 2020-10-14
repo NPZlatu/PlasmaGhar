@@ -1,10 +1,14 @@
 <?php
 /* @var $this yii\web\View */
+use yii\helpers\Html;
 
 ?>
 
 <div class="container-fluid">
     <div class="row">
+     
+    <?= Html::a('Sign out',['/user/logout'],['data-method' => 'post', 'class' => 'btn btn-default btn-flat']); ?>
+
         <?php echo $this->render('partials/_sidebar.php'); ?>
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
 

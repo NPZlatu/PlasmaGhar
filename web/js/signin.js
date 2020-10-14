@@ -47,7 +47,9 @@ var SignIn = function () {
       var _this = this;
 
       $("#signinModal").on("hidden.bs.modal", function () {
-        _this.resetForm();
+        if (window.location.href.includes("/user/login")) {
+          window.location.href = "/";
+        } else _this.resetForm();
       });
     }
   }, {
@@ -68,12 +70,13 @@ var SignIn = function () {
   }, {
     key: "resetForm",
     value: function resetForm() {
-      this.model.map(function (v) {
+      this.model.forEach(function (v) {
         var selector = v.selector;
 
         $("#" + selector).val("");
+        v.value = "";
       });
-      $("invalid-feedback").hide();
+      $(".invalid-feedback").hide();
     }
   }, {
     key: "showError",
@@ -136,11 +139,9 @@ var SignIn = function () {
 
       var data = {
         phone_number: model[0].value,
-        password: model[1].value
+        password: model[1].value,
+        remember_me: $("#rememberMe:checked").val() ? 1 : 0
       };
-
-      axios.defaults.headers.post["X-CSRF-Token"] = $('meta[name="csrf-token"]').attr("content");
-      axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
       axios.post("/user/login", data).then(function (_ref) {
         var response = _ref.data;

@@ -1,4 +1,5 @@
-<?php ?>
+<?php 
+?>
 <div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -18,12 +19,9 @@
                                     </small>
                                     <br/>
                                 </div>
-                              <div class="row">
-                           
-                                
-                            </div>
+                              
                               <div class=" mb-1">
-                                <label for="lastName">Phone Number</label>
+                                <label for="phoneNumber">Phone Number</label>
                               </div>
                               <div class="input-group mb-2">
                                 <div class="input-group-prepend">
@@ -33,6 +31,41 @@
                                 <div class="invalid-feedback">
                                   </div>
                               </div>
+
+
+                              <div class=" mb-1">
+                              <label for="bloodGroup">Blood Group <span class="">(Mandatory for Blood Donor)</span></label>
+                                <select id="bloodGroup" class="form-control">
+                                <option selected="true" value="">select blood group</option>    
+                                <option value="A positive"> A positive </option>
+                                <option value="B positive"> B positive </option>
+                                <option value="B negative"> B negative </option>
+                                <option value="AB positive"> AB positive </option>
+                                <option value="O positive"> O positive </option>
+                                <option value="O negative"> O negative </option>
+
+                                  </div>
+                                </select>
+                                <div class="invalid-feedback">
+                                </div>
+                              </div>
+
+                              <div class=" mb-1">
+                                <label for="state">State</label>
+                                <select id="state" class="form-control">
+                                </select>
+                                <div class="invalid-feedback">
+                                </div>
+                              </div>
+
+                              <div class="district-wrapper mb-1" style="display:none">
+                                <label for="district">District </label>
+                                <select id="district" class="form-control">
+                                </select>
+                                <div class="invalid-feedback">
+                                </div>
+                              </div>
+
 
                               <div class="mb-1">
                                 <label for="password">Password <span class=""></span></label>
@@ -68,6 +101,19 @@
                                     
                                   </div>
                                 </div>
+                              </fieldset>
+
+                              <fieldset class="form-group">
+                                <div class="row">
+                                  <div class="col-sm-12">
+                                    <div class="form-check">
+                                      <input class="form-check-input" type="checkbox" name="terms" id="terms" value="option1">
+                                      <label class="form-check-label" for="terms">
+                                        I agree to <a target="_blank" href="/terms-and-conditions">terms and conditions</a>
+                                      </label>
+                                    </div>
+                                    </div>
+                              </div>
                               </fieldset>
                       
                              <button type="button" class="btn btn-secondary close-signup" data-dismiss="modal">Close</button>

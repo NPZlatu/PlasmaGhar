@@ -29,11 +29,14 @@ class AppAsset extends AssetBundle
     public $js = [
         '//code.jquery.com/jquery-3.2.1.min.js',
         'js/bootstrap/bootstrap.min.js',
-        '//cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js',
         '//unpkg.com/axios/dist/axios.min.js',
         'js/bootstrap/toaster.js',
         'js/signup.js',
         'js/signin.js'
+    ];
+
+    public $depends = [
+        'yii\web\YiiAsset',
     ];
  
 }
