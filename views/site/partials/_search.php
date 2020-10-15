@@ -10,7 +10,7 @@
                         a potential therapy, we may be able to help people at risk for serious complications from
                         COVID-19 better fight the disease.</p>
                     <div class="container p-4 col-md-12 text-center">
-                        <button type="button" class="btn btn-secondary cus-btn-hero">I'll Help</button>
+                        <button type="button" class="btn btn-secondary cus-btn-hero btn-help">I'll Help</button>
                     </div>
                 </div>
                 <div class="col-md-4 p-4 cus-how cus-search">

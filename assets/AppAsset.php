@@ -23,17 +23,19 @@ class AppAsset extends AssetBundle
         '//fonts.googleapis.com/css2?family=Merriweather:wght@300&display=swap',
         '//fonts.googleapis.com/css2?family=Montserrat&display=swap',
         'css/bootstrap/css/bootstrap.min.css',
-        'css/site.css',
+        'css/dist/build-main.css',
     ];
 
     public $js = [
         '//code.jquery.com/jquery-3.2.1.min.js',
         'js/bootstrap/bootstrap.min.js',
-        '//cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js',
         '//unpkg.com/axios/dist/axios.min.js',
         'js/bootstrap/toaster.js',
-        'js/signup.js',
-        'js/signin.js'
+        'js/dist/build-main.js'
+    ];
+
+    public $depends = [
+        'yii\web\YiiAsset',
     ];
  
 }

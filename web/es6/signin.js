@@ -37,7 +37,9 @@ class SignIn {
 
   setModalListeners() {
     $("#signinModal").on("hidden.bs.modal", () => {
-      this.resetForm();
+      if (window.location.href.includes("/user/login")) {
+        window.location.href = "/";
+      } else this.resetForm();
     });
   }
 
@@ -52,11 +54,12 @@ class SignIn {
   }
 
   resetForm() {
-    this.model.map((v) => {
+    this.model.forEach((v) => {
       const { selector } = v;
       $(`#${selector}`).val("");
+      v.value = "";
     });
-    $("invalid-feedback").hide();
+    $(".invalid-feedback").hide();
   }
 
   showError(selector, rules, index) {
@@ -112,12 +115,8 @@ class SignIn {
     const data = {
       phone_number: model[0].value,
       password: model[1].value,
+      remember_me: $("#rememberMe:checked").val() ? 1 : 0,
     };
-
-    axios.defaults.headers.post["X-CSRF-Token"] = $(
-      'meta[name="csrf-token"]'
-    ).attr("content");
-    axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
     axios
       .post("/user/login", data)

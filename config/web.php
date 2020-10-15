@@ -29,6 +29,7 @@ $config = [
         ],
         'user' => [
             'identityClass' => 'app\models\Users',
+            'loginUrl' => ['/user/login'],
             'enableAutoLogin' => true,
             'enableSession' => true
         ],
@@ -57,7 +58,8 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                '' => 'home/index',
+                '' => 'site/index',
+                'terms-and-conditions' => 'site/terms',
                 'dashboard' => 'user/index',
             ],
         ],

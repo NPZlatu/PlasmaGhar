@@ -61,7 +61,7 @@ body {
 }
 
 .cus-hero {
-  background-image: url(../images/hero.png);
+  background-image: url(../../images/hero.png);
   border-radius: 0rem !important;
   padding-bottom: 9rem !important;
 }

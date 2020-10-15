@@ -15,6 +15,43 @@ class SignUp {
         value: "",
       },
       {
+        selector: "bloodGroup",
+        rules: {
+          required: {
+            value: true,
+            conditions: [
+              {
+                selector: "input#gridRadios2:checked",
+                value: true,
+              },
+            ],
+            error: "Blood Group is required.",
+          },
+        },
+        value: "",
+      },
+
+      {
+        selector: "state",
+        rules: {
+          required: {
+            value: true,
+            error: "State is required.",
+          },
+        },
+        value: "",
+      },
+      {
+        selector: "district",
+        rules: {
+          required: {
+            value: true,
+            error: "District is required.",
+          },
+        },
+        value: "",
+      },
+      {
         selector: "password",
         rules: {
           regex: {
@@ -40,6 +77,7 @@ class SignUp {
 
   constructor() {
     this.clicked = false;
+    this.states = [];
     this.model = this.getModel();
     this.onSignUpConfirmClick = this.onSignUpConfirmClick.bind(this);
     this.checkValidation = this.checkValidation.bind(this);
@@ -50,10 +88,15 @@ class SignUp {
   setUpListeners() {
     $(".confirm-signup").click(this.onSignUpConfirmClick);
     this.setUpOnBlurListeners();
+    this.setUpOnChangeListeners();
     this.setModalListeners();
   }
 
   setModalListeners() {
+    $("#signupModal").on("shown.bs.modal", () => {
+      if (this.states.length === 0) this.requestStates();
+    });
+
     $("#signupModal").on("hidden.bs.modal", () => {
       this.resetForm();
     });
@@ -69,6 +112,27 @@ class SignUp {
     });
   }
 
+  setUpOnChangeListeners() {
+    const self = this;
+
+    $("#state").on("change", function () {
+      if (this.value) {
+        const code = $("option:selected", this).data("code");
+        console.log(code);
+        self.requestDistricts(code);
+      } else {
+        $(".district-wrapper").hide();
+      }
+    });
+
+    $("input#gridRadios2").on("click", function () {
+      $("input#gridRadios1").prop("checked", false);
+      const errorElement = $("#bloodGroup").next();
+      errorElement.text("");
+      errorElement.hide();
+    });
+  }
+
   showError(selector, rules, index) {
     const element = $(`#${selector}`);
     const value = element.val();
@@ -77,8 +141,18 @@ class SignUp {
     let valid = true;
 
     if (!value && rules.required && rules.required.value) {
-      valid = false;
-      message = rules.required.error;
+      if (!rules.required.conditions) {
+        valid = false;
+        message = rules.required.error;
+      } else {
+        rules.required.conditions.forEach((cond) => {
+          const selector = cond.selector;
+          if (!$(selector).val()) {
+            valid = false;
+            message = rules.required.error;
+          }
+        });
+      }
     } else if (rules.regex) {
       valid = new RegExp(rules.regex.value).test(value);
       if (rules.required && rules.required.value === false) {
@@ -115,33 +189,90 @@ class SignUp {
   }
 
   resetForm() {
-    this.model.map((v) => {
+    this.model.forEach((v) => {
       const { selector } = v;
       $(`#${selector}`).val("");
+      v.value = "";
     });
-    $("invalid-feedback").hide();
+    $(".invalid-feedback").hide();
+  }
+
+  checkIfTermsAndConditionsAgreed() {
+    let agree = true;
+    if (!$("#terms:checked").val()) {
+      $.toaster({ settings: { timeout: 5000 } });
+      $.toaster({
+        priority: "danger",
+        title: "Terms and Conditions",
+        message: `You must agree to our terms and conditions to proceed further.`,
+      });
+      agree = false;
+    }
+    return agree;
   }
 
   onSignUpConfirmClick() {
     this.clicked = true;
     const valid = this.checkValidation();
     if (valid) {
-      this.registerUser();
+      if (this.checkIfTermsAndConditionsAgreed()) this.registerUser();
     }
+  }
+
+  requestStates() {
+    axios
+      .get("/address/get-states")
+      .then(({ data: states }) => {
+        if (states && states.length > 0) {
+          this.states = states;
+          this.populateStates();
+        }
+      })
+      .catch(function (error) {});
+  }
+
+  requestDistricts(stateCode) {
+    axios
+      .get(`/address/get-districts?code=${stateCode}`)
+      .then(({ data: districts }) => {
+        if (districts && districts.length > 0) {
+          this.populateDistricts(districts);
+        }
+      })
+      .catch(function (error) {});
+  }
+
+  populateStates() {
+    const { states } = this;
+    $("#state").html("");
+    let options = "<option selected value>select state</option>";
+
+    for (let i = 0; i < states.length; i++) {
+      options += `<option data-code=${states[i].code} value=${states[i].name}>${states[i].name}</option>`;
+    }
+    $("#state").append(options);
+  }
+
+  populateDistricts(districts) {
+    $("#district").html("");
+    let options = "<option selected value>select district</option>";
+    for (let i = 0; i < districts.length; i++) {
+      options += `<option data-code=${districts[i].code} value=${districts[i].name}>${districts[i].name}</option>`;
+    }
+    $(".district-wrapper").show();
+    $("#district").append(options);
   }
 
   registerUser() {
     const { model } = this;
     const data = {
       phone_number: model[0].value,
-      password: model[1].value,
+      blood_group: model[1].value,
+      state: model[2].value,
+      district: model[3].value,
+      password: model[4].value,
       user_role: $("input#gridRadios1:checked").val() ? 0 : 1,
     };
-
-    axios.defaults.headers.post["X-CSRF-Token"] = $(
-      'meta[name="csrf-token"]'
-    ).attr("content");
-    axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
     axios
       .post("/user/save", data)
@@ -181,5 +312,10 @@ class SignUp {
 }
 
 $(document).ready(function () {
+  axios.defaults.headers.post["X-CSRF-Token"] = $(
+    'meta[name="csrf-token"]'
+  ).attr("content");
+  axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
+
   new SignUp();
 });
