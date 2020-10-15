@@ -19,6 +19,7 @@
             <tbody>
                 <?php 
                 $id=1;
+                if(is_null($request_list)) $request_list = [];
                 foreach($request_list as $receiver) {?>
                 <tr>
                     <td><?= $id ?></td>

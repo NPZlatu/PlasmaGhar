@@ -1,10 +1,12 @@
 "use strict";
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var SignIn = function () {
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var SignIn = /*#__PURE__*/function () {
   function SignIn() {
     _classCallCheck(this, SignIn);
 
@@ -47,7 +49,9 @@ var SignIn = function () {
       var _this = this;
 
       $("#signinModal").on("hidden.bs.modal", function () {
-        _this.resetForm();
+        if (window.location.href.includes("/user/login")) {
+          window.location.href = "/";
+        } else _this.resetForm();
       });
     }
   }, {
@@ -58,9 +62,8 @@ var SignIn = function () {
       this.model.map(function (v, index) {
         var selector = v.selector,
             rules = v.rules;
-
         var self = _this2;
-        $("#" + selector).blur(function () {
+        $("#".concat(selector)).blur(function () {
           if (self.clicked) self.showError(selector, rules, index);
         });
       });
@@ -68,17 +71,17 @@ var SignIn = function () {
   }, {
     key: "resetForm",
     value: function resetForm() {
-      this.model.map(function (v) {
+      this.model.forEach(function (v) {
         var selector = v.selector;
-
-        $("#" + selector).val("");
+        $("#".concat(selector)).val("");
+        v.value = "";
       });
-      $("invalid-feedback").hide();
+      $(".invalid-feedback").hide();
     }
   }, {
     key: "showError",
     value: function showError(selector, rules, index) {
-      var element = $("#" + selector);
+      var element = $("#".concat(selector));
       var value = element.val();
       var errorElement = element.next();
       var message = "";
@@ -89,9 +92,11 @@ var SignIn = function () {
         message = rules.required.error;
       } else if (rules.regex) {
         valid = new RegExp(rules.regex.value).test(value);
+
         if (rules.required && rules.required.value === false) {
           valid = !value || valid;
         }
+
         if (!valid) message = rules.regex.error;
       }
 
@@ -102,6 +107,7 @@ var SignIn = function () {
         errorElement.text("");
         errorElement.hide();
       }
+
       this.model[index].value = value;
       return valid;
     }
@@ -110,14 +116,15 @@ var SignIn = function () {
     value: function checkValidation() {
       var valid = true;
       var retrunVal = true;
-      for (var i = 0; i < this.model.length; i++) {
-        var _model$i = this.model[i],
-            selector = _model$i.selector,
-            rules = _model$i.rules;
 
+      for (var i = 0; i < this.model.length; i++) {
+        var _this$model$i = this.model[i],
+            selector = _this$model$i.selector,
+            rules = _this$model$i.rules;
         valid = this.showError(selector, rules, i);
         if (!valid) retrunVal = false;
       }
+
       return retrunVal;
     }
   }, {
@@ -125,6 +132,7 @@ var SignIn = function () {
     value: function onSignInConfirmClick() {
       this.clicked = true;
       var valid = this.checkValidation();
+
       if (valid) {
         this.loginUser();
       }
@@ -133,29 +141,29 @@ var SignIn = function () {
     key: "loginUser",
     value: function loginUser() {
       var model = this.model;
-
       var data = {
         phone_number: model[0].value,
-        password: model[1].value
+        password: model[1].value,
+        remember_me: $("#rememberMe:checked").val() ? 1 : 0
       };
-
-      axios.defaults.headers.post["X-CSRF-Token"] = $('meta[name="csrf-token"]').attr("content");
-      axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
-
       axios.post("/user/login", data).then(function (_ref) {
         var response = _ref.data;
 
         if (response && response.success) {
           window.location.href = "/dashboard";
         } else {
-          $.toaster({ settings: { timeout: 5000 } });
+          $.toaster({
+            settings: {
+              timeout: 5000
+            }
+          });
           $.toaster({
             priority: "danger",
             title: "Error",
             message: "Invalid phone and/or password"
           });
         }
-      }).catch(function (error) {
+      })["catch"](function (error) {
         alert("Error while saving the data");
       });
     }
@@ -167,3 +175,4 @@ var SignIn = function () {
 $(document).ready(function () {
   new SignIn();
 });
+//# sourceMappingURL=signin.js.map

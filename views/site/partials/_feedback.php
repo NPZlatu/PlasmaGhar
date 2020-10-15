@@ -15,36 +15,32 @@
                       <label for="fb-firstName">First name</label>
                       <input type="text" class="form-control" id="fb-firstName" placeholder="" value="" required="">
                       <div class="invalid-feedback">
-                        Valid first name is required.
                       </div>
                     </div>
                     <div class="col-md-6 mb-1">
                       <label for="fb-lastName">Last name</label>
                       <input type="text" class="form-control" id="fb-lastName" placeholder="" value="" required="">
                       <div class="invalid-feedback">
-                        Valid last name is required.
                       </div>
                     </div>
                   </div>
           
                   <div class="mb-1">
-                    <label for="fb-email">Email <span class="">(Optional)</span></label>
-                    <input type="email" class="form-control" id="fb-email" placeholder="johndoe@gmail.com">
+                    <label for="fb-email">Email</label>
+                    <input type="email" class="form-control" id="fb-email" placeholder="abc@gmail.com">
                     <div class="invalid-feedback">
-                      Please enter a valid email address for shipping updates.
                     </div>
                   </div>
           
                   
                   <div class="mb-3">
-                    <label for="exampleFormControlTextarea1">Message</label>
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                    <label for="fb-msg">Message</label>
+                    <textarea class="form-control" id="fb-msg" rows="3"></textarea>
                     <div class="invalid-feedback">
-                      Please enter a valid email address for shipping updates.
                     </div>
                   </div>
                   
-                  <button class="btn btn-light btn-md btn-block" type="submit">SEND</button>
+                  <button class="btn btn-light btn-md btn-block feedback-send" type="submit">SEND</button>
                 </form>
               </div>  
         </div>

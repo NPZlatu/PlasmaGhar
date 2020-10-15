@@ -38,6 +38,21 @@
                                     <div class="invalid-feedback">
                                     </div>
                                   </div>
+
+                                <br/>
+                                <fieldset class="form-group">
+                                <div class="row">
+                                  <div class="col-sm-6">
+                                    <div class="form-check">
+                                      <input class="form-check-input" type="checkbox" name="rememberMe" id="rememberMe" value="option1" checked>
+                                      <label class="form-check-label" for="gridRadios1">
+                                        Remember Me
+                                      </label>
+                                    </div>
+                                
+                                  </div>
+                                </div>
+                                </fieldset>
                                   
                           
                                  <button type="button" class="btn btn-secondary close-signin" data-dismiss="modal">Close</button>
