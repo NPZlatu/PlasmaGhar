@@ -19,6 +19,8 @@
             <tbody>
                 <?php 
                 $id=1;
+                if (sizeof($request_list)>0){
+                
                 foreach($request_list as $receiver) {?>
                 <tr>
                     <td><?= $id ?></td>
@@ -36,7 +38,15 @@
                 </tr>
                 <?php
                     $id+=1;
-                } ?>
+                    }
+                }else{ 
+                    
+                    ?>
+
+                    <td colspan=7 class="table-error">You have no any request for now.</td>
+                
+                 <?php  } ?>
+                
             </tbody>
         </table>
         <hr/>

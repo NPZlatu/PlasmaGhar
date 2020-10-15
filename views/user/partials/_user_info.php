@@ -13,9 +13,9 @@
         <p><button type="button" class="btn btn-sm btn-outline-danger">Edit My Info</button></p>
         <p>User Status : <span class="badge badge-sm badge-secondary badge-pill">Available</span> Change</p>
         <p>Blood Group : <strong><?=$res['model']['blood_group'] ?></strong></p>
-        <p>Location : <br/><br/><strong><?= 
-                            strtoupper($res['model']['municipality']).",<br/> WARD NO.". $res['model']['ward_no'].", <br/>".
-                            strtoupper($res['model']['district']).",<br/>". strtoupper($res['model']['state']);
+        <p>Location : <strong><?= 
+                            // strtoupper($res['model']['municipality']).",<br/> WARD NO.". $res['model']['ward_no'].", <br/>".
+                            strtoupper($res['model']['district']).", ". strtoupper($res['model']['state']);
                         ?></strong></p>
         <p>Phone Number : <strong><?= $res['model']['phone_number']?></strong></p>
         <p>Role: <strong><?=$res['role_value'] ?></strong></p>

@@ -13,6 +13,7 @@ class UserController extends \yii\web\Controller
 {
     public function actionIndex()
     {
+        
         //check if user is not logged in
         if(Yii::$app->user->isGuest) {
             throw new NotFoundHttpException;
@@ -21,44 +22,19 @@ class UserController extends \yii\web\Controller
         $donor = Yii::$app->user->identity->user_role === 0;
         $receiver = Yii::$app->user->identity->user_role === 1;
 
-        /*
-        //select * from receiver_request_log where donor_id=id order by requested_date
-        $receiver_request_log = $users->getReceiverRequestLogByDonorId()
-                            ->orderBy('requested_date')
-                            ->all();
-        // rq($receiver_request_log);
-        // dd($receiver_request_log);
-
-        foreach($receiver_request_log as $receiver_request){
-            // dd(gettype($receiver_request));
-            $receiver_detail = $receiver_request->getReceiver();
-            
-            // rq($receiver_detail);
-            dd($receiver_detail);
-            $receiver_detail['phone_number'];
-        }
-        
-        //  dd($receiver_request_log[0]);  
-        
-        */
+        // dd($receiver);
         
         
-          
-
-          $request_log=$users->getRequesterList($users->id);
-        //  dd($request_log);
+        $users = Yii::$app->user->identity;
+        $request_log=Users::getRequesterList(Yii::$app->user->id);
         
-        
-        // $request_log=ReceiverRequestLog::find()->with('users')->all();
-        
-        // $request_log=ReceiverRequestLog::find()
-
         $res['model']=$users;
-        $res['role_value']=$role;
+        $res['role_value']=$receiver===true?'Receiver':'Donor';
 
         $res['request_log']=$request_log;
 
-        // dd($res['request_log']);
+        // dd(sizeof($res['request_log']));
+
         
         
         return $this->render('index' , ['res'=>$res]);
