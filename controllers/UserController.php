@@ -184,14 +184,14 @@ class UserController extends \yii\web\Controller
      */
     public function actionLogin(){
         try {  
-            $request = \Yii::$app->request;            
+            $request = Yii::$app->request;            
         
             if(!$request->isAjax) {
                 return $this->render('login');
             }
 
             //check if already logged in
-            if(!\Yii::$app->user->isGuest){
+            if(!Yii::$app->user->isGuest){
                 $result = array(
                     'success' => false,
                     'error' => 'already logged in'
@@ -224,8 +224,25 @@ class UserController extends \yii\web\Controller
                 'error' => $exception->getMessage()
             ));
         }  
-       
+    }
 
+
+    public function actionWhoAmI(){   
+        $user = [];
+        $request = Yii::$app->request;            
+        if($request->isAjax) {
+            if(Yii::$app->user->isGuest) {
+                $user['id'] = null;
+                $user['role'] = 'guest';
+            } else if(Yii::$app->user->identity->user_role == '0') {
+                $user['id'] = Yii::$app->user->id;
+                $user['role'] = 'donor';
+            } else if(Yii::$app->user->identity->user_role == '1') {
+                $user['id'] = Yii::$app->user->id;
+                $user['role'] = 'receiver';
+            }
+        }
+        return $this->asJson($user);
     }
 
 

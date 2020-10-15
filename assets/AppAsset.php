@@ -23,7 +23,7 @@ class AppAsset extends AssetBundle
         '//fonts.googleapis.com/css2?family=Merriweather:wght@300&display=swap',
         '//fonts.googleapis.com/css2?family=Montserrat&display=swap',
         'css/bootstrap/css/bootstrap.min.css',
-        'css/build/build-min.css',
+        'css/dist/build-main.css',
     ];
 
     public $js = [
@@ -31,7 +31,7 @@ class AppAsset extends AssetBundle
         'js/bootstrap/bootstrap.min.js',
         '//unpkg.com/axios/dist/axios.min.js',
         'js/bootstrap/toaster.js',
-        'js/dist/build-min.js'
+        'js/dist/build-main.js'
     ];
 
     public $depends = [

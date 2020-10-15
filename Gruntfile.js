@@ -9,25 +9,34 @@ module.exports = function (grunt) {
         files: {
           "web/js/dist/signup.js": "web/es6/signup.js",
           "web/js/dist/signin.js": "web/es6/signin.js",
+          "web/js/dist/home.js": "web/es6/home.js",
         },
       },
     },
     concat: {
       dist: {
         src: ["web/js/dist/signup.js", "web/js/dist/signin.js"],
-        dest: "web/js/dist/build-min.js",
+        dest: "web/js/dist/build-main.js",
       },
     },
     uglify: {
-      dist: {
-        src: "web/js/dist/build-min.js",
-        dest: "web/js/dist/build-min.js",
+      build: {
+        files: [
+          {
+            src: "web/js/dist/build-main.js",
+            dest: "web/js/dist/build-main.js",
+          },
+          {
+            src: "web/js/dist/home.js",
+            dest: "web/js/dist/build-home.js",
+          },
+        ],
       },
     },
     cssmin: {
       target: {
         files: {
-          "web/css/build/build-min.css": ["web/css/site.css"],
+          "web/css/dist/build-main.css": ["web/css/site.css"],
         },
       },
     },
