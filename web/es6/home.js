@@ -1,15 +1,56 @@
-$(document).ready(function () {
-  function initialize() {
-    setUpListeners();
+class Home {
+  constructor() {
+    this.clicked = false;
+    this.model = [
+      {
+        selector: "fb-firstName",
+        rules: {
+          required: {
+            value: true,
+            error: "First name is required.",
+          },
+        },
+        value: "",
+      },
+      {
+        selector: "fb-lastName",
+        rules: {
+          required: {
+            value: true,
+            error: "Last name is required.",
+          },
+        },
+        value: "",
+      },
+      {
+        selector: "fb-email",
+        rules: {
+          required: {
+            regex: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+            error: "Please enter a valid email address",
+          },
+        },
+        value: "",
+      },
+      {
+        selector: "fb-msg",
+        rules: {
+          required: {
+            value: true,
+            error: "Message is required.",
+          },
+        },
+        value: "Message is required",
+      },
+    ];
+    this.setUpListeners();
   }
 
-  function setUpListeners() {
-    $(".btn-help").on("click", function () {
-      openModalIfUserIsNotLoggedIn();
-    });
+  setUpListeners() {
+    $(".btn-help").on("click", this.onIWillHelpClick);
   }
 
-  function openModalIfUserIsNotLoggedIn() {
+  onIWillHelpClick() {
     axios
       .get(`/user/who-am-i`)
       .then(({ data: user }) => {
@@ -19,8 +60,12 @@ $(document).ready(function () {
           $("#signinModal").modal("show");
         }
       })
-      .catch(function (error) {});
+      .catch(function (error) {
+        console.log(error);
+      });
   }
+}
 
-  initialize();
+$(document).ready(function () {
+  new Home();
 });
