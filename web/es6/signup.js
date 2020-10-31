@@ -87,6 +87,10 @@ class SignUp {
 
   setUpListeners() {
     $(".confirm-signup").click(this.onSignUpConfirmClick);
+    $(".signin-register").click(function () {
+      $("#signupModal").modal("hide");
+      $("#signinModal").modal("show");
+    });
     this.setUpOnBlurListeners();
     this.setUpOnChangeListeners();
     this.setModalListeners();
@@ -245,7 +249,7 @@ class SignUp {
   populateStates() {
     const { states } = this;
     $("#state").html("");
-    let options = "<option selected value>select state</option>";
+    let options = "<option selected value>SELECT STATE</option>";
 
     for (let i = 0; i < states.length; i++) {
       options += `<option data-code=${states[i].code} value=${states[i].name}>${states[i].name}</option>`;
@@ -255,7 +259,7 @@ class SignUp {
 
   populateDistricts(districts) {
     $("#district").html("");
-    let options = "<option selected value>select district</option>";
+    let options = "<option selected value>SELECT DISTRICT</option>";
     for (let i = 0; i < districts.length; i++) {
       options += `<option data-code=${districts[i].code} value=${districts[i].name}>${districts[i].name}</option>`;
     }
@@ -277,7 +281,6 @@ class SignUp {
     axios
       .post("/user/save", data)
       .then(({ data: response }) => {
-        console.log(response);
         if (response && response.success) {
           this.resetForm();
           $("#signupModal").modal("hide");

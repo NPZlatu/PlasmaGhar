@@ -57,8 +57,14 @@
                           
                                  <button type="button" class="btn btn-secondary close-signin" data-dismiss="modal">Close</button>
                                  <button type="button" class="btn btn-primary confirm-signin">Sign In</button>
+
+                                <div style="margin-top: 10px;"class="alert alert-light" role="alert">
+                                If you have no account, please <a class="register-signin" href="javascript:void(0);">click here</a> to register
+                                </div>
+
                                 </form>
                               </div>  
+                             
                         </div>
                         
                         

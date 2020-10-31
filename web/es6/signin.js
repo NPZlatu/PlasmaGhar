@@ -31,6 +31,10 @@ class SignIn {
 
   setUpListeners() {
     $(".confirm-signin").click(this.onSignInConfirmClick);
+    $(".register-signin").click(function () {
+      $("#signinModal").modal("hide");
+      $("#signupModal").modal("show");
+    });
     this.setUpOnBlurListeners();
     this.setModalListeners();
   }
@@ -122,7 +126,9 @@ class SignIn {
       .post("/user/login", data)
       .then(({ data: response }) => {
         if (response && response.success) {
-          window.location.href = "/dashboard";
+          if ($("#searchModal").hasClass("show")) {
+            $("#signinModal").modal("hide");
+          } else window.location.href = "/dashboard";
         } else {
           $.toaster({ settings: { timeout: 5000 } });
           $.toaster({

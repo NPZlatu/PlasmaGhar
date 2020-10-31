@@ -1,13 +1,14 @@
 <?php  
 use yii\helpers\Html;
 ?>
+
 <header class="blog-header py-3">
             <div class="row flex-nowrap justify-content-between align-items-center">
                 <div class="col-4 pt-1">
-                    <a class="" href="/">PlasmaNepal</a>
+                    <a class="" href="/">PlasmaGhar</a>
                 </div>
 
-                <div class="col-4 d-flex justify-content-end ">
+                <div class="col-4 d-flex justify-content-end nav-menus">
                     <?php 
                     if(\Yii::$app->user->isGuest) {
                     ?>

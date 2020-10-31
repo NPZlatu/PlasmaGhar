@@ -36,7 +36,7 @@
                               <div class=" mb-1">
                               <label for="bloodGroup">Blood Group <span class="">(Mandatory for Blood Donor)</span></label>
                                 <select id="bloodGroup" class="form-control">
-                                <option selected="true" value="">select blood group</option>    
+                                <option selected="true" value="">SELECT A BLOOD GROUP</option>    
                                 <option value="A positive"> A positive </option>
                                 <option value="B positive"> B positive </option>
                                 <option value="B negative"> B negative </option>
@@ -118,6 +118,10 @@
                       
                              <button type="button" class="btn btn-secondary close-signup" data-dismiss="modal">Close</button>
                              <button type="button" class="btn btn-primary confirm-signup">Sign Up</button>
+                             <div style="margin-top: 10px;"class="alert alert-light" role="alert">
+                                If you have already registered an account, please <a class="signin-register" href="javascript:void(0);">click here</a> to login
+                                </div>
+                            
                             </form>
                           </div>  
                     </div>

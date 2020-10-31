@@ -153,3 +153,7 @@ body {
   color: var(--clr-white);
   padding: 20px;
 }
+
+.filter {
+  padding: 3px;
+}

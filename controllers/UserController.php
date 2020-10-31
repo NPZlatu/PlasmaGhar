@@ -254,8 +254,30 @@ class UserController extends \yii\web\Controller
     public function actionLogout()
     {
         Yii::$app->user->logout();
-
         return $this->goHome();
+    }
+
+
+    /**
+     * Search Donar lists
+     */
+    public function actionSearch()
+    {
+        $request = \Yii::$app->request;
+
+        if(!$request->isAjax) {
+            throw new NotFoundHttpException;
+        }
+        $filter = $request->post();
+        $DonorFound = Users::find()
+        ->select('id,blood_group,district')
+        ->where(['blood_group' => $filter['blood_group']])
+        ->andWhere(['state' => $filter['state']])
+        ->andWhere(['district' => $filter['district']])
+        ->andWhere(['user_role' => 0])
+        ->andWhere(['phone_confirmation_status' => 1])
+        ->all();
+        return $this->asJson($DonorFound);
     }
 
 }

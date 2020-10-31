@@ -91,6 +91,10 @@ var SignUp = /*#__PURE__*/function () {
     key: "setUpListeners",
     value: function setUpListeners() {
       $(".confirm-signup").click(this.onSignUpConfirmClick);
+      $(".signin-register").click(function () {
+        $("#signupModal").modal("hide");
+        $("#signinModal").modal("show");
+      });
       this.setUpOnBlurListeners();
       this.setUpOnChangeListeners();
       this.setModalListeners();
@@ -282,7 +286,7 @@ var SignUp = /*#__PURE__*/function () {
     value: function populateStates() {
       var states = this.states;
       $("#state").html("");
-      var options = "<option selected value>select state</option>";
+      var options = "<option selected value>SELECT STATE</option>";
 
       for (var i = 0; i < states.length; i++) {
         options += "<option data-code=".concat(states[i].code, " value=").concat(states[i].name, ">").concat(states[i].name, "</option>");
@@ -294,7 +298,7 @@ var SignUp = /*#__PURE__*/function () {
     key: "populateDistricts",
     value: function populateDistricts(districts) {
       $("#district").html("");
-      var options = "<option selected value>select district</option>";
+      var options = "<option selected value>SELECT DISTRICT</option>";
 
       for (var i = 0; i < districts.length; i++) {
         options += "<option data-code=".concat(districts[i].code, " value=").concat(districts[i].name, ">").concat(districts[i].name, "</option>");
@@ -319,7 +323,6 @@ var SignUp = /*#__PURE__*/function () {
       };
       axios.post("/user/save", data).then(function (_ref3) {
         var response = _ref3.data;
-        console.log(response);
 
         if (response && response.success) {
           _this5.resetForm();

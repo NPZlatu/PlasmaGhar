@@ -40,6 +40,10 @@ var SignIn = /*#__PURE__*/function () {
     key: "setUpListeners",
     value: function setUpListeners() {
       $(".confirm-signin").click(this.onSignInConfirmClick);
+      $(".register-signin").click(function () {
+        $("#signinModal").modal("hide");
+        $("#signupModal").modal("show");
+      });
       this.setUpOnBlurListeners();
       this.setModalListeners();
     }
@@ -150,7 +154,9 @@ var SignIn = /*#__PURE__*/function () {
         var response = _ref.data;
 
         if (response && response.success) {
-          window.location.href = "/dashboard";
+          if ($("#searchModal").hasClass("show")) {
+            $("#signinModal").modal("hide");
+          } else window.location.href = "/dashboard";
         } else {
           $.toaster({
             settings: {
