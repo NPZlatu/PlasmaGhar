@@ -16,7 +16,11 @@ use yii\helpers\Html;
                     <a class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#signupModal">Sign up</a>
                     <?php } else {
                             echo Html::a('Sign out',['/user/logout'],['data-method' => 'post', 'class' => 'btn btn-sm btn-outline-secondary']); 
-                        }
+                        
+                        ?> 
+                          <a class="btn btn-sm btn-outline-secondary" href="/dashboard">Dashboard</a>
+
+                        <?php }
                         ?>
                 </div>
             </div>
