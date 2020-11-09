@@ -55,6 +55,7 @@ class Home {
     this.requestDistricts = this.requestDistricts.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
     this.onSearchClick = this.onSearchClick.bind(this);
+    this.onRequestClick = this.onRequestClick.bind(this);
     this.setUpListeners();
   }
 
@@ -62,14 +63,44 @@ class Home {
     this.setUpOnBlurListeners();
     this.setUpSearchFieldsListeners();
     this.setModalListeners();
+    this.setSearchListPageListeners();
     $(".btn-help").on("click", this.onIWillHelpClick);
     $(".feedback-send").on("click", this.onFeedBackSubmit);
     $(".search-btn").on("click", this.onSearchClick);
   }
 
+  setSearchListPageListeners() {
+    if (location.href.includes("/search?")) {
+      const searchParams = new URLSearchParams(window.location.search);
+      if (searchParams.has("blood_group")) {
+        this.filters.blood_group = searchParams.get("blood_group");
+      }
+      if (searchParams.has("state")) {
+        this.filters.state = searchParams.get("state");
+      }
+      if (searchParams.has("district")) {
+        this.filters.district = searchParams.get("district");
+      }
+      const self = this;
+
+      $(".btn-search-req").on("click", function () {
+        const donorId = $(this).attr("data-id");
+        self.onRequestClick(donorId, self.filters, "not-required");
+      });
+    }
+  }
+
   setModalListeners() {
+    if (location.href.includes("/search?")) {
+      $("#searchModal").modal("show");
+    }
+
     $("#searchModal").on("hidden.bs.modal", () => {
-      location.reload(true);
+      if (location.href.includes("/search?")) {
+        location.href = "/";
+      } else {
+        location.reload(true);
+      }
     });
   }
 
@@ -96,9 +127,11 @@ class Home {
     $(".clear-filter").on("click", this.resetFilters);
   }
 
-  onRequestClick(donorId) {
-    axios.get(`/user/who-am-i`).then(({ data: user }) => {
-      console.log(user);
+  onRequestClick(donorId, filters, user) {
+    if (user === "not-required") {
+      donorId = parseInt(donorId, 10);
+      this.sendRequestToDonor(donorId, filters);
+    } else {
       if (user.id) {
         if (user.role === "donor") {
           $.toaster({ settings: { timeout: 10000 } });
@@ -108,12 +141,63 @@ class Home {
             message: `You are logged in as a donar. You need to be a receiver to be able to request plasma!`,
           });
         } else {
-          alert("we need to do things");
+          donorId = parseInt(donorId, 10);
+          this.sendRequestToDonor(donorId, filters);
         }
       } else {
         $("#signinModal").modal("show");
       }
-    });
+    }
+  }
+
+  sendRequestToDonor(donorId, filters) {
+    axios
+      .post("/request/donor", {
+        p_donor_id: donorId,
+        p_requested_blood_group: filters.blood_group,
+        p_requested_state: filters.state,
+        p_requested_district: filters.district,
+      })
+      .then(({ data }) => {
+        $.toaster({ settings: { timeout: 6000 } });
+        if (
+          data &&
+          data.t_result &&
+          data.t_result === "Your apply request is succeeded."
+        ) {
+          const selector = `button[data-id='${donorId}']`;
+          $(selector).text("Requested");
+          $(selector).prop("disabled", true);
+          $(selector).prop("onclick", null).off("click");
+
+          $.toaster({
+            priority: "success",
+            title: "Success",
+            message: `${data.t_result} ${
+              data.t_apply_count !== null
+                ? "\nRemaining Quota for today is " +
+                  (35 - parseInt(data.t_apply_count, 10)) +
+                  "."
+                : null
+            }`,
+          });
+        } else {
+          $.toaster({ settings: { timeout: 1000 } });
+          $.toaster({
+            priority: "danger",
+            title: "Error",
+            message: `Something is wrong! Please try again later. If the issue persist for long time, please contact us.`,
+          });
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+        $.toaster({
+          priority: "danger",
+          title: "Error",
+          message: `Something is wrong! Please try again later. If the issue persist for long time, please contact us.`,
+        });
+      });
   }
 
   requestDistricts(stateCode) {
@@ -127,9 +211,10 @@ class Home {
       .catch(function (error) {});
   }
 
-  requestSearchLists() {
+  requestSearchLists(user) {
     $(".table-searchlist tbody").html("");
     $(".table-searchlist tbody td button").unbind("click");
+    $("#searchModal").modal("show");
 
     axios
       .post("/user/search", this.filters)
@@ -141,7 +226,7 @@ class Home {
             trElement.push(`
             <tr>
             <td> ${index + 1} </td>
-            <td>Anonymous-${donor.id}</td>
+            <td>Donor-${donor.id}</td>
             <td> ${donor.blood_group}</td>
             <td> ${donor.district}</td>
             <td><button type="button"
@@ -151,18 +236,16 @@ class Home {
             </tr>
             `);
           });
-
           $(".table-searchlist tbody").append(trElement.join(""));
           $(".table-searchlist tbody td button").on("click", function () {
             const donorId = $(this).attr("data-id");
-            self.onRequestClick(donorId);
+            self.onRequestClick(donorId, self.filters, user);
           });
         }
       })
       .catch(function (error) {
         console.log(error);
       });
-    $("#searchModal").modal("show");
   }
 
   populateDistricts(districts) {
@@ -299,7 +382,33 @@ class Home {
       valid = false;
     }
 
-    if (valid) this.requestSearchLists();
+    if (valid) {
+      axios.get(`/user/who-am-i`).then(({ data: user }) => {
+        if (user.id) {
+          if (user.role === "donor") {
+            $.toaster({ settings: { timeout: 10000 } });
+            $.toaster({
+              priority: "danger",
+              title: "Error",
+              message: `You are logged in as a donar. You need to be a receiver to be able to request plasma!`,
+            });
+          } else {
+            this.requestSearchLists(user);
+          }
+        } else {
+          $(".confirm-signin").attr(
+            "data-nexturl",
+            `/search?blood_group=${encodeURIComponent(
+              bloodGroup
+            )}&state=${encodeURIComponent(state)}&district=${encodeURIComponent(
+              district
+            )}`
+          );
+          $(".sign-in-text").text("sign in to view donors");
+          $("#signinModal").modal("show");
+        }
+      });
+    }
   }
 
   onFeedBackSubmit(event) {

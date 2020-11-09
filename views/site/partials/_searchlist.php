@@ -1,4 +1,6 @@
-
+<?php ?>
+    
+    
     <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered cus-modal-dialog" role="document">
@@ -26,7 +28,26 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                    
+                                        <?php
+                                        if(isset($donors) && $donors && count($donors) > 0) {
+                                            foreach($donors as $key => $donor) { ?>
+                                            <tr>
+                                                        <td> <?= $key+1 ?> </td>
+                                                        <td><?="Donor-".$donor['id'] ?></td>
+                                                        <td><?=$donor['blood_group'] ?></td>
+                                                        <td><?=$donor['district']?></td>
+                                                        <td><button type="button"
+                                                        data-id="<?=$donor['id'] ?>"
+                                                        class="btn btn-sm btn-outline-success btn-search-req">Request</button>
+                                                        </td>
+                                                        </tr>
+
+
+                                            <?php } 
+                                        }
+
+                                        ?>
+
                                         </tbody>
                                     </table>
                                     <small id="nameHelp" class="form-text text-muted">*You can request only up to 10 plasma donors on an hour due to fair usage policy<br />

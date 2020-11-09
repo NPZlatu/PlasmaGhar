@@ -6,7 +6,6 @@
  */
 
 namespace app\assets;
-
 use yii\web\AssetBundle;
 
 /**
@@ -35,7 +34,7 @@ class AppAsset extends AssetBundle
     ];
 
     public $depends = [
-        'yii\web\YiiAsset',
+        'yii\web\YiiAsset'
     ];
  
 }

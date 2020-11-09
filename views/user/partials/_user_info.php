@@ -1,6 +1,25 @@
 <?php 
-//echo $model;
-//echo "adsf";
+if($res['role_value'] === 'Donor') {
+$name = 'Donor-'.$res['model']['id'];
+$statuses = array(
+    0 => "available",
+    1 => "waiting for a call",
+    2 => "blood confirmed",
+    9 => "not interested"
+);
+
+} else if($res['role_value'] === 'Receiver') {
+$name = 'Requester-'.$res['model']['id'];
+
+
+$statuses = array(
+    0 => "searching for a donor",
+    1 => "received sms",
+    2 => "blood confirmed",
+    9 => "not interested"
+);
+
+}
 ?>
 
 
@@ -11,12 +30,18 @@
             <span class="text-muted">Your info</span>
         </h4>
         <p><button type="button" class="btn btn-sm btn-outline-danger">Edit My Info</button></p>
-        <p>User Status : <span class="badge badge-sm badge-secondary badge-pill">Available</span> Change</p>
+        <p>Identity : <strong><?=$name ?></strong></p>
+
+        <p>User Status : <span class="badge badge-md badge-primary badge-pill">
+        <?php echo $statuses[$res['model']['user_status']];   ?>
+        </span> Change</p>
+        
+        <?php if($res['role_value'] === 'Donor') { ?>
         <p>Blood Group : <strong><?=$res['model']['blood_group'] ?></strong></p>
-        <p>Location : <br/><br/><strong><?= 
-                            strtoupper($res['model']['municipality']).",<br/> WARD NO.". $res['model']['ward_no'].", <br/>".
-                            strtoupper($res['model']['district']).",<br/>". strtoupper($res['model']['state']);
-                        ?></strong></p>
+        <?php } ?>
+        <p>Location : <strong><?=                             
+            str_replace('\' ', '\'', ucwords(str_replace('\'', '\' ', strtolower($res['model']['district'])))); 
+          ?></strong></p>
         <p>Phone Number : <strong><?= $res['model']['phone_number']?></strong></p>
         <p>Role: <strong><?=$res['role_value'] ?></strong></p>
         <hr/>

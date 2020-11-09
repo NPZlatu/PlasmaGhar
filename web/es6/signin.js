@@ -33,7 +33,11 @@ class SignIn {
     $(".confirm-signin").click(this.onSignInConfirmClick);
     $(".register-signin").click(function () {
       $("#signinModal").modal("hide");
-      $("#signupModal").modal("show");
+      if (!window.location.href.includes("/user/login")) {
+        $("#signupModal").modal("show");
+      } else {
+        window.location.href = "/user/register";
+      }
     });
     this.setUpOnBlurListeners();
     this.setModalListeners();
@@ -41,9 +45,16 @@ class SignIn {
 
   setModalListeners() {
     $("#signinModal").on("hidden.bs.modal", () => {
-      if (window.location.href.includes("/user/login")) {
+      if (
+        window.location.href.includes("/user/confirm") ||
+        window.location.href.includes("/user/login")
+      ) {
         window.location.href = "/";
       } else this.resetForm();
+    });
+
+    $("#signinModal").on("shown.bs.modal", () => {
+      $("body").addClass("modal-open");
     });
   }
 
@@ -126,7 +137,10 @@ class SignIn {
       .post("/user/login", data)
       .then(({ data: response }) => {
         if (response && response.success) {
-          if ($("#searchModal").hasClass("show")) {
+          if (typeof $(".confirm-signin").data("nexturl") !== "undefined") {
+            const nextUrl = $(".confirm-signin").attr("data-nexturl");
+            window.location.href = nextUrl;
+          } else if ($("#searchModal").hasClass("show")) {
             $("#signinModal").modal("hide");
           } else window.location.href = "/dashboard";
         } else {
@@ -139,7 +153,8 @@ class SignIn {
         }
       })
       .catch(function (error) {
-        alert("Error while saving the data");
+        console.log(error);
+        console.log("Error while saving the data");
       });
   }
 }

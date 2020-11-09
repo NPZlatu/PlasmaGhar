@@ -58,6 +58,7 @@ var Home = /*#__PURE__*/function () {
     this.requestDistricts = this.requestDistricts.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
     this.onSearchClick = this.onSearchClick.bind(this);
+    this.onRequestClick = this.onRequestClick.bind(this);
     this.setUpListeners();
   }
 
@@ -67,15 +68,49 @@ var Home = /*#__PURE__*/function () {
       this.setUpOnBlurListeners();
       this.setUpSearchFieldsListeners();
       this.setModalListeners();
+      this.setSearchListPageListeners();
       $(".btn-help").on("click", this.onIWillHelpClick);
       $(".feedback-send").on("click", this.onFeedBackSubmit);
       $(".search-btn").on("click", this.onSearchClick);
     }
   }, {
+    key: "setSearchListPageListeners",
+    value: function setSearchListPageListeners() {
+      if (location.href.includes("/search?")) {
+        var searchParams = new URLSearchParams(window.location.search);
+
+        if (searchParams.has("blood_group")) {
+          this.filters.blood_group = searchParams.get("blood_group");
+        }
+
+        if (searchParams.has("state")) {
+          this.filters.state = searchParams.get("state");
+        }
+
+        if (searchParams.has("district")) {
+          this.filters.district = searchParams.get("district");
+        }
+
+        var self = this;
+        $(".btn-search-req").on("click", function () {
+          var donorId = $(this).attr("data-id");
+          self.onRequestClick(donorId, self.filters, "not-required");
+        });
+      }
+    }
+  }, {
     key: "setModalListeners",
     value: function setModalListeners() {
+      if (location.href.includes("/search?")) {
+        $("#searchModal").modal("show");
+      }
+
       $("#searchModal").on("hidden.bs.modal", function () {
-        location.reload(true);
+        if (location.href.includes("/search?")) {
+          location.href = "/";
+        } else {
+          location.reload(true);
+        }
       });
     }
   }, {
@@ -102,11 +137,11 @@ var Home = /*#__PURE__*/function () {
     }
   }, {
     key: "onRequestClick",
-    value: function onRequestClick(donorId) {
-      axios.get("/user/who-am-i").then(function (_ref) {
-        var user = _ref.data;
-        console.log(user);
-
+    value: function onRequestClick(donorId, filters, user) {
+      if (user === "not-required") {
+        donorId = parseInt(donorId, 10);
+        this.sendRequestToDonor(donorId, filters);
+      } else {
         if (user.id) {
           if (user.role === "donor") {
             $.toaster({
@@ -120,11 +155,59 @@ var Home = /*#__PURE__*/function () {
               message: "You are logged in as a donar. You need to be a receiver to be able to request plasma!"
             });
           } else {
-            alert("we need to do things");
+            donorId = parseInt(donorId, 10);
+            this.sendRequestToDonor(donorId, filters);
           }
         } else {
           $("#signinModal").modal("show");
         }
+      }
+    }
+  }, {
+    key: "sendRequestToDonor",
+    value: function sendRequestToDonor(donorId, filters) {
+      axios.post("/request/donor", {
+        p_donor_id: donorId,
+        p_requested_blood_group: filters.blood_group,
+        p_requested_state: filters.state,
+        p_requested_district: filters.district
+      }).then(function (_ref) {
+        var data = _ref.data;
+        $.toaster({
+          settings: {
+            timeout: 6000
+          }
+        });
+
+        if (data && data.t_result && data.t_result === "Your apply request is succeeded.") {
+          var selector = "button[data-id='".concat(donorId, "']");
+          $(selector).text("Requested");
+          $(selector).prop("disabled", true);
+          $(selector).prop("onclick", null).off("click");
+          $.toaster({
+            priority: "success",
+            title: "Success",
+            message: "".concat(data.t_result, " ").concat(data.t_apply_count !== null ? "\nRemaining Quota for today is " + (35 - parseInt(data.t_apply_count, 10)) + "." : null)
+          });
+        } else {
+          $.toaster({
+            settings: {
+              timeout: 1000
+            }
+          });
+          $.toaster({
+            priority: "danger",
+            title: "Error",
+            message: "Something is wrong! Please try again later. If the issue persist for long time, please contact us."
+          });
+        }
+      })["catch"](function (error) {
+        console.log(error);
+        $.toaster({
+          priority: "danger",
+          title: "Error",
+          message: "Something is wrong! Please try again later. If the issue persist for long time, please contact us."
+        });
       });
     }
   }, {
@@ -142,11 +225,12 @@ var Home = /*#__PURE__*/function () {
     }
   }, {
     key: "requestSearchLists",
-    value: function requestSearchLists() {
+    value: function requestSearchLists(user) {
       var _this2 = this;
 
       $(".table-searchlist tbody").html("");
       $(".table-searchlist tbody td button").unbind("click");
+      $("#searchModal").modal("show");
       axios.post("/user/search", this.filters).then(function (_ref3) {
         var donors = _ref3.data;
 
@@ -154,18 +238,17 @@ var Home = /*#__PURE__*/function () {
           var self = _this2;
           var trElement = [];
           donors.forEach(function (donor, index) {
-            trElement.push("\n            <tr>\n            <td> ".concat(index + 1, " </td>\n            <td>Anonymous-").concat(donor.id, "</td>\n            <td> ").concat(donor.blood_group, "</td>\n            <td> ").concat(donor.district, "</td>\n            <td><button type=\"button\"\n            data-id=\"").concat(donor.id, "\"\n            class=\"btn btn-sm btn-outline-success\">Request</button>\n            </td>\n            </tr>\n            "));
+            trElement.push("\n            <tr>\n            <td> ".concat(index + 1, " </td>\n            <td>Donor-").concat(donor.id, "</td>\n            <td> ").concat(donor.blood_group, "</td>\n            <td> ").concat(donor.district, "</td>\n            <td><button type=\"button\"\n            data-id=\"").concat(donor.id, "\"\n            class=\"btn btn-sm btn-outline-success\">Request</button>\n            </td>\n            </tr>\n            "));
           });
           $(".table-searchlist tbody").append(trElement.join(""));
           $(".table-searchlist tbody td button").on("click", function () {
             var donorId = $(this).attr("data-id");
-            self.onRequestClick(donorId);
+            self.onRequestClick(donorId, self.filters, user);
           });
         }
       })["catch"](function (error) {
         console.log(error);
       });
-      $("#searchModal").modal("show");
     }
   }, {
     key: "populateDistricts",
@@ -285,6 +368,8 @@ var Home = /*#__PURE__*/function () {
   }, {
     key: "onSearchClick",
     value: function onSearchClick() {
+      var _this4 = this;
+
       var _this$filters = this.filters,
           bloodGroup = _this$filters.blood_group,
           state = _this$filters.state,
@@ -333,7 +418,32 @@ var Home = /*#__PURE__*/function () {
         valid = false;
       }
 
-      if (valid) this.requestSearchLists();
+      if (valid) {
+        axios.get("/user/who-am-i").then(function (_ref5) {
+          var user = _ref5.data;
+
+          if (user.id) {
+            if (user.role === "donor") {
+              $.toaster({
+                settings: {
+                  timeout: 10000
+                }
+              });
+              $.toaster({
+                priority: "danger",
+                title: "Error",
+                message: "You are logged in as a donar. You need to be a receiver to be able to request plasma!"
+              });
+            } else {
+              _this4.requestSearchLists(user);
+            }
+          } else {
+            $(".confirm-signin").attr("data-nexturl", "/search?blood_group=".concat(encodeURIComponent(bloodGroup), "&state=").concat(encodeURIComponent(state), "&district=").concat(encodeURIComponent(district)));
+            $(".sign-in-text").text("sign in to view donors");
+            $("#signinModal").modal("show");
+          }
+        });
+      }
     }
   }, {
     key: "onFeedBackSubmit",
@@ -376,7 +486,7 @@ var Home = /*#__PURE__*/function () {
   }, {
     key: "sendFeedback",
     value: function sendFeedback() {
-      var _this4 = this;
+      var _this5 = this;
 
       var model = this.model;
       var data = {
@@ -384,8 +494,8 @@ var Home = /*#__PURE__*/function () {
         email: model[2].value,
         message: model[3].value
       };
-      axios.post("/site/feedback", data).then(function (_ref5) {
-        var response = _ref5.data;
+      axios.post("/site/feedback", data).then(function (_ref6) {
+        var response = _ref6.data;
         $.toaster({
           settings: {
             timeout: 3000
@@ -393,7 +503,7 @@ var Home = /*#__PURE__*/function () {
         });
 
         if (response && response.success) {
-          _this4.resetForm();
+          _this5.resetForm();
 
           $.toaster({
             priority: "success",

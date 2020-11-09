@@ -19,6 +19,29 @@
                                     </small>
                                     <br/>
                                 </div>
+
+                                <br/>
+
+                                <fieldset class="form-group">
+                                <div class="row">
+                                  <legend class="col-form-label col-sm-3 pt-0">You Are </legend>
+                                  <div class="col-sm-6">
+                                    <div class="form-check">
+                                      <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="option1" checked>
+                                      <label class="form-check-label" for="gridRadios1">
+                                        Plasma Donor
+                                      </label>
+                                    </div>
+                                    <div class="form-check">
+                                      <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="option2">
+                                      <label class="form-check-label" for="gridRadios2">
+                                        Plasma Seeker
+                                      </label>
+                                    </div>
+                                    
+                                  </div>
+                                </div>
+                              </fieldset>
                               
                               <div class=" mb-1">
                                 <label for="phoneNumber">Phone Number</label>
@@ -80,28 +103,39 @@
                                 </div>
                               </div>
                       
-                              
-                              <br/>
-                              <fieldset class="form-group">
+                          
+                              <div class="alert alert-warning plasma-warning" role="alert">
+                              <h4 class="alert-heading">You <span style="color:red;">can't</span> donate plasma if you:</h4>
+                                <ul>
+                                <li>are still recovering from coronavirus </li>
+                                <li>are less than 17 years old </li>
+                                <li>have had most types of cancer</li>
+                                <li>have tested positive for HIV or HTLV </li>
+                                <li>have some heart conditions </li>
+                                <li>have had an organ transplant </li>
+                                <li>are pregnant </li>
+                                <li>have had a baby in the last 9 months </li>
+                                <li> are a hepatitis B carrier </li>
+                                <li> are a hepatitis C carrier </li>
+                                <li> have injected non-prescribed drugs including body-building and injectable tanning agent </li>
+                                <ul>
+                              </div>
+
+                              <br>
+
+                              <fieldset class="form-group confirm-health">
                                 <div class="row">
-                                  <legend class="col-form-label col-sm-3 pt-0">You are: </legend>
-                                  <div class="col-sm-6">
+                                  <div class="col-sm-12">
                                     <div class="form-check">
-                                      <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="option1" checked>
-                                      <label class="form-check-label" for="gridRadios1">
-                                        Plasma Donor
+                                      <input class="form-check-input" type="checkbox" name="confirmHealth" id="confirmHealth" value="option1">
+                                      <label class="form-check-label" for="terms">
+                                        I confirm that I do not have any health conditions as mentioned above</a>
                                       </label>
                                     </div>
-                                    <div class="form-check">
-                                      <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="option2">
-                                      <label class="form-check-label" for="gridRadios2">
-                                        Plasma Receiver
-                                      </label>
                                     </div>
-                                    
-                                  </div>
-                                </div>
+                              </div>
                               </fieldset>
+
 
                               <fieldset class="form-group">
                                 <div class="row">

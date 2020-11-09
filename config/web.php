@@ -61,6 +61,13 @@ $config = [
                 '' => 'site/index',
                 'terms-and-conditions' => 'site/terms',
                 'dashboard' => 'user/index',
+                'user/confirm/<token:[\w\-]+>'=>'user/confirm',
+                'user/register' => 'user/save',
+                'request/donor' => 'user/request-donor',
+                'accept/requester' => 'user/accept-requester',
+                'confirm/blood' => 'user/confirm-blood',
+                'cancel/request' => 'user/cancel-request',
+                'search' => 'user/search'
             ],
         ],
     ],

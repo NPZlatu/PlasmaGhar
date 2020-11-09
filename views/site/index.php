@@ -12,7 +12,6 @@ $this->registerJsFile('//cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.m
     ]
 ]);
 
-
 ?>
 
 <?php

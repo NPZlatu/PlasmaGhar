@@ -29,6 +29,7 @@ AppAsset::register($this);
 <div class="container">
        
         <?php echo $this->render('partials/_header.php');  ?>
+        <?= Alert::widget(); ?>
         <?= $content ?>
         <?php echo $this->render('partials/_footer.php');  ?>
 </div>
@@ -36,6 +37,7 @@ AppAsset::register($this);
 <?php $this->endBody() ?>
 <?php echo $this->render('modals/_signinmodal.php');  ?>
 <?php echo $this->render('modals/_signupmodal.php');  ?>
+
 </body>
 </html>
 <?php $this->endPage() ?>

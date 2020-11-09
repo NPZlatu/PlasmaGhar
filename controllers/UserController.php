@@ -10,6 +10,7 @@ use app\models\Users;
 use app\models\LoginForm;
 use app\models\ReceiverRequestLog;
 use yii\web\NotFoundHttpException;
+use yii\helpers\Url;
 
 
 class UserController extends \yii\web\Controller
@@ -31,7 +32,32 @@ class UserController extends \yii\web\Controller
                         'roles' => ['@'],
                     ],
                     [
+                        'actions' => ['request-donor'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => ['accept-requester'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => ['confirm-blood'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => ['cancel-request'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    [
                         'actions' => ['index'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => ['search'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -44,7 +70,7 @@ class UserController extends \yii\web\Controller
                         'actions' => ['login'],
                         'allow' => true,
                         'roles' => ['?'],
-                    ]
+                    ],
                 ],
             ],
             'verbs' => [
@@ -76,53 +102,25 @@ class UserController extends \yii\web\Controller
     public function actionIndex()
     {
         
-        $donor = Yii::$app->user->identity->user_role == 0;
-        $receiver = Yii::$app->user->identity->user_role == 1;
+        //check if user is not logged in
+        if(Yii::$app->user->isGuest) {
+            throw new NotFoundHttpException;
+        }  
+        $donor = Yii::$app->user->identity->user_role === 0;
+        $receiver = Yii::$app->user->identity->user_role === 1;
+        $lists = [];
 
-
-        /*
-        //select * from receiver_request_log where donor_id=id order by requested_date
-        $receiver_request_log = $users->getReceiverRequestLogByDonorId()
-                            ->orderBy('requested_date')
-                            ->all();
-        // rq($receiver_request_log);
-        // dd($receiver_request_log);
-
-        foreach($receiver_request_log as $receiver_request){
-            // dd(gettype($receiver_request));
-            $receiver_detail = $receiver_request->getReceiver();
-            
-            // rq($receiver_detail);
-            dd($receiver_detail);
-            $receiver_detail['phone_number'];
+        if($donor) {
+            $lists=Users::getRequesterList(Yii::$app->user->id);
         }
-        
-        //  dd($receiver_request_log[0]);  
-        
-        */
-        
-        
-          
-
-        //   $request_log=$users->getRequesterList($users->id);
-        // //  dd($request_log);
-        
-        
-        // // $request_log=ReceiverRequestLog::find()->with('users')->all();
-        
-        // // $request_log=ReceiverRequestLog::find()
-
-        // $res['model']=$users;
-        // $res['role_value']=$role;
-
-        // $res['request_log']=$request_log;
-
-        // // dd($res['request_log']);
-        
-        
-        return $this->render('index' , ['res'=>[]]);
-        
-
+        else if($receiver) {
+            $lists=Users::getDonorList(Yii::$app->user->id);
+        }
+        $users = Yii::$app->user->identity;
+        $res['model']=$users;
+        $res['role_value']=$receiver===true?'Receiver':'Donor';
+        $res['lists']=$lists;
+        return $this->render('index' , ['res'=>$res]);
     }
 
     /**
@@ -134,7 +132,7 @@ class UserController extends \yii\web\Controller
             $request = \Yii::$app->request;
 
             if(!$request->isAjax) {
-                throw new NotFoundHttpException;
+                return $this->render('signup');
             }
 
             $result = [];
@@ -159,7 +157,8 @@ class UserController extends \yii\web\Controller
             if($model->save()) {
                 $result = array(
                     'success' => true,
-                );
+                    'link' => Url::home(true).'user/confirm/'.$model->phone_confirmation_token      
+                  );
 
             } else {
                 $result = array(
@@ -245,6 +244,26 @@ class UserController extends \yii\web\Controller
         return $this->asJson($user);
     }
 
+    public function actionConfirm($token) {
+        if(!isset($token) || !$token) {
+        throw new NotFoundHttpException;
+        }
+        $model = Users::find()->where(['phone_confirmation_token' => $token, 'phone_confirmation_status' => 0])->one();
+        if($model->id) {
+            $model->phone_confirmation_status = 1;
+            if($model->save()) {
+                return $this->render('/user/login', array('confirm' => 'yes'));
+            }
+        }
+        Yii::$app->session->setFlash('danger', 'The link you clicked has either expired or is not valid!');
+        return $this->redirect(array('/'));
+    }
+
+
+    public function actionRequestDonar() {
+
+    }
+
 
     /**
      * Logout action.
@@ -264,20 +283,222 @@ class UserController extends \yii\web\Controller
     public function actionSearch()
     {
         $request = \Yii::$app->request;
+    
+        $filter = [];
 
         if(!$request->isAjax) {
-            throw new NotFoundHttpException;
-        }
+        $filter = $request->get();
+        } else {
         $filter = $request->post();
-        $DonorFound = Users::find()
-        ->select('id,blood_group,district')
-        ->where(['blood_group' => $filter['blood_group']])
-        ->andWhere(['state' => $filter['state']])
-        ->andWhere(['district' => $filter['district']])
-        ->andWhere(['user_role' => 0])
-        ->andWhere(['phone_confirmation_status' => 1])
+        }
+        $valid = true;
+        $message = '';
+
+        if(!$filter['blood_group']) {
+            $valid = false;
+            $message = "Blood group is missing!";
+        }
+        else if(!$filter['district']) {
+            $invalid = false;
+            $message = "District is missing!";
+
+        } else if(!$filter['state']) {
+            $valid = false;
+            $message = "State is missing!";
+        }
+
+        if(!$valid) {
+            if(!$request->isAjax) {
+                Yii::$app->session->setFlash('danger', $message);
+                return $this->redirect(array('/'));
+            } else {
+                return $this->asJson([]); 
+            }
+        }
+
+
+        $donorFound = Users::find()
+        ->select('users.id,users.blood_group,users.district,users.state,users.user_status')
+        ->leftJoin('receiver_request_log', 'receiver_request_log.donor_id=users.id')
+        ->where(['users.blood_group' => $filter['blood_group']])
+        ->andWhere(['users.state' => $filter['state']])
+        ->andWhere(['users.district' => $filter['district']])
+        ->andWhere(['users.user_role' => 0])
+        ->andWhere(['users.phone_confirmation_status' => 1])
+        ->andWhere(['<>','users.user_status', 2])
+        ->andWhere(['<>','users.user_status', 9])
+        ->andWhere(['is', 'receiver_request_log.id', new \yii\db\Expression('null')])
         ->all();
-        return $this->asJson($DonorFound);
+        if(!$request->isAjax) {
+            if(Yii::$app->user->identity->user_role === 0) {
+                return $this->redirect('/');
+            }
+            return $this->render('search' , ['donors'=>$donorFound]);
+
+        } else {
+            return $this->asJson($donorFound);
+        }
+    }
+
+
+    /**
+     * Request Donor
+     */
+    public function actionRequestDonor() {
+        try {  
+            $request = Yii::$app->request;
+
+            if(!$request->isAjax || Yii::$app->user->identity->user_role === 0) {
+                throw new NotFoundHttpException;
+            }
+            $result = [];
+            $donor = $request->post();
+            $receiverId = Yii::$app->user->id;
+            
+            $params = [
+                'p_donor_id' => $donor['p_donor_id'],
+                'p_requested_blood_group' => $donor['p_requested_blood_group'],
+                'p_requested_state' => $donor['p_requested_state'],
+                'p_requested_district' => $donor['p_requested_district'],
+                'p_receiver_id' => $receiverId ,
+                'p_action' => 'apply',
+                'p_action_by' => 'receiver',
+                'p_relationship' => 'same' 
+            ];
+
+            $result = Users::changeStatus($params); 
+            return $this->asJson($result);
+
+        } catch(\Exception $exception) {
+                return $this->asJson(array(
+                    'success' => false,
+                    'error' => $exception->getMessage()
+                ));
+        }  
+
+    }
+
+      /**
+     * Accept Requester
+     */
+    public function actionAcceptRequester() {
+        try {  
+            $request = Yii::$app->request;
+
+            if(!$request->isAjax || Yii::$app->user->identity->user_role === 1) {
+                throw new NotFoundHttpException;
+            }
+            $result = [];
+            $params = $request->post();
+            $donorId = Yii::$app->user->id;
+
+            if($donorId != $params['p_donor_id']) {
+                throw new NotFoundHttpException;
+            }
+
+            dd($params);
+
+            $result = Users::changeStatus($params); 
+            return $this->asJson($result);
+
+        } catch(\Exception $exception) {
+                return $this->asJson(array(
+                    'success' => false,
+                    'error' => $exception->getMessage()
+                ));
+        }  
+
+    }
+
+      /**
+     * Confirm Blood
+     */
+    public function actionConfirmBlood() {
+        try {  
+            $request = Yii::$app->request;
+
+            if(!$request->isAjax) {
+                throw new NotFoundHttpException;
+            }
+            $params = $request->post();
+
+            if($params['action_by'] === 'donor') {
+                if(Yii::$app->user->identity->user_role === 1) { 
+                    throw new NotFoundHttpException;
+                }
+                $donorId = Yii::$app->user->id;
+                if($donorId != $params['p_donor_id']) {
+                    throw new NotFoundHttpException;
+                }
+            }
+
+            if($params['action_by'] === 'receiver') {
+                if(Yii::$app->user->identity->user_role === 0) { 
+                    throw new NotFoundHttpException;
+                }
+                $receiverId = Yii::$app->user->id;
+                if($receiverId != $params['p_receiver_id']) {
+                    throw new NotFoundHttpException;
+                }
+            }
+            $result = [];       
+            $result = Users::changeStatus($params); 
+            return $this->asJson($result);
+
+        } catch(\Exception $exception) {
+                return $this->asJson(array(
+                    'success' => false,
+                    'error' => $exception->getMessage()
+                ));
+        }  
+
+    }
+
+
+      /**
+     * Cancel Request
+     */
+    public function actionCancelRequest() {
+        try {  
+            $request = Yii::$app->request;
+
+            if(!$request->isAjax) {
+                throw new NotFoundHttpException;
+            }
+            $params = $request->post();
+
+            if($params['action_by'] === 'donor') {
+                if(Yii::$app->user->identity->user_role === 1) { 
+                    throw new NotFoundHttpException;
+                }
+                $donorId = Yii::$app->user->id;
+                if($donorId != $params['p_donor_id']) {
+                    throw new NotFoundHttpException;
+                }
+            }
+
+            if($params['action_by'] === 'receiver') {
+                if(Yii::$app->user->identity->user_role === 0) { 
+                    throw new NotFoundHttpException;
+                }
+                $receiverId = Yii::$app->user->id;
+                if($receiverId != $params['p_receiver_id']) {
+                    throw new NotFoundHttpException;
+                }
+            }
+
+            $result = [];  
+                        
+            $result = Users::changeStatus($params); 
+            return $this->asJson($result);
+
+        } catch(\Exception $exception) {
+                return $this->asJson(array(
+                    'success' => false,
+                    'error' => $exception->getMessage()
+                ));
+        }  
+
     }
 
 }

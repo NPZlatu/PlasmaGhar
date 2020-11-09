@@ -9,7 +9,7 @@
                 <div class="container row cus-feedback">
                     <div class="col-md-12">
                         <br/>
-                        <h3 class="cus-border-bottom">
+                        <h3 class="cus-border-bottom sign-in-text">
                             Sign In
                         </h3>
                         <div class="container row">
