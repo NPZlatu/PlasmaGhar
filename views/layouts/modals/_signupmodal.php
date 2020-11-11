@@ -8,7 +8,7 @@
             <div class="container row cus-feedback">
                 <div class="col-md-12">
                     <br/>
-                    <h3 class="cus-border-bottom">
+                    <h3 class="cus-border-bottom header-text">
                         Sign Up
                     </h3>
                     <div class="container row">
@@ -22,7 +22,7 @@
 
                                 <br/>
 
-                                <fieldset class="form-group">
+                                <fieldset class="form-group hidden-edit">
                                 <div class="row">
                                   <legend class="col-form-label col-sm-3 pt-0">You Are </legend>
                                   <div class="col-sm-6">
@@ -90,13 +90,13 @@
                               </div>
 
 
-                              <div class="mb-1">
+                              <div class="mb-1 hidden-edit">
                                 <label for="password">Password <span class=""></span></label>
                                 <input type="password" class="form-control" id="password" >
                                 <div class="invalid-feedback">
                                 </div>
                               </div>
-                              <div class="mb-1">
+                              <div class="mb-1 hidden-edit">
                                 <label for="confirm-password">Confirm Password <span class=""></span></label>
                                 <input type="password" class="form-control" id="confirm-password" >
                                 <div class="invalid-feedback">
@@ -104,7 +104,7 @@
                               </div>
                       
                           
-                              <div class="alert alert-warning plasma-warning" role="alert">
+                              <div class="alert alert-warning plasma-warning hidden-edit" role="alert">
                               <h4 class="alert-heading">You <span style="color:red;">can't</span> donate plasma if you:</h4>
                                 <ul>
                                 <li>are still recovering from coronavirus </li>
@@ -123,7 +123,7 @@
 
                               <br>
 
-                              <fieldset class="form-group confirm-health">
+                              <fieldset class="form-group confirm-health hidden-edit">
                                 <div class="row">
                                   <div class="col-sm-12">
                                     <div class="form-check">
@@ -137,7 +137,7 @@
                               </fieldset>
 
 
-                              <fieldset class="form-group">
+                              <fieldset class="form-group hidden-edit">
                                 <div class="row">
                                   <div class="col-sm-12">
                                     <div class="form-check">
@@ -151,8 +151,8 @@
                               </fieldset>
                       
                              <button type="button" class="btn btn-secondary close-signup" data-dismiss="modal">Close</button>
-                             <button type="button" class="btn btn-primary confirm-signup">Sign Up</button>
-                             <div style="margin-top: 10px;"class="alert alert-light" role="alert">
+                             <button type="button" class="btn btn-primary confirm-signup hidden-edit">Sign Up</button>
+                             <div style="margin-top: 10px;"class="alert alert-light hidden-edit" role="alert">
                                 If you have already registered an account, please <a class="signin-register" href="javascript:void(0);">click here</a> to login
                                 </div>
                             

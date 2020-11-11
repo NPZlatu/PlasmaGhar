@@ -67,6 +67,7 @@ $config = [
                 'accept/requester' => 'user/accept-requester',
                 'confirm/blood' => 'user/confirm-blood',
                 'cancel/request' => 'user/cancel-request',
+                'change-active-status' => 'user/change-active-status',
                 'search' => 'user/search'
             ],
         ],

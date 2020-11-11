@@ -35,7 +35,10 @@ $this->registerJsFile('//cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.m
                 else {
                  echo $this->render('partials/_main_content_donor.php',['lists'=>$res['lists']]);
                 }
-                echo $this->render('//site/partials/_searchlist.php')
+                echo $this->render('//site/partials/_searchlist.php');
+                echo $this->render('partials/_update_user.php');
+                echo $this->render('partials/_change_password.php');
+
                 ?>
             </div>
         </main>

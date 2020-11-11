@@ -66,9 +66,12 @@ $allTables = [['pendingApprovals', 'Pending Approvals'], ['acceptedLists', 'Acce
                     <td colspan=3><?= 
                             str_replace('\' ', '\'', ucwords(str_replace('\'', '\' ', strtolower($receiver['requested_district'])))); ?></td>
                     
-                    <td> <?= $receiverStatus[$receiver['user_status']] ?> </td>
+                    <td> <?= $receiverStatus[$receiver['receiver_status']] ?> </td>
 
                     <td><?= $receiver['requested_date'] ?></td>
+                    
+                    
+                    <?php if($receiver['receiver_status'] != 9) { ?>
                     <td>
                         <?php if($table[0] === 'acceptedLists' || $table[0] === 'pendingApprovals') { ?>
                         <button type="button" data-section="<?php echo $table[0]; ?>" 
@@ -90,9 +93,13 @@ $allTables = [['pendingApprovals', 'Pending Approvals'], ['acceptedLists', 'Acce
                         <?php } ?>
                
                     </td>
+                        <?php } 
+                        else { ?>
+                    <td> <button class="btn btn-sm btn-outline-danger">NOT ACTIVE </button> </td>
+                <?php } ?> 
                 </tr>
-                <?php
-                } ?>
+                        <?php } ?>
+               
             </tbody>
         </table>
         <hr/>

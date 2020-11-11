@@ -131,8 +131,10 @@ $allTables = [['pendingApprovals', 'Pending Approvals'], ['acceptedLists', 'Dono
                         <td><?php 
                         echo str_replace('\' ', '\'', ucwords(str_replace('\'', '\' ', strtolower($donor['district'])))); ?></td>
                         <td><?php echo $donor['requested_blood_group']; ?></td>
-                        <td> <?= $donorStatus[$donor['user_status']] ?> </td>
+                        <td> <?= $donorStatus[$donor['donor_status']] ?> </td>
 
+
+                        <?php if($donor['donor_status'] != 9) { ?>
                         <td>
                         <?php if($table[0] === 'acceptedLists' || $table[0] === 'pendingApprovals') { ?>
 
@@ -155,6 +157,10 @@ $allTables = [['pendingApprovals', 'Pending Approvals'], ['acceptedLists', 'Dono
                     <?php } ?>
 
                         </td>
+                        <?php } else {?>
+                            <td> <button class="btn btn-sm btn-outline-danger">NOT ACTIVE </button> </td>
+
+                        <?php } ?> 
                     </tr>
                 <?php } ?>
                   

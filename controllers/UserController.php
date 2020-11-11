@@ -12,7 +12,6 @@ use app\models\ReceiverRequestLog;
 use yii\web\NotFoundHttpException;
 use yii\helpers\Url;
 
-
 class UserController extends \yii\web\Controller
 {
 
@@ -67,10 +66,26 @@ class UserController extends \yii\web\Controller
                         'roles' => ['?'],
                     ],
                     [
+                        'actions' => ['update'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    [
                         'actions' => ['login'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
+                    [
+                        'actions' => ['change-active-status'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ], 
+                    [
+                        'actions' => ['change-password'],
+                        'allow' => true,
+                        'roles' => ['@'],
+
+                    ]
                 ],
             ],
             'verbs' => [
@@ -121,6 +136,105 @@ class UserController extends \yii\web\Controller
         $res['role_value']=$receiver===true?'Receiver':'Donor';
         $res['lists']=$lists;
         return $this->render('index' , ['res'=>$res]);
+    }
+
+    public function actionUpdate()
+    {
+        try {
+            $request = \Yii::$app->request;
+            $result = [];
+
+            if(!$request->isAjax) {
+                throw new NotFoundHttpException;
+            }
+
+            if(Yii::$app->user->isGuest) {
+                throw new NotFoundHttpException;
+            }  
+
+            $user = $request->post();
+
+            if($user['id'] != Yii::$app->user->id) {
+                throw new NotFoundHttpException;;
+            }
+
+            $model = Users::find()->where(['id' => $user['id']])->one();
+            $model->blood_group = $user['blood_group'];
+            $model->state = $user['state'];
+            $model->district = $user['district'];
+
+            if($model->save()) {
+                $result = array(
+                    'success' => true,
+                  );
+
+            } else {
+                $result = array(
+                    'success' => false,
+                    'error' => $model->getErrors()
+                );
+            }
+
+            return $this->asJson($result);
+
+
+        }  catch(\Exception $exception) {
+            return $this->asJson(array(
+                'success' => false,
+                'error' => $exception->getMessage()
+            ));
+    }  
+
+    }
+
+    /**
+     * Change Password
+     */
+    public function actionChangePassword() 
+    {
+    try {
+        $request = \Yii::$app->request;
+        $result = [];
+
+        if(!$request->isAjax) {
+                throw new NotFoundHttpException;
+        }
+
+        $user = $request->post();
+
+
+        if($user['id'] != Yii::$app->user->id) {
+            throw new NotFoundHttpException;;
+        }
+
+        $model = Users::find()->where(['id' => Yii::$app->user->id])->one();
+        if($model->validatePassword($user['current_password'])) {
+           $model->password = Yii::$app->security->generatePasswordHash($user['new_password']);
+             if($model->save()) {
+                $result = array(
+                    'success' => true,
+                );
+            } else {
+                $result = array(
+                    'success' => false,
+                    'error' => $model->getErrors()
+                ); 
+            }
+
+        } else {
+            $result = array(
+                'success' => false,
+                'error' => 'Invalid current password'
+            );
+        }
+        return $this->asJson($result);
+
+    } catch(\Exception $exception) {
+        return $this->asJson(array(
+            'success' => false,
+            'error' => $exception->getMessage()
+        ));
+    }  
     }
 
     /**
@@ -176,6 +290,7 @@ class UserController extends \yii\web\Controller
         }  
 
     }
+
 
 
     /**
@@ -259,10 +374,6 @@ class UserController extends \yii\web\Controller
         return $this->redirect(array('/'));
     }
 
-
-    public function actionRequestDonar() {
-
-    }
 
 
     /**
@@ -366,7 +477,7 @@ class UserController extends \yii\web\Controller
                 'p_relationship' => 'same' 
             ];
 
-            $result = Users::changeStatus($params); 
+            $result = Users::setStatus($params); 
             return $this->asJson($result);
 
         } catch(\Exception $exception) {
@@ -396,9 +507,7 @@ class UserController extends \yii\web\Controller
                 throw new NotFoundHttpException;
             }
 
-            dd($params);
-
-            $result = Users::changeStatus($params); 
+            $result = Users::setStatus($params); 
             return $this->asJson($result);
 
         } catch(\Exception $exception) {
@@ -442,7 +551,7 @@ class UserController extends \yii\web\Controller
                 }
             }
             $result = [];       
-            $result = Users::changeStatus($params); 
+            $result = Users::setStatus($params); 
             return $this->asJson($result);
 
         } catch(\Exception $exception) {
@@ -489,7 +598,7 @@ class UserController extends \yii\web\Controller
 
             $result = [];  
                         
-            $result = Users::changeStatus($params); 
+            $result = Users::setStatus($params); 
             return $this->asJson($result);
 
         } catch(\Exception $exception) {
@@ -499,6 +608,46 @@ class UserController extends \yii\web\Controller
                 ));
         }  
 
+    }
+
+
+    /**
+     * Activate/Deactivate users
+     */
+    public function actionChangeActiveStatus() {
+        try {  
+            $request = Yii::$app->request;
+
+            if(!$request->isAjax) {
+                throw new NotFoundHttpException;
+            }
+            $user = $request->post();
+
+            $model = Users::findOne(Yii::$app->user->id);
+
+            /* deactivate user */
+            if($user['user_status'] == 9) {
+              $model->user_status = 9;
+            }
+
+            /* activate user */
+            if($user['user_status'] == 0) {
+                $model->user_status = 0;
+            }
+
+            if(!$model->save()) {
+                throw $model->getErrors();
+            }
+            return $this->asJson(array(
+                'success' => true,
+            ));
+
+        } catch(\Exception $exception) {
+            return $this->asJson(array(
+                'success' => false,
+                'error' => $exception->getMessage()
+            ));
+    }  
     }
 
 }
