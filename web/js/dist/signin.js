@@ -40,6 +40,15 @@ var SignIn = /*#__PURE__*/function () {
     key: "setUpListeners",
     value: function setUpListeners() {
       $(".confirm-signin").click(this.onSignInConfirmClick);
+      $(".register-signin").click(function () {
+        $("#signinModal").modal("hide");
+
+        if (!window.location.href.includes("/user/login")) {
+          $("#signupModal").modal("show");
+        } else {
+          window.location.href = "/user/register";
+        }
+      });
       this.setUpOnBlurListeners();
       this.setModalListeners();
     }
@@ -49,9 +58,12 @@ var SignIn = /*#__PURE__*/function () {
       var _this = this;
 
       $("#signinModal").on("hidden.bs.modal", function () {
-        if (window.location.href.includes("/user/login")) {
+        if (window.location.href.includes("/user/confirm") || window.location.href.includes("/user/login")) {
           window.location.href = "/";
         } else _this.resetForm();
+      });
+      $("#signinModal").on("shown.bs.modal", function () {
+        $("body").addClass("modal-open");
       });
     }
   }, {
@@ -150,7 +162,12 @@ var SignIn = /*#__PURE__*/function () {
         var response = _ref.data;
 
         if (response && response.success) {
-          window.location.href = "/dashboard";
+          if (typeof $(".confirm-signin").data("nexturl") !== "undefined") {
+            var nextUrl = $(".confirm-signin").attr("data-nexturl");
+            window.location.href = nextUrl;
+          } else if ($("#searchModal").hasClass("show")) {
+            $("#signinModal").modal("hide");
+          } else window.location.href = "/dashboard";
         } else {
           $.toaster({
             settings: {
@@ -164,7 +181,8 @@ var SignIn = /*#__PURE__*/function () {
           });
         }
       })["catch"](function (error) {
-        alert("Error while saving the data");
+        console.log(error);
+        console.log("Error while saving the data");
       });
     }
   }]);

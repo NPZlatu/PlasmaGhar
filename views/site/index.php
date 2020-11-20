@@ -5,6 +5,13 @@ $this->registerJsFile('@web/js/dist/build-home.js',[
         \yii\web\JqueryAsset::className()
     ]
 ]);
+
+$this->registerJsFile('//cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js',[
+    'depends' => [
+        \yii\web\JqueryAsset::className()
+    ]
+]);
+
 ?>
 
 <?php

@@ -1,6 +1,17 @@
 <?php
 /* @var $this yii\web\View */
+/* @var $this yii\web\View */
+$this->registerJsFile('@web/js/dist/build-dashboard.js',[
+    'depends' => [
+        \yii\web\JqueryAsset::className()
+    ]
+]);
 
+$this->registerJsFile('//cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js',[
+    'depends' => [
+        \yii\web\JqueryAsset::className()
+    ]
+]);
 ?>
 
 <div class="container-fluid">
@@ -17,7 +28,16 @@
                 <?php 
                 
                 echo $this->render('partials/_user_info.php',['res'=>$res]); 
-                echo $this->render('partials/_main_content.php',['request_list'=>$res['request_log']]);
+                
+                if($res['role_value'] === 'Receiver') {
+                echo $this->render('partials/_main_content_receiver.php',['lists'=>$res['lists']]);
+                }
+                else {
+                 echo $this->render('partials/_main_content_donor.php',['lists'=>$res['lists']]);
+                }
+                echo $this->render('//site/partials/_searchlist.php');
+                echo $this->render('partials/_update_user.php');
+                echo $this->render('partials/_change_password.php');
 
                 ?>
             </div>

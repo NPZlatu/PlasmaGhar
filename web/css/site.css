@@ -126,6 +126,13 @@ body {
 .cus-icon {
   padding: 22px !important;
   border: 0px;
+  max-width: 60%
+}
+
+.cus-logo {
+  padding: 0px !important;
+  border: 0px !important;
+  max-width: 60% !important;
 }
 
 .cus-hor-border {
@@ -153,3 +160,11 @@ body {
   color: var(--clr-white);
   padding: 20px;
 }
+
+.filter {
+  padding: 3px;
+}
+
+
+
+/*SUPPORTING PARTNERS */

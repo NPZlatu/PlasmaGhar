@@ -1,13 +1,16 @@
 <?php  
 use yii\helpers\Html;
 ?>
+
 <header class="blog-header py-3">
             <div class="row flex-nowrap justify-content-between align-items-center">
                 <div class="col-4 pt-1">
-                    <a class="" href="/">PlasmaNepal</a>
+                <a href="/">
+                <?= Html::img('@web/images/logo.svg', ['alt'=>'...', 'class'=>'img-thumbnail cus-logo']);?>
+                </a>
                 </div>
 
-                <div class="col-4 d-flex justify-content-end ">
+                <div class="col-4 d-flex justify-content-end nav-menus">
                     <?php 
                     if(\Yii::$app->user->isGuest) {
                     ?>
@@ -15,7 +18,11 @@ use yii\helpers\Html;
                     <a class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#signupModal">Sign up</a>
                     <?php } else {
                             echo Html::a('Sign out',['/user/logout'],['data-method' => 'post', 'class' => 'btn btn-sm btn-outline-secondary']); 
-                        }
+                        
+                        ?> 
+                          <a class="btn btn-sm btn-outline-secondary" href="/dashboard">Dashboard</a>
+
+                        <?php }
                         ?>
                 </div>
             </div>

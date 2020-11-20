@@ -9,6 +9,8 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\UserFeedbacks;
+
 
 class SiteController extends Controller
 {
@@ -76,5 +78,47 @@ class SiteController extends Controller
     public function actionTerms()
     {
         return $this->render('terms');
+    }
+
+
+
+    /**
+     * Send Feedback
+     */
+    public function actionFeedback()
+    {
+        try {  
+
+        $request = \Yii::$app->request;
+
+        if(!$request->isAjax) {
+                throw new NotFoundHttpException;
+        }
+        $result = [];
+        $feedback = $request->post();
+        $model = new UserFeedbacks();
+        $model->name = $feedback['name'];
+        $model->email = $feedback['email'];
+        $model->message = $feedback['message'];
+
+        if($model->save()) {
+            $result = array(
+                'success' => true,
+            );
+
+        } else {
+            $result = array(
+                'success' => false,
+                'error' => $model->getErrors()
+            );
+        }
+        return $this->asJson($result);
+   
+        } catch(\Exception $exception) {
+        return $this->asJson(array(
+            'success' => false,
+            'error' => $exception->getMessage()
+        ));
+        }  
     }
 }

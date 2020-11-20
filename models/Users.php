@@ -103,7 +103,9 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         if (parent::beforeSave($insert)) {
             if ($this->isNewRecord) {
                 $this->auth_key = \Yii::$app->security->generateRandomString();
+                $this->phone_confirmation_token = \Yii::$app->security->generateRandomString();
                 $this->password = \Yii::$app->security->generatePasswordHash($this->password);
+
             }
             return true;
         }
@@ -185,13 +187,52 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return $unique;
     }
 
+    /**
+     * Set status - donor/receiver/request
+     */
+    public static function setStatus($params) {
+        if (empty($params)) {
+            throw new CHttpException(404,'no params is supplied for changing status.');
+        }
+        $return = [];
+        $result = Yii::$app->db->createCommand
+        ("CALL sp_setStatus(:p_receiver_id,:p_donor_id, 
+        :p_requested_blood_group, :p_requested_state, :p_requested_district,:p_action,:p_action_by,:p_relationship)")
+        ->bindValue(':p_receiver_id' , $params['p_receiver_id'] )
+        ->bindValue(':p_donor_id', $params['p_donor_id'])
+        ->bindValue(':p_requested_blood_group', 
+         $params['p_requested_blood_group'] ? $params['p_requested_blood_group']:null )
+         ->bindValue(':p_requested_state', 
+         $params['p_requested_state'] ? $params['p_requested_state']:null )
+         ->bindValue(':p_requested_district', 
+         $params['p_requested_district'] ? $params['p_requested_district']:null )
+        ->bindValue(':p_action', $params['p_action'])
+        ->bindValue(':p_action_by', $params['p_action_by'])
+        ->bindValue(':p_relationship', $params['p_relationship'])
+        ->queryAll();
+        if($result && count($result) > 0) {
+            $return = $result[0];
+        }
+        return $return;
+    }
 
+
+
+    /**
+     * Get all requesters having logs with donors
+     */
     public static function getRequesterList($id){
-
         $requester_list = Users::find()
-                ->select(['*'])
+                ->select(['users.id','users.blood_group', 'users.state', 'users.district', 'users.user_role', 'users.user_status',
+                'users.created_date', 'users.updated_date', 'users.phone_confirmation_status', 'users.apply_count', 
+                'users.blood_confirmation_count','receiver_request_log.requested_district','receiver_request_log.requested_state', 'receiver_request_log.receiver_id', 'receiver_request_log.donor_id',
+                'receiver_request_log.request_status', 'receiver_request_log.requested_blood_group', 'receiver_request_log.requested_date', 
+                'receiver_request_log.request_updated_date','receiver.user_status as receiver_status',
+                ])
                 ->innerJoin('receiver_request_log', 'receiver_request_log.donor_id=users.id')
+                ->innerJoin('users as receiver', 'receiver_request_log.receiver_id=receiver.id')
                 ->where(['receiver_request_log.donor_id'=>$id])
+                // ->andWhere(['<>','receiver.user_status', 9])
                 ->asArray()
                 ->all();
         
@@ -199,4 +240,31 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return $requester_list;
 
     }
+
+    /**
+     * Get all donors having logs with receivers
+     */
+    public static function getDonorList($id){
+        $donor_list = Users::find()
+                ->select(['users.id','users.blood_group', 'users.state', 'users.district', 'users.user_role', 'users.user_status',
+                'users.created_date', 'users.updated_date', 'users.phone_confirmation_status', 'users.apply_count', 
+                'users.blood_confirmation_count','receiver_request_log.requested_district','receiver_request_log.requested_state', 'receiver_request_log.receiver_id', 'receiver_request_log.donor_id',
+                'receiver_request_log.request_status', 'receiver_request_log.requested_blood_group', 'receiver_request_log.requested_date', 
+                'receiver_request_log.request_updated_date','donor.user_status as donor_status'
+                ])
+                ->innerJoin('receiver_request_log', 'receiver_request_log.receiver_id=users.id')
+                ->innerJoin('users as donor', 'receiver_request_log.donor_id=donor.id')
+                ->where(['receiver_request_log.receiver_id'=>$id])
+                // ->andWhere(['<>','donor.user_status', 9])
+                ->asArray()
+                ->all();
+        return $donor_list;
+
+    }
+
+    public static function sendSMS($message) {
+
+    }
+
+
 }

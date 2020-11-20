@@ -10,6 +10,7 @@ module.exports = function (grunt) {
           "web/js/dist/signup.js": "web/es6/signup.js",
           "web/js/dist/signin.js": "web/es6/signin.js",
           "web/js/dist/home.js": "web/es6/home.js",
+          "web/js/dist/dashboard.js": "web/es6/dashboard.js",
         },
       },
     },
@@ -29,6 +30,10 @@ module.exports = function (grunt) {
           {
             src: "web/js/dist/home.js",
             dest: "web/js/dist/build-home.js",
+          },
+          {
+            src: "web/js/dist/dashboard.js",
+            dest: "web/js/dist/build-dashboard.js",
           },
         ],
       },

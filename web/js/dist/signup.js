@@ -91,6 +91,15 @@ var SignUp = /*#__PURE__*/function () {
     key: "setUpListeners",
     value: function setUpListeners() {
       $(".confirm-signup").click(this.onSignUpConfirmClick);
+      $(".signin-register").click(function () {
+        $("#signupModal").modal("hide");
+
+        if (!window.location.href.includes("/user/register")) {
+          $("#signinModal").modal("show");
+        } else {
+          window.location.href = "/user/login";
+        }
+      });
       this.setUpOnBlurListeners();
       this.setUpOnChangeListeners();
       this.setModalListeners();
@@ -102,9 +111,12 @@ var SignUp = /*#__PURE__*/function () {
 
       $("#signupModal").on("shown.bs.modal", function () {
         if (_this.states.length === 0) _this.requestStates();
+        $("body").addClass("modal-open");
       });
       $("#signupModal").on("hidden.bs.modal", function () {
-        _this.resetForm();
+        if (window.location.href.includes("/user/register")) {
+          window.location.href = "/";
+        } else _this.resetForm();
       });
     }
   }, {
@@ -136,9 +148,16 @@ var SignUp = /*#__PURE__*/function () {
       });
       $("input#gridRadios2").on("click", function () {
         $("input#gridRadios1").prop("checked", false);
+        $(".plasma-warning").hide();
+        $(".confirm-health").hide();
         var errorElement = $("#bloodGroup").next();
         errorElement.text("");
         errorElement.hide();
+      });
+      $("input#gridRadios1").on("click", function () {
+        $("input#gridRadios2").prop("checked", false);
+        $(".plasma-warning").show();
+        $(".confirm-health").show();
       });
     }
   }, {
@@ -219,6 +238,30 @@ var SignUp = /*#__PURE__*/function () {
       $(".invalid-feedback").hide();
     }
   }, {
+    key: "checkIfHealthConditionsFine",
+    value: function checkIfHealthConditionsFine() {
+      var healthFine = false;
+      var userRole = $("input#gridRadios1:checked").val() ? 0 : 1;
+      if (userRole === 1) healthFine = true;else {
+        if ($("#confirmHealth:checked").val()) {
+          healthFine = true;
+        } else {
+          healthFine = false;
+          $.toaster({
+            settings: {
+              timeout: 5000
+            }
+          });
+          $.toaster({
+            priority: "danger",
+            title: "Confirm Health",
+            message: "You must confirm that you do not have listed health conditions before signup."
+          });
+        }
+      }
+      return healthFine;
+    }
+  }, {
     key: "checkIfTermsAndConditionsAgreed",
     value: function checkIfTermsAndConditionsAgreed() {
       var agree = true;
@@ -246,7 +289,9 @@ var SignUp = /*#__PURE__*/function () {
       var valid = this.checkValidation();
 
       if (valid) {
-        if (this.checkIfTermsAndConditionsAgreed()) this.registerUser();
+        if (this.checkIfHealthConditionsFine()) {
+          if (this.checkIfTermsAndConditionsAgreed()) this.registerUser();
+        }
       }
     }
   }, {
@@ -282,7 +327,7 @@ var SignUp = /*#__PURE__*/function () {
     value: function populateStates() {
       var states = this.states;
       $("#state").html("");
-      var options = "<option selected value>select state</option>";
+      var options = "<option selected value>SELECT STATE</option>";
 
       for (var i = 0; i < states.length; i++) {
         options += "<option data-code=".concat(states[i].code, " value=").concat(states[i].name, ">").concat(states[i].name, "</option>");
@@ -294,7 +339,7 @@ var SignUp = /*#__PURE__*/function () {
     key: "populateDistricts",
     value: function populateDistricts(districts) {
       $("#district").html("");
-      var options = "<option selected value>select district</option>";
+      var options = "<option selected value>SELECT DISTRICT</option>";
 
       for (var i = 0; i < districts.length; i++) {
         options += "<option data-code=".concat(districts[i].code, " value=").concat(districts[i].name, ">").concat(districts[i].name, "</option>");
@@ -319,7 +364,6 @@ var SignUp = /*#__PURE__*/function () {
       };
       axios.post("/user/save", data).then(function (_ref3) {
         var response = _ref3.data;
-        console.log(response);
 
         if (response && response.success) {
           _this5.resetForm();
@@ -333,7 +377,7 @@ var SignUp = /*#__PURE__*/function () {
           $.toaster({
             priority: "success",
             title: "Success",
-            message: "You are successfully registered, we have sent a confirmation link on your phone. \n          Please click on that link to verify your phone."
+            message: "You are successfully registered, we have sent a confirmation link on your phone. \n          Please click on that link to verify your phone.\n          <a href=\"".concat(response.link, "\"> CLICK THIS LINK </a>\n          ")
           });
         } else if (response && response.error && response.error === "exist already") {
           var errorElement = $("#phoneNumber").next();

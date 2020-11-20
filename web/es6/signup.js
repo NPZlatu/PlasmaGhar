@@ -87,6 +87,14 @@ class SignUp {
 
   setUpListeners() {
     $(".confirm-signup").click(this.onSignUpConfirmClick);
+    $(".signin-register").click(function () {
+      $("#signupModal").modal("hide");
+      if (!window.location.href.includes("/user/register")) {
+        $("#signinModal").modal("show");
+      } else {
+        window.location.href = "/user/login";
+      }
+    });
     this.setUpOnBlurListeners();
     this.setUpOnChangeListeners();
     this.setModalListeners();
@@ -95,10 +103,13 @@ class SignUp {
   setModalListeners() {
     $("#signupModal").on("shown.bs.modal", () => {
       if (this.states.length === 0) this.requestStates();
+      $("body").addClass("modal-open");
     });
 
     $("#signupModal").on("hidden.bs.modal", () => {
-      this.resetForm();
+      if (window.location.href.includes("/user/register")) {
+        window.location.href = "/";
+      } else this.resetForm();
     });
   }
 
@@ -127,9 +138,17 @@ class SignUp {
 
     $("input#gridRadios2").on("click", function () {
       $("input#gridRadios1").prop("checked", false);
+      $(".plasma-warning").hide();
+      $(".confirm-health").hide();
       const errorElement = $("#bloodGroup").next();
       errorElement.text("");
       errorElement.hide();
+    });
+
+    $("input#gridRadios1").on("click", function () {
+      $("input#gridRadios2").prop("checked", false);
+      $(".plasma-warning").show();
+      $(".confirm-health").show();
     });
   }
 
@@ -197,6 +216,26 @@ class SignUp {
     $(".invalid-feedback").hide();
   }
 
+  checkIfHealthConditionsFine() {
+    let healthFine = false;
+    const userRole = $("input#gridRadios1:checked").val() ? 0 : 1;
+    if (userRole === 1) healthFine = true;
+    else {
+      if ($("#confirmHealth:checked").val()) {
+        healthFine = true;
+      } else {
+        healthFine = false;
+        $.toaster({ settings: { timeout: 5000 } });
+        $.toaster({
+          priority: "danger",
+          title: "Confirm Health",
+          message: `You must confirm that you do not have listed health conditions before signup.`,
+        });
+      }
+    }
+    return healthFine;
+  }
+
   checkIfTermsAndConditionsAgreed() {
     let agree = true;
     if (!$("#terms:checked").val()) {
@@ -215,7 +254,9 @@ class SignUp {
     this.clicked = true;
     const valid = this.checkValidation();
     if (valid) {
-      if (this.checkIfTermsAndConditionsAgreed()) this.registerUser();
+      if (this.checkIfHealthConditionsFine()) {
+        if (this.checkIfTermsAndConditionsAgreed()) this.registerUser();
+      }
     }
   }
 
@@ -245,7 +286,7 @@ class SignUp {
   populateStates() {
     const { states } = this;
     $("#state").html("");
-    let options = "<option selected value>select state</option>";
+    let options = "<option selected value>SELECT STATE</option>";
 
     for (let i = 0; i < states.length; i++) {
       options += `<option data-code=${states[i].code} value=${states[i].name}>${states[i].name}</option>`;
@@ -255,7 +296,7 @@ class SignUp {
 
   populateDistricts(districts) {
     $("#district").html("");
-    let options = "<option selected value>select district</option>";
+    let options = "<option selected value>SELECT DISTRICT</option>";
     for (let i = 0; i < districts.length; i++) {
       options += `<option data-code=${districts[i].code} value=${districts[i].name}>${districts[i].name}</option>`;
     }
@@ -277,7 +318,6 @@ class SignUp {
     axios
       .post("/user/save", data)
       .then(({ data: response }) => {
-        console.log(response);
         if (response && response.success) {
           this.resetForm();
           $("#signupModal").modal("hide");
@@ -287,7 +327,9 @@ class SignUp {
             priority: "success",
             title: "Success",
             message: `You are successfully registered, we have sent a confirmation link on your phone. 
-          Please click on that link to verify your phone.`,
+          Please click on that link to verify your phone.
+          <a href="${response.link}"> CLICK THIS LINK </a>
+          `,
           });
         } else if (
           response &&
