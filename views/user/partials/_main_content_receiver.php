@@ -3,28 +3,28 @@ use app\models\States;
 $states = States::find()
         ->select(['code','name'])->all();
 
-
 $donorStatus = array(
     0 => "AVAILABLE",
     1 => "WAITING FOR YOUR CALL",
     2 => "BLOOD CONFIRMED",
     9 => "NOT INTERESTED"
 );
-$pendingApprovals = array_filter($lists, function($list) {
-    return $list['request_status'] == 0;
-});
+    $pendingApprovals = array_filter($lists, function($list) {
+        return $list['request_status'] == 0;
+    });
 
-$acceptedLists = array_filter($lists, function($list) {
-    return $list['request_status'] == 1;
-});
+    $acceptedLists = array_filter($lists, function($list) {
+        return $list['request_status'] == 1;
+    });
 
-$rejectedLists= array_filter($lists, function($list) {
-    return $list['request_status'] == 2;
-});
+    $rejectedLists= array_filter($lists, function($list) {
+        return $list['request_status'] == 2;
+    });
 
-$connectedLists= array_filter($lists, function($list) {
-    return $list['request_status'] == 3;
-});
+    $connectedLists= array_filter($lists, function($list) {
+        return $list['request_status'] == 3;
+    });
+
 
 $allTables = [['pendingApprovals', 'Pending Approvals'], ['acceptedLists', 'Donors who Accepted'], ['rejectedLists', 'Rejected Donors'], ['connectedLists', 'Connected Donors']];
 
@@ -56,6 +56,7 @@ $allTables = [['pendingApprovals', 'Pending Approvals'], ['acceptedLists', 'Dono
                         <a class="dropdown-item" href="javascript:void(0);">B positive</a>
                         <a class="dropdown-item" href="javascript:void(0);">B negative</a>
                         <a class="dropdown-item" href="javascript:void(0);">AB positive</a>
+                        <a class="dropdown-item" href="javascript:void(0);">AB negative</a>
                         <a class="dropdown-item" href="javascript:void(0);">O positive</a>
                         <a class="dropdown-item" href="javascript:void(0);">O negative</a>
                     </div>
@@ -151,7 +152,14 @@ $allTables = [['pendingApprovals', 'Pending Approvals'], ['acceptedLists', 'Dono
 
                         <button type="button" data-section="<?php echo $table[0]; ?>" 
                         data-params="<?php echo htmlspecialchars(json_encode($donor), ENT_QUOTES, 'UTF-8'); ?>"
-                                class="btn btn-sm btn-outline-danger receiver-reject-btn">Reject</button>
+                                class="btn btn-sm btn-outline-danger receiver-reject-btn">
+                               <?php
+                                if($table[0] === 'pendingApprovals') {
+                                    echo 'Cancel';
+                                } else echo 'Reject';
+                                ?>
+                                
+                                </button>
       
                         
                     <?php } ?>

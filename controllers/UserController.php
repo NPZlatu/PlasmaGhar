@@ -269,10 +269,20 @@ class UserController extends \yii\web\Controller
             $model->password = $user['password'];
 
             if($model->save()) {
-                $result = array(
-                    'success' => true,
-                    'link' => Url::home(true).'user/confirm/'.$model->phone_confirmation_token      
-                  );
+                $link = Url::home(true).'user/confirm/'.$model->phone_confirmation_token;
+                $smsResult = $this->sendSms('Please click on the given link to activate your account on PlasmaGhar -> '.$link, 
+                $user['phone_number']);
+
+
+                if(isset($smsResult['resonse_code']) && $smsResult['resonse_code'] == 200) {
+                    $result = array(
+                        'success' => true,
+                        'link' => $link
+                      );
+                } else $result = array(
+                    'success' => false,
+                    'response' => $smsResult
+                );
 
             } else {
                 $result = array(
@@ -289,6 +299,36 @@ class UserController extends \yii\web\Controller
                 ));
         }  
 
+    }
+
+
+    /**
+     * Send SMS
+     */
+    public function sendSms($message, $phone) {
+        // $args = http_build_query(array(
+        //     'token' => 'random',
+        //     'from'  => 'Demo',
+        //     'to'    => $phone,
+        //     'text'  => $message)
+        // );
+        // $url = "http://api.sparrowsms.com/v2/sms/";
+    
+        # Make the call using API.
+        // $ch = curl_init();
+        // curl_setopt($ch, CURLOPT_URL, $url);
+        // curl_setopt($ch, CURLOPT_POST, 1);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS,$args);
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    
+        // Response
+        // $response = curl_exec($ch);
+        // $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        // curl_close($ch);
+        // $result = json_decode($response, true);   
+        // $response= "'{\"count\": 1, \"response_code\": 200, \"response\": \"1 mesages has been queued for delivery\", \"message_id\": 86086784, \"credit_consumed\": 1, \"credit_available\": 9.0}'";
+        $result = array('resonse_code' => 200);
+        return $result;
     }
 
 
@@ -426,20 +466,29 @@ class UserController extends \yii\web\Controller
                 return $this->asJson([]); 
             }
         }
+        $userId = Yii::$app->user->id;
+
+        $donorFound = Yii::$app->db->createCommand
+        (
+        "
+        select u.id,u.blood_group,u.district,u.state,u.user_status
+        from users u
+        where u.user_role = 0
+        and u.blood_group = :blood_group
+        and u.state = :state
+        and u.district = :district
+        and u.user_status in (0,1)
+        and u.phone_confirmation_status=1
+        and u.id not in (select donor_id from receiver_request_log where receiver_id = :user_id)
+        "
+        )
+        ->bindValue(':user_id' , $userId)
+        ->bindValue(':blood_group' , $filter['blood_group'])
+        ->bindValue(':state' , $filter['state'])
+        ->bindValue(':district' , $filter['district'])
+        ->queryAll();
 
 
-        $donorFound = Users::find()
-        ->select('users.id,users.blood_group,users.district,users.state,users.user_status')
-        ->leftJoin('receiver_request_log', 'receiver_request_log.donor_id=users.id')
-        ->where(['users.blood_group' => $filter['blood_group']])
-        ->andWhere(['users.state' => $filter['state']])
-        ->andWhere(['users.district' => $filter['district']])
-        ->andWhere(['users.user_role' => 0])
-        ->andWhere(['users.phone_confirmation_status' => 1])
-        ->andWhere(['<>','users.user_status', 2])
-        ->andWhere(['<>','users.user_status', 9])
-        ->andWhere(['is', 'receiver_request_log.id', new \yii\db\Expression('null')])
-        ->all();
         if(!$request->isAjax) {
             if(Yii::$app->user->identity->user_role === 0) {
                 return $this->redirect('/');
@@ -478,6 +527,28 @@ class UserController extends \yii\web\Controller
             ];
 
             $result = Users::setStatus($params); 
+            if(isset($result['t_result']) && $result['t_result'] == 'Your apply request is succeeded.') {
+                $donorPhone = Users::getPhone($params['p_donor_id']); 
+                if(!$donorPhone) {
+                    return $this->asJson(array(
+                        'success' => false,
+                        'error' => 'no donor phone is found'
+                    ));
+                }
+                $receiverPhone = Yii::$app->user->identity->phone_number;
+                $link = Url::home(true).'dashboard';
+
+                $message = 'URGENT URGENT!!, A seeker with the identity Requester-'.$receiverId.' is in need of your plasma. Please go to the link and accept his/her request to share your number with him/her -> '.$link;
+
+                $smsResult = $this->sendSms($message, $receiverPhone);
+                if(!isset($smsResult['resonse_code']) || $smsResult['resonse_code'] !== 200) {
+                    return $this->asJson(array(
+                        'success' => false,
+                        'error' => 'error on sending sms'
+                    ));
+                } 
+                $result['message'] = $message;
+            }
             return $this->asJson($result);
 
         } catch(\Exception $exception) {
@@ -506,8 +577,27 @@ class UserController extends \yii\web\Controller
             if($donorId != $params['p_donor_id']) {
                 throw new NotFoundHttpException;
             }
-
             $result = Users::setStatus($params); 
+
+            if(isset($result['t_result']) && $result['t_result'] == 'Your accept request is succeeded.') {
+                $receiverPhone = Users::getPhone($params['p_receiver_id']); 
+                if(!$receiverPhone) {
+                    return $this->asJson(array(
+                        'success' => false,
+                        'error' => 'no receiver phone is found'
+                    ));
+                }
+                $donorPhone = Yii::$app->user->identity->phone_number;
+                $message = 'Congratulations, A donar with the identity Donor-'.$donorId.' has just accepted your blood request. You can call donor on this number'.$donorPhone.'. If the blood is confirmed or there are some problems on confirmation, please update your status on our dashboard';
+                $smsResult = $this->sendSms($message, $receiverPhone);
+                if(!isset($smsResult['resonse_code']) || $smsResult['resonse_code'] !== 200) {
+                    return $this->asJson(array(
+                        'success' => false,
+                        'error' => 'error on sending sms'
+                    ));
+                } 
+                $result['message'] = $message;
+            }
             return $this->asJson($result);
 
         } catch(\Exception $exception) {
@@ -597,6 +687,7 @@ class UserController extends \yii\web\Controller
             }
 
             $result = [];  
+
                         
             $result = Users::setStatus($params); 
             return $this->asJson($result);

@@ -159,7 +159,7 @@ class Home {
         p_requested_district: filters.district,
       })
       .then(({ data }) => {
-        $.toaster({ settings: { timeout: 6000 } });
+        $.toaster({ settings: { timeout: 16000 } });
         if (
           data &&
           data.t_result &&
@@ -177,7 +177,9 @@ class Home {
               data.t_apply_count !== null
                 ? "\nRemaining Quota for today is " +
                   (35 - parseInt(data.t_apply_count, 10)) +
-                  "."
+                  ".\n\n" +
+                  " SMS: " +
+                  data.message
                 : null
             }`,
           });

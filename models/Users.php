@@ -187,6 +187,20 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return $unique;
     }
 
+
+    /**
+     * Get Phone
+     * @param $user_id string
+     */
+    public static function getPhone($user_id) {
+        $return = null;
+        $user = self::findOne(['id' => $user_id]);
+        if($user && $user['phone_number']) {
+            $return = $user['phone_number'];
+        }
+        return $return;
+    }
+
     /**
      * Set status - donor/receiver/request
      */
@@ -222,43 +236,81 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      * Get all requesters having logs with donors
      */
     public static function getRequesterList($id){
-        $requester_list = Users::find()
-                ->select(['users.id','users.blood_group', 'users.state', 'users.district', 'users.user_role', 'users.user_status',
-                'users.created_date', 'users.updated_date', 'users.phone_confirmation_status', 'users.apply_count', 
-                'users.blood_confirmation_count','receiver_request_log.requested_district','receiver_request_log.requested_state', 'receiver_request_log.receiver_id', 'receiver_request_log.donor_id',
-                'receiver_request_log.request_status', 'receiver_request_log.requested_blood_group', 'receiver_request_log.requested_date', 
-                'receiver_request_log.request_updated_date','receiver.user_status as receiver_status',
-                ])
-                ->innerJoin('receiver_request_log', 'receiver_request_log.donor_id=users.id')
-                ->innerJoin('users as receiver', 'receiver_request_log.receiver_id=receiver.id')
-                ->where(['receiver_request_log.donor_id'=>$id])
-                // ->andWhere(['<>','receiver.user_status', 9])
-                ->asArray()
-                ->all();
-        
-                
-        return $requester_list;
-
+        $result = Yii::$app->db->createCommand
+        (
+        "
+        SELECT `users`.`id`, 
+        `users`.`blood_group`, 
+        `users`.`state`, 
+        `users`.`district`, 
+        `users`.`user_role`, 
+        `users`.`user_status`, 
+        `users`.`created_date`, 
+        `users`.`updated_date`, 
+        `users`.`phone_confirmation_status`, 
+        `users`.`apply_count`, 
+        `users`.`blood_confirmation_count`, 
+        `receiver_request_log`.`requested_district`, 
+        `receiver_request_log`.`requested_state`, 
+        `receiver_request_log`.`receiver_id`, 
+        `receiver_request_log`.`donor_id`, 
+        `receiver_request_log`.`request_status`, 
+        `receiver_request_log`.`requested_blood_group`, 
+        `receiver_request_log`.`requested_date`, 
+        `receiver_request_log`.`request_updated_date`, 
+        `receiver`.`user_status` AS `receiver_status` 
+ FROM   `users` 
+        INNER JOIN `receiver_request_log` 
+                ON receiver_request_log.donor_id = users.id 
+        INNER JOIN `users` `receiver` 
+                ON receiver_request_log.receiver_id = receiver.id 
+ WHERE  `receiver_request_log`.`donor_id` = :user_id 
+        "
+        )
+        ->bindValue(':user_id' , $id)
+        ->queryAll();
+        return $result;
     }
 
     /**
      * Get all donors having logs with receivers
      */
     public static function getDonorList($id){
-        $donor_list = Users::find()
-                ->select(['users.id','users.blood_group', 'users.state', 'users.district', 'users.user_role', 'users.user_status',
-                'users.created_date', 'users.updated_date', 'users.phone_confirmation_status', 'users.apply_count', 
-                'users.blood_confirmation_count','receiver_request_log.requested_district','receiver_request_log.requested_state', 'receiver_request_log.receiver_id', 'receiver_request_log.donor_id',
-                'receiver_request_log.request_status', 'receiver_request_log.requested_blood_group', 'receiver_request_log.requested_date', 
-                'receiver_request_log.request_updated_date','donor.user_status as donor_status'
-                ])
-                ->innerJoin('receiver_request_log', 'receiver_request_log.receiver_id=users.id')
-                ->innerJoin('users as donor', 'receiver_request_log.donor_id=donor.id')
-                ->where(['receiver_request_log.receiver_id'=>$id])
-                // ->andWhere(['<>','donor.user_status', 9])
-                ->asArray()
-                ->all();
-        return $donor_list;
+
+        $result = Yii::$app->db->createCommand
+        (
+        "
+        SELECT `users`.`id`, 
+            `users`.`blood_group`, 
+            `users`.`state`, 
+            `users`.`district`, 
+            `users`.`user_role`, 
+            `users`.`user_status`, 
+            `users`.`created_date`, 
+            `users`.`updated_date`, 
+            `users`.`phone_confirmation_status`, 
+            `users`.`apply_count`, 
+            `users`.`blood_confirmation_count`, 
+            `receiver_request_log`.`requested_district`, 
+            `receiver_request_log`.`requested_state`, 
+            `receiver_request_log`.`receiver_id`, 
+            `receiver_request_log`.`donor_id`, 
+            `receiver_request_log`.`request_status`, 
+            `receiver_request_log`.`requested_blood_group`, 
+            `receiver_request_log`.`requested_date`, 
+            `receiver_request_log`.`request_updated_date`, 
+            `donor`.`user_status` AS `donor_status` 
+        FROM   `users` 
+            INNER JOIN `receiver_request_log` 
+                    ON receiver_request_log.receiver_id = users.id 
+            INNER JOIN `users` `donor` 
+                    ON receiver_request_log.donor_id = donor.id 
+        WHERE  `receiver_request_log`.`receiver_id` = :user_id 
+        "
+        )
+        ->bindValue(':user_id' , $id)
+        ->queryAll();
+        return $result;
 
     }
 

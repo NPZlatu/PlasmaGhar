@@ -1,5 +1,9 @@
 <?php 
 
+$user = \Yii::$app->user->identity;
+$donorStatus = $user->user_status;
+
+
 $receiverStatus = array(
     0 => "SEARCHING FOR A DONOR",
     1 => "WILL BE CALLING YOU",
@@ -23,7 +27,6 @@ $connectedLists= array_filter($lists, function($list) {
 });
 
 $allTables = [['pendingApprovals', 'Pending Approvals'], ['acceptedLists', 'Accepted Receivers'], ['rejectedLists', 'Rejected Receivers'], ['connectedLists', 'Connected Receivers']];
-
 ?>
 
 <div class="col-md-8 order-md-1">
@@ -73,7 +76,14 @@ $allTables = [['pendingApprovals', 'Pending Approvals'], ['acceptedLists', 'Acce
                     
                     <?php if($receiver['receiver_status'] != 9) { ?>
                     <td>
-                        <?php if($table[0] === 'acceptedLists' || $table[0] === 'pendingApprovals') { ?>
+                        <?php if($table[0] === 'acceptedLists' || $table[0] === 'pendingApprovals') { 
+                            
+                            if($table[0] === 'pendingApprovals' && (in_array($donorStatus, [1,2, 9])))
+                            { ?>
+                            <button disabled type="button" class="btn btn-sm btn-outline-secondary">
+                                Accept
+                            </button>
+                            <?php } else {?>
                         <button type="button" data-section="<?php echo $table[0]; ?>" 
                         data-params="<?php echo htmlspecialchars(json_encode($receiver), ENT_QUOTES, 'UTF-8'); ?>"
                         class="btn btn-sm btn-outline-success <?php echo $table[0] === 'pendingApprovals'?'donor-accept-btn': 'donor-bloodconfirm-btn'; ?>">
@@ -84,8 +94,8 @@ $allTables = [['pendingApprovals', 'Pending Approvals'], ['acceptedLists', 'Acce
                                 echo 'Accept';
                             }
                         ?>
-                        
                         </button>
+                        <?php } ?>
 
                         <button data-section="<?php echo $table[0]; ?>" 
                         data-params="<?php echo htmlspecialchars(json_encode($receiver), ENT_QUOTES, 'UTF-8'); ?>"
@@ -102,7 +112,32 @@ $allTables = [['pendingApprovals', 'Pending Approvals'], ['acceptedLists', 'Acce
                
             </tbody>
         </table>
+       <?php 
+       if($table[0] === 'pendingApprovals' &&  (in_array($donorStatus, [1, 2, 9]))) {
+       ?>
+        <small id="nameHelp" class="form-text text-muted">You cannot accept more than one request at a time. If you want to accept the request above, you should reject the request below for already accepted receiver. <br />
+        </small>
         <hr/>
+       <?php }
+
+       else if($table[0] === 'acceptedLists') { ?>
+        <small id="nameHelp" class="form-text text-muted">
+        * It seems like your phone number is shared with receiver. Please click on "Blood Confirm" if blood is confirmed, if conversation did not happen or did not go as expected, click on "Reject"
+        <br />
+        </small>
+        <hr/>
+      <?php  }
+
+       else if($table[0] === 'connectedLists' ) {
+       ?>
+        <small id="nameHelp" class="form-text text-muted"> 
+        * Thank you for your donation and confirming with us. You are a hero. Because of the people like yourself, there is a hope. 
+        <br />
+        </small>
+        <hr/>
+       <?php } ?>
+
+
         <?php
         if($tableKey == (count($allTables)-1)) { ?>
         <small id="nameHelp" class="form-text text-muted">* Help us by frequently updating your status. <br />

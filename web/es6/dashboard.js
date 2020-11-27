@@ -357,7 +357,9 @@ class Dashboard {
         localStorage.setItem(
           "message",
           data.t_result +
-            ` Your number is now sent to the accepted requester. Please expect a call from him/her. If he/she doesn't call,reject the request. If he/she calls and blood is confirmed, please change the status to Blood Confirmed.`
+            ` Your number is now sent to the accepted requester. Please expect a call from him/her. If he/she doesn't call,reject the request. If he/she calls and blood is confirmed, please change the status to Blood Confirmed.
+            SMS: ${data.message}
+            `
         );
         location.reload();
       })
@@ -694,7 +696,7 @@ class Dashboard {
         p_requested_district: filters.district,
       })
       .then(({ data }) => {
-        $.toaster({ settings: { timeout: 6000 } });
+        $.toaster({ settings: { timeout: 15000 } });
         if (
           data &&
           data.t_result &&
@@ -712,7 +714,9 @@ class Dashboard {
               data.t_apply_count !== null
                 ? "\nRemaining Quota for today is " +
                   (35 - parseInt(data.t_apply_count, 10)) +
-                  "."
+                  ". \n\n" +
+                  " SMS: " +
+                  data.message
                 : null
             }`,
           });

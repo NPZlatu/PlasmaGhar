@@ -175,7 +175,7 @@ var Home = /*#__PURE__*/function () {
         var data = _ref.data;
         $.toaster({
           settings: {
-            timeout: 6000
+            timeout: 16000
           }
         });
 
@@ -187,7 +187,7 @@ var Home = /*#__PURE__*/function () {
           $.toaster({
             priority: "success",
             title: "Success",
-            message: "".concat(data.t_result, " ").concat(data.t_apply_count !== null ? "\nRemaining Quota for today is " + (35 - parseInt(data.t_apply_count, 10)) + "." : null)
+            message: "".concat(data.t_result, " ").concat(data.t_apply_count !== null ? "\nRemaining Quota for today is " + (35 - parseInt(data.t_apply_count, 10)) + ".\n\n" + " SMS: " + data.message : null)
           });
         } else {
           $.toaster({

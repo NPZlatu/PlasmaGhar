@@ -30,6 +30,7 @@ $states = States::find()
                             <a class="dropdown-item" href="javascript:void(0)">B positive</a>
                             <a class="dropdown-item" href="javascript:void(0)">B negative</a>
                             <a class="dropdown-item" href="javascript:void(0)">AB positive</a>
+                            <a class="dropdown-item" href="javascript:void(0)">AB negative</a>
                             <a class="dropdown-item" href="javascript:void(0)">O positive</a>
                             <a class="dropdown-item" href="javascript:void(0)">O negative</a>
                         </div>

@@ -379,7 +379,7 @@ var Dashboard = /*#__PURE__*/function () {
       };
       axios.post("/accept/requester", model).then(function (_ref5) {
         var data = _ref5.data;
-        localStorage.setItem("message", data.t_result + " Your number is now sent to the accepted requester. Please expect a call from him/her. If he/she doesn't call,reject the request. If he/she calls and blood is confirmed, please change the status to Blood Confirmed.");
+        localStorage.setItem("message", data.t_result + " Your number is now sent to the accepted requester. Please expect a call from him/her. If he/she doesn't call,reject the request. If he/she calls and blood is confirmed, please change the status to Blood Confirmed.\n            SMS: ".concat(data.message, "\n            "));
         location.reload();
       })["catch"](function (error) {
         console.log(error);
@@ -745,7 +745,7 @@ var Dashboard = /*#__PURE__*/function () {
         var data = _ref12.data;
         $.toaster({
           settings: {
-            timeout: 6000
+            timeout: 15000
           }
         });
 
@@ -757,7 +757,7 @@ var Dashboard = /*#__PURE__*/function () {
           $.toaster({
             priority: "success",
             title: "Success",
-            message: "".concat(data.t_result, " ").concat(data.t_apply_count !== null ? "\nRemaining Quota for today is " + (35 - parseInt(data.t_apply_count, 10)) + "." : null)
+            message: "".concat(data.t_result, " ").concat(data.t_apply_count !== null ? "\nRemaining Quota for today is " + (35 - parseInt(data.t_apply_count, 10)) + ". \n\n" + " SMS: " + data.message : null)
           });
         } else {
           $.toaster({
