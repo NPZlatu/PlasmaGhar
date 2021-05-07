@@ -23,6 +23,15 @@ var SignUp = /*#__PURE__*/function () {
         },
         value: ""
       }, {
+        selector: "email",
+        rules: {
+          regex: {
+            value: /\S+@\S+\.\S+/,
+            error: "Valid email address is required."
+          }
+        },
+        value: ""
+      }, {
         selector: "bloodGroup",
         rules: {
           required: {
@@ -79,6 +88,7 @@ var SignUp = /*#__PURE__*/function () {
     _classCallCheck(this, SignUp);
 
     this.clicked = false;
+    this.signUpProgress = false;
     this.states = [];
     this.model = this.getModel();
     this.onSignUpConfirmClick = this.onSignUpConfirmClick.bind(this);
@@ -288,7 +298,7 @@ var SignUp = /*#__PURE__*/function () {
       this.clicked = true;
       var valid = this.checkValidation();
 
-      if (valid) {
+      if (valid && !this.signUpProgress) {
         if (this.checkIfHealthConditionsFine()) {
           if (this.checkIfTermsAndConditionsAgreed()) this.registerUser();
         }
@@ -354,12 +364,14 @@ var SignUp = /*#__PURE__*/function () {
       var _this5 = this;
 
       var model = this.model;
+      this.signUpProgress = true;
       var data = {
         phone_number: model[0].value,
-        blood_group: model[1].value,
-        state: model[2].value,
-        district: model[3].value,
-        password: model[4].value,
+        email: model[1].value,
+        blood_group: model[2].value,
+        state: model[3].value,
+        district: model[4].value,
+        password: model[5].value,
         user_role: $("input#gridRadios1:checked").val() ? 0 : 1
       };
       axios.post("/user/save", data).then(function (_ref3) {
@@ -377,15 +389,26 @@ var SignUp = /*#__PURE__*/function () {
           $.toaster({
             priority: "success",
             title: "Success",
-            message: "You are successfully registered, we have sent a confirmation link on your phone. \n          Please click on that link to verify your phone.\n          <a href=\"".concat(response.link, "\"> CLICK THIS LINK </a>\n          ")
+            message: "You are successfully registered, we have sent a confirmation link on your email. \n          Please click on that link to verify your email.          "
           });
+          _this5.signUpProgress = false;
         } else if (response && response.error && response.error === "exist already") {
-          var errorElement = $("#phoneNumber").next();
-          errorElement.text("User already exists with this phone number");
+          var errorElement = $("#email").next();
+          errorElement.text("User already exists with this email");
           errorElement.show();
+          $.toaster({
+            settings: {
+              timeout: 5000
+            }
+          });
+          $.toaster({
+            priority: "danger",
+            title: "Error",
+            message: "The user already exists with the email"
+          });
+          _this5.signUpProgress = false;
         }
-      })["catch"](function (error) {
-        console.log(error);
+      })["catch"](function (_error) {
         $.toaster({
           settings: {
             timeout: 5000
@@ -396,6 +419,7 @@ var SignUp = /*#__PURE__*/function () {
           title: "Error",
           message: "Something is wrong. Please try later"
         });
+        this.signUpProgress = false;
       });
     }
   }]);

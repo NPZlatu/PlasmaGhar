@@ -12,11 +12,11 @@ var SignIn = /*#__PURE__*/function () {
 
     this.clicked = false;
     this.model = [{
-      selector: "loginPhone",
+      selector: "loginEmail",
       rules: {
         regex: {
-          value: /^[0-9]{10}$/,
-          error: "Phone Number must have 10 digits."
+          value: /\S+@\S+\.\S+/,
+          error: "Valid email address is required."
         }
       },
       value: ""
@@ -154,12 +154,13 @@ var SignIn = /*#__PURE__*/function () {
     value: function loginUser() {
       var model = this.model;
       var data = {
-        phone_number: model[0].value,
+        email: model[0].value,
         password: model[1].value,
         remember_me: $("#rememberMe:checked").val() ? 1 : 0
       };
       axios.post("/user/login", data).then(function (_ref) {
         var response = _ref.data;
+        console.log(response);
 
         if (response && response.success) {
           if (typeof $(".confirm-signin").data("nexturl") !== "undefined") {
@@ -168,6 +169,17 @@ var SignIn = /*#__PURE__*/function () {
           } else if ($("#searchModal").hasClass("show")) {
             $("#signinModal").modal("hide");
           } else window.location.href = "/dashboard";
+        } else if (response && response.error && response.error === "account not confirmed") {
+          $.toaster({
+            settings: {
+              timeout: 15000
+            }
+          });
+          $.toaster({
+            priority: "danger",
+            title: "Error",
+            message: "Your account has not been activated yet. Please check your email and click on the activation link. "
+          });
         } else {
           $.toaster({
             settings: {
@@ -177,7 +189,7 @@ var SignIn = /*#__PURE__*/function () {
           $.toaster({
             priority: "danger",
             title: "Error",
-            message: "Invalid phone and/or password"
+            message: "Invalid email and/or password"
           });
         }
       })["catch"](function (error) {

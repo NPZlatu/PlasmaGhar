@@ -3,42 +3,43 @@
 ?>
 <div class="container">
 <h4 class="cus-border-bottom">
-           Supporting Partners
+           Supporting Partner
 </h4>
 <div class="row">
 
-        <div class="col-lg-3">
+        <!-- <div class="col-lg-3">
         <img src="./images/mahalaxmi-municipality.png" alt="..." style="width: 96px; height: 96px;" class="img-thumbnail cus-logo rounded mx-auto d-block">
         <p class="text-center">
         Mahalaxmi Municipality
         <br/>Office of Municipal Executive
         <br/>Lalitpur, Bagmati Province
         <br/>“Clean, Green, Prosperous, Full of Beauty-Mahalaxmi Municipality”</p>
+        </div> -->
+        <div class="col-lg-12">
+        <a href="https://bpazes.com" target="_blank">
+        <img src="./images/logo.jpg" alt="..." style="width: 192px; height: 192px;" class="img-thumbnail cus-logo rounded mx-auto d-block">
+        <p class="text-center">
+        Business Pazes
+        <br/>New Baneshwor, Kathmandu
+        </a>
+
         </div>
-        <div class="col-lg-3">
+        <!-- <div class="col-lg-3">
         <img src="./images/mahalaxmi-municipality.png" alt="..." style="width: 96px; height: 96px;" class="img-thumbnail cus-logo rounded mx-auto d-block">
         <p class="text-center">
         Mahalaxmi Municipality
         <br/>Office of Municipal Executive
         <br/>Lalitpur, Bagmati Province
         <br/>“Clean, Green, Prosperous, Full of Beauty-Mahalaxmi Municipality”</p>
-        </div>
-        <div class="col-lg-3">
+        </div> -->
+        <!-- <div class="col-lg-3">
         <img src="./images/mahalaxmi-municipality.png" alt="..." style="width: 96px; height: 96px;" class="img-thumbnail cus-logo rounded mx-auto d-block">
         <p class="text-center">
         Mahalaxmi Municipality
         <br/>Office of Municipal Executive
         <br/>Lalitpur, Bagmati Province
         <br/>“Clean, Green, Prosperous, Full of Beauty-Mahalaxmi Municipality”</p>
-        </div>
-        <div class="col-lg-3">
-        <img src="./images/mahalaxmi-municipality.png" alt="..." style="width: 96px; height: 96px;" class="img-thumbnail cus-logo rounded mx-auto d-block">
-        <p class="text-center">
-        Mahalaxmi Municipality
-        <br/>Office of Municipal Executive
-        <br/>Lalitpur, Bagmati Province
-        <br/>“Clean, Green, Prosperous, Full of Beauty-Mahalaxmi Municipality”</p>
-        </div>
+        </div> -->
         
                  
 </div>

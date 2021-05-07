@@ -11,6 +11,7 @@ var Home = /*#__PURE__*/function () {
     _classCallCheck(this, Home);
 
     this.clicked = false;
+    this.requestToDonorProgress = false;
     this.model = [{
       selector: "fb-firstName",
       rules: {
@@ -140,7 +141,7 @@ var Home = /*#__PURE__*/function () {
     value: function onRequestClick(donorId, filters, user) {
       if (user === "not-required") {
         donorId = parseInt(donorId, 10);
-        this.sendRequestToDonor(donorId, filters);
+        if (!this.requestToDonorProgress) this.sendRequestToDonor(donorId, filters);
       } else {
         if (user.id) {
           if (user.role === "donor") {
@@ -156,7 +157,7 @@ var Home = /*#__PURE__*/function () {
             });
           } else {
             donorId = parseInt(donorId, 10);
-            this.sendRequestToDonor(donorId, filters);
+            if (!this.requestToDonorProgress) this.sendRequestToDonor(donorId, filters);
           }
         } else {
           $("#signinModal").modal("show");
@@ -166,6 +167,9 @@ var Home = /*#__PURE__*/function () {
   }, {
     key: "sendRequestToDonor",
     value: function sendRequestToDonor(donorId, filters) {
+      var _this = this;
+
+      this.requestToDonorProgress = true;
       axios.post("/request/donor", {
         p_donor_id: donorId,
         p_requested_blood_group: filters.blood_group,
@@ -187,8 +191,9 @@ var Home = /*#__PURE__*/function () {
           $.toaster({
             priority: "success",
             title: "Success",
-            message: "".concat(data.t_result, " ").concat(data.t_apply_count !== null ? "\nRemaining Quota for today is " + (35 - parseInt(data.t_apply_count, 10)) + ".\n\n" + " SMS: " + data.message : null)
+            message: "".concat(data.t_result, " ").concat(data.t_apply_count !== null ? "\nRemaining Quota for today is " + (35 - parseInt(data.t_apply_count, 10)) : null)
           });
+          _this.requestToDonorProgress = false;
         } else {
           $.toaster({
             settings: {
@@ -200,6 +205,7 @@ var Home = /*#__PURE__*/function () {
             title: "Error",
             message: "Something is wrong! Please try again later. If the issue persist for long time, please contact us."
           });
+          _this.requestToDonorProgress = false;
         }
       })["catch"](function (error) {
         console.log(error);
@@ -208,25 +214,26 @@ var Home = /*#__PURE__*/function () {
           title: "Error",
           message: "Something is wrong! Please try again later. If the issue persist for long time, please contact us."
         });
+        this.requestToDonorProgress = false;
       });
     }
   }, {
     key: "requestDistricts",
     value: function requestDistricts(stateCode) {
-      var _this = this;
+      var _this2 = this;
 
       axios.get("/address/get-districts?code=".concat(stateCode)).then(function (_ref2) {
         var districts = _ref2.data;
 
         if (districts && districts.length > 0) {
-          _this.populateDistricts(districts);
+          _this2.populateDistricts(districts);
         }
       })["catch"](function (error) {});
     }
   }, {
     key: "requestSearchLists",
     value: function requestSearchLists(user) {
-      var _this2 = this;
+      var _this3 = this;
 
       $(".table-searchlist tbody").html("");
       $(".table-searchlist tbody td button").unbind("click");
@@ -235,7 +242,7 @@ var Home = /*#__PURE__*/function () {
         var donors = _ref3.data;
 
         if (donors.length > 0) {
-          var self = _this2;
+          var self = _this3;
           var trElement = [];
           donors.forEach(function (donor, index) {
             trElement.push("\n            <tr>\n            <td> ".concat(index + 1, " </td>\n            <td>Donor-").concat(donor.id, "</td>\n            <td> ").concat(donor.blood_group, "</td>\n            <td> ").concat(donor.district, "</td>\n            <td><button type=\"button\"\n            data-id=\"").concat(donor.id, "\"\n            class=\"btn btn-sm btn-outline-success\">Request</button>\n            </td>\n            </tr>\n            "));
@@ -272,12 +279,12 @@ var Home = /*#__PURE__*/function () {
   }, {
     key: "setUpOnBlurListeners",
     value: function setUpOnBlurListeners() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.model.map(function (v, index) {
         var selector = v.selector,
             rules = v.rules;
-        var self = _this3;
+        var self = _this4;
         $("#".concat(selector)).blur(function () {
           if (self.clicked) self.showError(selector, rules, index);
         });
@@ -368,7 +375,7 @@ var Home = /*#__PURE__*/function () {
   }, {
     key: "onSearchClick",
     value: function onSearchClick() {
-      var _this4 = this;
+      var _this5 = this;
 
       var _this$filters = this.filters,
           bloodGroup = _this$filters.blood_group,
@@ -435,7 +442,7 @@ var Home = /*#__PURE__*/function () {
                 message: "You are logged in as a donar. You need to be a receiver to be able to request plasma!"
               });
             } else {
-              _this4.requestSearchLists(user);
+              _this5.requestSearchLists(user);
             }
           } else {
             $(".confirm-signin").attr("data-nexturl", "/search?blood_group=".concat(encodeURIComponent(bloodGroup), "&state=").concat(encodeURIComponent(state), "&district=").concat(encodeURIComponent(district)));
@@ -486,7 +493,7 @@ var Home = /*#__PURE__*/function () {
   }, {
     key: "sendFeedback",
     value: function sendFeedback() {
-      var _this5 = this;
+      var _this6 = this;
 
       var model = this.model;
       var data = {
@@ -503,7 +510,7 @@ var Home = /*#__PURE__*/function () {
         });
 
         if (response && response.success) {
-          _this5.resetForm();
+          _this6.resetForm();
 
           $.toaster({
             priority: "success",

@@ -7,6 +7,7 @@ class Dashboard {
     };
     this.user = {};
     this.clicked = false;
+    this.requestToDonorProgress = false;
 
     this.model = [
       {
@@ -358,7 +359,6 @@ class Dashboard {
           "message",
           data.t_result +
             ` Your number is now sent to the accepted requester. Please expect a call from him/her. If he/she doesn't call,reject the request. If he/she calls and blood is confirmed, please change the status to Blood Confirmed.
-            SMS: ${data.message}
             `
         );
         location.reload();
@@ -677,7 +677,10 @@ class Dashboard {
           $(".table-searchlist tbody").append(trElement.join(""));
           $(".table-searchlist tbody td button").on("click", function () {
             const donorId = $(this).attr("data-id");
-            self.sendRequestToDonor(donorId, self.filters);
+            if (!self.requestToDonorProgress) {
+              self.requestToDonorProgress = true;
+              self.sendRequestToDonor(donorId, self.filters, self);
+            }
           });
         }
       })
@@ -687,7 +690,7 @@ class Dashboard {
     $("#searchModal").modal("show");
   }
 
-  sendRequestToDonor(donorId, filters) {
+  sendRequestToDonor(donorId, filters, self) {
     axios
       .post("/request/donor", {
         p_donor_id: donorId,
@@ -696,6 +699,7 @@ class Dashboard {
         p_requested_district: filters.district,
       })
       .then(({ data }) => {
+        self.requestToDonorProgress = false;
         $.toaster({ settings: { timeout: 15000 } });
         if (
           data &&
@@ -713,10 +717,7 @@ class Dashboard {
             message: `${data.t_result} ${
               data.t_apply_count !== null
                 ? "\nRemaining Quota for today is " +
-                  (35 - parseInt(data.t_apply_count, 10)) +
-                  ". \n\n" +
-                  " SMS: " +
-                  data.message
+                  (35 - parseInt(data.t_apply_count, 10))
                 : null
             }`,
           });
@@ -736,6 +737,7 @@ class Dashboard {
           title: "Error",
           message: `Something is wrong! Please try again later. If the issue persist for long time, please contact us.`,
         });
+        self.requestToDonorProgress = true;
       });
   }
 }

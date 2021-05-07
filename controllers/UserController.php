@@ -7,10 +7,15 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 
 use app\models\Users;
+use app\models\UserNotifications;
 use app\models\LoginForm;
 use app\models\ReceiverRequestLog;
 use yii\web\NotFoundHttpException;
 use yii\helpers\Url;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 
 class UserController extends \yii\web\Controller
 {
@@ -252,7 +257,8 @@ class UserController extends \yii\web\Controller
             $result = [];
             $user = $request->post();
             $model = new Users();
-            $unique = Users::isUnique($user['phone_number']);
+            $unique = Users::isUnique($user['email']);
+            
             
             if(!$unique) {
                 return $this->asJson(array(
@@ -267,22 +273,16 @@ class UserController extends \yii\web\Controller
             $model->district = $user['district'];
             $model->user_role = $user['user_role'];
             $model->password = $user['password'];
+            $model->email = $user['email'];
 
             if($model->save()) {
                 $link = Url::home(true).'user/confirm/'.$model->phone_confirmation_token;
-                $smsResult = $this->sendSms('Please click on the given link to activate your account on PlasmaGhar -> '.$link, 
-                $user['phone_number']);
-
-
-                if(isset($smsResult['resonse_code']) && $smsResult['resonse_code'] == 200) {
-                    $result = array(
-                        'success' => true,
-                        'link' => $link
-                      );
-                } else $result = array(
-                    'success' => false,
-                    'response' => $smsResult
-                );
+                $smsResult = $this->sendEmail(
+                    'Please click on the given link to activate your account on PlasmaGhar -> '.$link, 
+                $user['email'], 'Activation Link');
+                $result = array(
+                    'success' => true
+                  );
 
             } else {
                 $result = array(
@@ -303,32 +303,54 @@ class UserController extends \yii\web\Controller
 
 
     /**
+     * Save notification in db
+     */
+    public function saveNotification($message, $userId) {
+        $return = false;
+        $model = new UserNotifications();
+        $model->notification = $message;
+        $model->created_time = date('Y-m-d H:i:s');
+        $model->user_id = $userId;
+        if($model->save()) {
+            $return = true;
+        }
+
+        return $return;
+    }
+
+
+    /**
      * Send SMS
      */
-    public function sendSms($message, $phone) {
-        // $args = http_build_query(array(
-        //     'token' => 'random',
-        //     'from'  => 'Demo',
-        //     'to'    => $phone,
-        //     'text'  => $message)
-        // );
-        // $url = "http://api.sparrowsms.com/v2/sms/";
-    
-        # Make the call using API.
-        // $ch = curl_init();
-        // curl_setopt($ch, CURLOPT_URL, $url);
-        // curl_setopt($ch, CURLOPT_POST, 1);
-        // curl_setopt($ch, CURLOPT_POSTFIELDS,$args);
-        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    
-        // Response
-        // $response = curl_exec($ch);
-        // $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        // curl_close($ch);
-        // $result = json_decode($response, true);   
-        // $response= "'{\"count\": 1, \"response_code\": 200, \"response\": \"1 mesages has been queued for delivery\", \"message_id\": 86086784, \"credit_consumed\": 1, \"credit_available\": 9.0}'";
-        $result = array('resonse_code' => 200);
-        return $result;
+    public function sendEmail($message, $email, $subject) {
+        $mail = new PHPMailer(true);
+        try {
+
+        $mail->SMTPDebug = 0;
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; 
+        $mail->Port = 465;
+        $mail->Username = 'testniraj1234@gmail.com';
+        $mail->Password = 'NirazPaudel62';
+
+        $mail->setFrom('testniraj1234@gmail.com', 'Plasma Ghar');
+        $mail->addAddress($email, $email);
+        $mail->addReplyTo('testniraj1234@gmail.com', 'Plasma Ghar');
+        $mail->IsHTML(true);
+        $mail->Subject = $subject;
+        $mail->Body = $message;
+        if($mail->send()) {
+            return true;
+        } else {
+            return false;
+        }
+        
+    } catch (Exception $e) {
+        return false;
+    }
+
     }
 
 
@@ -356,9 +378,19 @@ class UserController extends \yii\web\Controller
             $user = $request->post();
 
             $model = new LoginForm();
-            $model->phone_number = $user['phone_number'];
+            $model->email = $user['email'];
             $model->password = $user['password'];
             $model->remember_me = $user['remember_me'];
+
+
+            $accountConfirmed = Users::isAccountConfirmed($user['email']);
+
+            if(!$accountConfirmed) {
+                return $this->asJson(array(
+                    'success' => false,
+                    'error' => 'account not confirmed'
+                )); 
+            }
             
             if($model->login()) {
                 $result = array(
@@ -372,7 +404,6 @@ class UserController extends \yii\web\Controller
             return $this->asJson($result);
 
         } catch (\Exception $exception) {
-
             return $this->asJson(array(
                 'success' => false,
                 'error' => $exception->getMessage()
@@ -528,26 +559,34 @@ class UserController extends \yii\web\Controller
 
             $result = Users::setStatus($params); 
             if(isset($result['t_result']) && $result['t_result'] == 'Your apply request is succeeded.') {
-                $donorPhone = Users::getPhone($params['p_donor_id']); 
-                if(!$donorPhone) {
+                $donorId = $params['p_donor_id'];
+                $donorEmail = Users::getEmail($params['p_donor_id']); 
+                if(!$donorEmail) {
                     return $this->asJson(array(
                         'success' => false,
                         'error' => 'no donor phone is found'
                     ));
                 }
-                $receiverPhone = Yii::$app->user->identity->phone_number;
+                $receiverId = Yii::$app->user->id;
                 $link = Url::home(true).'dashboard';
 
-                $message = 'URGENT URGENT!!, A seeker with the identity Requester-'.$receiverId.' is in need of your plasma. Please go to the link and accept his/her request to share your number with him/her -> '.$link;
+                $message = 'URGENT URGENT!! A seeker with the identity Requester-'.$receiverId.' is in need of your plasma. Please go to the link and accept his/her request to share your number with him/her -> '.$link;
 
-                $smsResult = $this->sendSms($message, $receiverPhone);
-                if(!isset($smsResult['resonse_code']) || $smsResult['resonse_code'] !== 200) {
+                if(!$this->saveNotification($message, $donorId)) {
                     return $this->asJson(array(
                         'success' => false,
-                        'error' => 'error on sending sms'
-                    ));
+                        'error' => "Error while saving notification to db."
+                    )); 
                 } 
-                $result['message'] = $message;
+
+                if($this->sendEmail($message, $donorEmail, 'Urgent Request for Plasma')) {
+                    $result['message'] = $message;
+                } else {
+                    return $this->asJson(array(
+                        'success' => false,
+                        'error' => "Error while sending email."
+                    )); 
+                }
             }
             return $this->asJson($result);
 
@@ -579,24 +618,33 @@ class UserController extends \yii\web\Controller
             }
             $result = Users::setStatus($params); 
 
+
             if(isset($result['t_result']) && $result['t_result'] == 'Your accept request is succeeded.') {
-                $receiverPhone = Users::getPhone($params['p_receiver_id']); 
-                if(!$receiverPhone) {
+                $receiverEmail = Users::getEmail($params['p_receiver_id']); 
+                if(!$receiverEmail) {
                     return $this->asJson(array(
                         'success' => false,
-                        'error' => 'no receiver phone is found'
+                        'error' => 'no receiver email is found'
                     ));
                 }
                 $donorPhone = Yii::$app->user->identity->phone_number;
-                $message = 'Congratulations, A donar with the identity Donor-'.$donorId.' has just accepted your blood request. You can call donor on this number'.$donorPhone.'. If the blood is confirmed or there are some problems on confirmation, please update your status on our dashboard';
-                $smsResult = $this->sendSms($message, $receiverPhone);
-                if(!isset($smsResult['resonse_code']) || $smsResult['resonse_code'] !== 200) {
+                $message = 'Congratulations, A donar with the identity Donor-'.$donorId.' has just accepted your blood request. You can call donor on this number '.$donorPhone.'. If the blood is confirmed or there are some problems on confirmation, please update your status on our dashboard';
+                
+                if(!$this->saveNotification($message, $params['p_receiver_id'])) {
                     return $this->asJson(array(
                         'success' => false,
-                        'error' => 'error on sending sms'
-                    ));
+                        'error' => "Error while saving notification to db."
+                    )); 
                 } 
-                $result['message'] = $message;
+
+                if($this->sendEmail($message, $receiverEmail, 'Donor Accepted Your Request')) {
+                    $result['message'] = $message;
+                } else {
+                    return $this->asJson(array(
+                        'success' => false,
+                        'error' => "Error while sending email."
+                    )); 
+                } 
             }
             return $this->asJson($result);
 

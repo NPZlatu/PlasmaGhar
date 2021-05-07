@@ -13,7 +13,7 @@ use yii\base\Model;
  */
 class LoginForm extends Model
 {
-    public $phone_number;
+    public $email;
     public $password;
     public $remember_me = true;
 
@@ -26,8 +26,8 @@ class LoginForm extends Model
     public function rules()
     {
         return [
-            // phone_number and password are both required
-            [['phone_number', 'password'], 'required'],
+            // email and password are both required
+            [['email', 'password'], 'required'],
             // remember_me must be a boolean value
             ['remember_me', 'boolean'],
             // password is validated by validatePassword()
@@ -65,15 +65,29 @@ class LoginForm extends Model
         return false;
     }
 
+    // /**
+    //  * Finds user by phonenumber
+    //  *
+    //  * @return User|null
+    //  */
+    // public function getUser()
+    // {
+    //     if ($this->_user === false) {
+    //         $this->_user = Users::findByPhoneNumber($this->phone_number);
+    //     }
+
+    //     return $this->_user;
+    // }
+
     /**
-     * Finds user by phonenumber
+     * Finds user by email
      *
      * @return User|null
      */
     public function getUser()
     {
         if ($this->_user === false) {
-            $this->_user = Users::findByPhoneNumber($this->phone_number);
+            $this->_user = Users::findByEmail($this->email);
         }
 
         return $this->_user;

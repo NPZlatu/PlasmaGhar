@@ -10,7 +10,7 @@ if($confirm && $confirm == 'yes') {
         $.toaster({
         priority: "success",
         title: "Success",
-        message: `Your phone number is confirmed. Please enter your phone and password to login!
+        message: `Your email is confirmed. Please enter your email and password to login!
         `});
 JS;
 }

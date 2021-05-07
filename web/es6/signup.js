@@ -15,6 +15,16 @@ class SignUp {
         value: "",
       },
       {
+        selector: "email",
+        rules: {
+          regex: {
+            value: /\S+@\S+\.\S+/,
+            error: "Valid email address is required.",
+          },
+        },
+        value: "",
+      },
+      {
         selector: "bloodGroup",
         rules: {
           required: {
@@ -77,6 +87,7 @@ class SignUp {
 
   constructor() {
     this.clicked = false;
+    this.signUpProgress = false;
     this.states = [];
     this.model = this.getModel();
     this.onSignUpConfirmClick = this.onSignUpConfirmClick.bind(this);
@@ -253,7 +264,7 @@ class SignUp {
   onSignUpConfirmClick() {
     this.clicked = true;
     const valid = this.checkValidation();
-    if (valid) {
+    if (valid && !this.signUpProgress) {
       if (this.checkIfHealthConditionsFine()) {
         if (this.checkIfTermsAndConditionsAgreed()) this.registerUser();
       }
@@ -306,12 +317,14 @@ class SignUp {
 
   registerUser() {
     const { model } = this;
+    this.signUpProgress = true;
     const data = {
       phone_number: model[0].value,
-      blood_group: model[1].value,
-      state: model[2].value,
-      district: model[3].value,
-      password: model[4].value,
+      email: model[1].value,
+      blood_group: model[2].value,
+      state: model[3].value,
+      district: model[4].value,
+      password: model[5].value,
       user_role: $("input#gridRadios1:checked").val() ? 0 : 1,
     };
 
@@ -326,29 +339,35 @@ class SignUp {
           $.toaster({
             priority: "success",
             title: "Success",
-            message: `You are successfully registered, we have sent a confirmation link on your phone. 
-          Please click on that link to verify your phone.
-          <a href="${response.link}"> CLICK THIS LINK </a>
-          `,
+            message: `You are successfully registered, we have sent a confirmation link on your email. 
+          Please click on that link to verify your email.          `,
           });
+          this.signUpProgress = false;
         } else if (
           response &&
           response.error &&
           response.error === "exist already"
         ) {
-          const errorElement = $("#phoneNumber").next();
-          errorElement.text("User already exists with this phone number");
+          const errorElement = $("#email").next();
+          errorElement.text("User already exists with this email");
           errorElement.show();
+          $.toaster({ settings: { timeout: 5000 } });
+          $.toaster({
+            priority: "danger",
+            title: "Error",
+            message: `The user already exists with the email`,
+          });
+          this.signUpProgress = false;
         }
       })
-      .catch(function (error) {
-        console.log(error);
+      .catch(function (_error) {
         $.toaster({ settings: { timeout: 5000 } });
         $.toaster({
           priority: "danger",
           title: "Error",
           message: `Something is wrong. Please try later`,
         });
+        this.signUpProgress = false;
       });
   }
 }

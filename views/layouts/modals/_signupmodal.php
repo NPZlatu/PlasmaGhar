@@ -50,11 +50,18 @@
                                 <div class="input-group-prepend">
                                   <div class="input-group-text">+977-</div>
                                 </div>
-                                <input type="text" class="form-control" id="phoneNumber" placeholder="">
+                                <input type="text" name="phoneNumber" class="form-control" id="phoneNumber" placeholder="" autocomplete="off">
                                 <div class="invalid-feedback">
                                   </div>
                               </div>
 
+                              <div class=" mb-1">
+                                <label for="email">Email</label>
+                                <input type="email" name="email" class="form-control" id="email" placeholder="" autocomplete="off">
+
+                                <div class="invalid-feedback">
+                                </div>
+                              </div>
 
                               <div class=" mb-1">
                               <label for="bloodGroup">Blood Group <span class="">(Mandatory for Blood Donor)</span></label>

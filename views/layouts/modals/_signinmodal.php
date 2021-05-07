@@ -21,13 +21,11 @@
                                     
                                 </div>
                                   <div class=" mb-1">
-                                    <label for="loginPhone">Phone Number</label>
+                                    <label for="loginEmail">Email</label>
                                   </div>
                                   <div class="input-group mb-2">
-                                    <div class="input-group-prepend">
-                                      <div class="input-group-text">+977-</div>
-                                    </div>
-                                    <input type="text" class="form-control" id="loginPhone" placeholder="">
+                                   
+                                    <input type="text" class="form-control" id="loginEmail" placeholder="">
                                     <div class="invalid-feedback">
                                       </div>
                                   </div>

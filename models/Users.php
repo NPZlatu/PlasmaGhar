@@ -156,6 +156,12 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return self::findOne(['phone_number' => $phone]);
     }
 
+    public static function findByEmail($email) {
+        return self::findOne(['email' => $email]);
+    }
+
+    
+
     public function validatePassword($password) {
         if(Yii::$app->getSecurity()->validatePassword($password, $this->password)){
             return true;
@@ -180,11 +186,21 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     /**
      * Checks if user with the phone already exist
      */
-    public static function isUnique($phone) {
+    public static function isUnique($email) {
         $unique = true;
-        $count = self::find()->where(['phone_number' => $phone])->count();
+        $count = self::find()->where(['email' => $email])->count();
         if($count > 0) $unique = false;
         return $unique;
+    }
+
+      /**
+     * Checks if user with the phone already exist
+     */
+    public static function isAccountConfirmed($email) {
+        $confirmed = false;
+        $count = self::find()->where(['email' => $email, 'phone_confirmation_status' => 1])->count();
+        if($count > 0) $confirmed = true;
+        return $confirmed;
     }
 
 
@@ -197,6 +213,19 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         $user = self::findOne(['id' => $user_id]);
         if($user && $user['phone_number']) {
             $return = $user['phone_number'];
+        }
+        return $return;
+    }
+
+    /**
+     * Get Email
+     * @param $user_id string
+     */
+    public static function getEmail($user_id) {
+        $return = null;
+        $user = self::findOne(['id' => $user_id]);
+        if($user && $user['email']) {
+            $return = $user['email'];
         }
         return $return;
     }

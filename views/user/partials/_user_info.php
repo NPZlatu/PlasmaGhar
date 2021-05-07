@@ -22,6 +22,7 @@ $statuses = array(
 
 $user = \Yii::$app->user;
 $userStatus = $user->identity->user_status;
+$email = $user->identity->email;
 
 $userDetails = [
     'id' => $user->id, 
@@ -53,6 +54,9 @@ $userDetails = [
         
         
         <p>Identity : <strong><?=$name ?></strong></p>
+
+        <p>Email : <strong><?=$email ?></strong></p>
+
 
         <p>User Status : <span class="badge badge-md badge-primary badge-pill">
         <?php echo $statuses[$res['model']['user_status']];   ?>

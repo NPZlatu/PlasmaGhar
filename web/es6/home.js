@@ -1,6 +1,7 @@
 class Home {
   constructor() {
     this.clicked = false;
+    this.requestToDonorProgress = false;
     this.model = [
       {
         selector: "fb-firstName",
@@ -130,7 +131,8 @@ class Home {
   onRequestClick(donorId, filters, user) {
     if (user === "not-required") {
       donorId = parseInt(donorId, 10);
-      this.sendRequestToDonor(donorId, filters);
+      if (!this.requestToDonorProgress)
+        this.sendRequestToDonor(donorId, filters);
     } else {
       if (user.id) {
         if (user.role === "donor") {
@@ -142,7 +144,8 @@ class Home {
           });
         } else {
           donorId = parseInt(donorId, 10);
-          this.sendRequestToDonor(donorId, filters);
+          if (!this.requestToDonorProgress)
+            this.sendRequestToDonor(donorId, filters);
         }
       } else {
         $("#signinModal").modal("show");
@@ -151,6 +154,7 @@ class Home {
   }
 
   sendRequestToDonor(donorId, filters) {
+    this.requestToDonorProgress = true;
     axios
       .post("/request/donor", {
         p_donor_id: donorId,
@@ -176,13 +180,11 @@ class Home {
             message: `${data.t_result} ${
               data.t_apply_count !== null
                 ? "\nRemaining Quota for today is " +
-                  (35 - parseInt(data.t_apply_count, 10)) +
-                  ".\n\n" +
-                  " SMS: " +
-                  data.message
+                  (35 - parseInt(data.t_apply_count, 10))
                 : null
             }`,
           });
+          this.requestToDonorProgress = false;
         } else {
           $.toaster({ settings: { timeout: 1000 } });
           $.toaster({
@@ -190,6 +192,7 @@ class Home {
             title: "Error",
             message: `Something is wrong! Please try again later. If the issue persist for long time, please contact us.`,
           });
+          this.requestToDonorProgress = false;
         }
       })
       .catch(function (error) {
@@ -199,6 +202,7 @@ class Home {
           title: "Error",
           message: `Something is wrong! Please try again later. If the issue persist for long time, please contact us.`,
         });
+        this.requestToDonorProgress = false;
       });
   }
 

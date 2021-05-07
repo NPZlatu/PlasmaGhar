@@ -3,11 +3,11 @@ class SignIn {
     this.clicked = false;
     this.model = [
       {
-        selector: "loginPhone",
+        selector: "loginEmail",
         rules: {
           regex: {
-            value: /^[0-9]{10}$/,
-            error: "Phone Number must have 10 digits.",
+            value: /\S+@\S+\.\S+/,
+            error: "Valid email address is required.",
           },
         },
         value: "",
@@ -128,7 +128,7 @@ class SignIn {
   loginUser() {
     const { model } = this;
     const data = {
-      phone_number: model[0].value,
+      email: model[0].value,
       password: model[1].value,
       remember_me: $("#rememberMe:checked").val() ? 1 : 0,
     };
@@ -136,6 +136,7 @@ class SignIn {
     axios
       .post("/user/login", data)
       .then(({ data: response }) => {
+        console.log(response);
         if (response && response.success) {
           if (typeof $(".confirm-signin").data("nexturl") !== "undefined") {
             const nextUrl = $(".confirm-signin").attr("data-nexturl");
@@ -143,12 +144,23 @@ class SignIn {
           } else if ($("#searchModal").hasClass("show")) {
             $("#signinModal").modal("hide");
           } else window.location.href = "/dashboard";
+        } else if (
+          response &&
+          response.error &&
+          response.error === "account not confirmed"
+        ) {
+          $.toaster({ settings: { timeout: 15000 } });
+          $.toaster({
+            priority: "danger",
+            title: "Error",
+            message: `Your account has not been activated yet. Please check your email and click on the activation link. `,
+          });
         } else {
           $.toaster({ settings: { timeout: 5000 } });
           $.toaster({
             priority: "danger",
             title: "Error",
-            message: `Invalid phone and/or password`,
+            message: `Invalid email and/or password`,
           });
         }
       })

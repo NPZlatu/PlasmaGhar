@@ -1,5 +1,6 @@
 <?php 
 use app\models\States;
+use app\models\Users;
 $states = States::find()
         ->select(['code','name'])->all();
 
@@ -27,6 +28,8 @@ $donorStatus = array(
 
 
 $allTables = [['pendingApprovals', 'Pending Approvals'], ['acceptedLists', 'Donors who Accepted'], ['rejectedLists', 'Rejected Donors'], ['connectedLists', 'Connected Donors']];
+
+
 
 ?>
 <div class="col-md-8 order-md-1">
@@ -118,7 +121,8 @@ $allTables = [['pendingApprovals', 'Pending Approvals'], ['acceptedLists', 'Dono
                         <th>#</th>
                         <th>Name</th>
                         <th>Location</th>
-                        <th>Blood Group Requested</th>
+                        <th>Contact</th>
+                        <th>Blood</th>
                         <th>Status </th>
                         <th>Options</th>
 
@@ -131,6 +135,15 @@ $allTables = [['pendingApprovals', 'Pending Approvals'], ['acceptedLists', 'Dono
                         <td><?php echo 'Donor-'.$donor['donor_id']; ?></td>
                         <td><?php 
                         echo str_replace('\' ', '\'', ucwords(str_replace('\'', '\' ', strtolower($donor['district'])))); ?></td>
+                        
+                        <?php if($donor['donor_status'] == 1 || $donor['donor_status'] == 2) { ?>
+                        <td> <?= Users::getPhone($donor['donor_id']);  ?>
+                        
+                         </td>
+                        <?php } else { ?>
+                            <td> <?= '**********' ?> </td>
+                        <?php }?>
+
                         <td><?php echo $donor['requested_blood_group']; ?></td>
                         <td> <?= $donorStatus[$donor['donor_status']] ?> </td>
 
