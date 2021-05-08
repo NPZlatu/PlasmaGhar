@@ -26,13 +26,13 @@ AppAsset::register($this);
 <body>
 <?php $this->beginBody() ?>
 
-<div class="container">
+
        
         <?php echo $this->render('partials/_header.php');  ?>
         <?= Alert::widget(); ?>
         <?= $content ?>
         <?php echo $this->render('partials/_footer.php');  ?>
-</div>
+
 
 <?php $this->endBody() ?>
 <?php echo $this->render('modals/_signinmodal.php');  ?>

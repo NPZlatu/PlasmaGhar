@@ -87,7 +87,7 @@ class SignUp {
 
   constructor() {
     this.clicked = false;
-    this.signUpProgress = false;
+    // this.signUpProgress = false;
     this.states = [];
     this.model = this.getModel();
     this.onSignUpConfirmClick = this.onSignUpConfirmClick.bind(this);
@@ -264,7 +264,7 @@ class SignUp {
   onSignUpConfirmClick() {
     this.clicked = true;
     const valid = this.checkValidation();
-    if (valid && !this.signUpProgress) {
+    if (valid) {
       if (this.checkIfHealthConditionsFine()) {
         if (this.checkIfTermsAndConditionsAgreed()) this.registerUser();
       }
@@ -317,7 +317,7 @@ class SignUp {
 
   registerUser() {
     const { model } = this;
-    this.signUpProgress = true;
+    // this.signUpProgress = true;
     const data = {
       phone_number: model[0].value,
       email: model[1].value,
@@ -342,7 +342,7 @@ class SignUp {
             message: `You are successfully registered, we have sent a confirmation link on your email. 
           Please click on that link to verify your email.          `,
           });
-          this.signUpProgress = false;
+          // this.signUpProgress = false;
         } else if (
           response &&
           response.error &&
@@ -357,7 +357,7 @@ class SignUp {
             title: "Error",
             message: `The user already exists with the email`,
           });
-          this.signUpProgress = false;
+          // this.signUpProgress = false;
         }
       })
       .catch(function (_error) {
@@ -367,7 +367,7 @@ class SignUp {
           title: "Error",
           message: `Something is wrong. Please try later`,
         });
-        this.signUpProgress = false;
+        // this.signUpProgress = false;
       });
   }
 }

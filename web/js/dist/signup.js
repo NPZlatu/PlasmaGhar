@@ -87,8 +87,8 @@ var SignUp = /*#__PURE__*/function () {
   function SignUp() {
     _classCallCheck(this, SignUp);
 
-    this.clicked = false;
-    this.signUpProgress = false;
+    this.clicked = false; // this.signUpProgress = false;
+
     this.states = [];
     this.model = this.getModel();
     this.onSignUpConfirmClick = this.onSignUpConfirmClick.bind(this);
@@ -298,7 +298,7 @@ var SignUp = /*#__PURE__*/function () {
       this.clicked = true;
       var valid = this.checkValidation();
 
-      if (valid && !this.signUpProgress) {
+      if (valid) {
         if (this.checkIfHealthConditionsFine()) {
           if (this.checkIfTermsAndConditionsAgreed()) this.registerUser();
         }
@@ -363,8 +363,8 @@ var SignUp = /*#__PURE__*/function () {
     value: function registerUser() {
       var _this5 = this;
 
-      var model = this.model;
-      this.signUpProgress = true;
+      var model = this.model; // this.signUpProgress = true;
+
       var data = {
         phone_number: model[0].value,
         email: model[1].value,
@@ -390,8 +390,7 @@ var SignUp = /*#__PURE__*/function () {
             priority: "success",
             title: "Success",
             message: "You are successfully registered, we have sent a confirmation link on your email. \n          Please click on that link to verify your email.          "
-          });
-          _this5.signUpProgress = false;
+          }); // this.signUpProgress = false;
         } else if (response && response.error && response.error === "exist already") {
           var errorElement = $("#email").next();
           errorElement.text("User already exists with this email");
@@ -405,8 +404,7 @@ var SignUp = /*#__PURE__*/function () {
             priority: "danger",
             title: "Error",
             message: "The user already exists with the email"
-          });
-          _this5.signUpProgress = false;
+          }); // this.signUpProgress = false;
         }
       })["catch"](function (_error) {
         $.toaster({
@@ -418,8 +416,7 @@ var SignUp = /*#__PURE__*/function () {
           priority: "danger",
           title: "Error",
           message: "Something is wrong. Please try later"
-        });
-        this.signUpProgress = false;
+        }); // this.signUpProgress = false;
       });
     }
   }]);

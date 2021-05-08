@@ -1,10 +1,17 @@
 <?php
-/* @var $this yii\web\View */
+
+use yii\helpers\Html;
 ?>
             
-            <div class="jumbotron p-4 p-md-5 text-white cus-hero">
-                <div class="col-md-5 offset-md-7 px-0">
-                    <h1 class="display-4 cus-hero-title">A SURVIVOR CAN BE A HERO</h1>
-                    <button type="button" class="btn btn-secondary cus-btn-hero btn-help">I'll Help</button>
-                </div>
-            </div>
+            <div class="banner">
+        <div class="container">
+            <h1 class="font-weight-semibold pt-4">Fighting Against Covid-19</h1>
+
+            <h6 class="font-weight-normal ">"A survior can be a hero"</h6>
+
+            
+            
+            <?= Html::img('@web/images/doctor.png', ['alt' => 'banner-img', 'class' => 'img-fluid']); ?>
+        </div>
+
+    </div>

@@ -1,6 +1,6 @@
 :root {
-  --ff-primary: "Montserrat", serif;
-  --ff-secondary: "Merriweather", sans-serif;
+  --ff-primary: "Mukta","Montserrat", serif;
+  --ff-secondary: "Mukta","Merriweather", sans-serif;
 
   --fw-reg: 100;
   --fw-bold: 500;
@@ -42,7 +42,101 @@ body {
   font-family: var(--ff-primary);
   font-size: var(--fs-body);
   line-height: 1.2;
+  font-family: Mukta, sans-serif;
+	font-size: 1.6rem;
 }
+
+p{
+    font-size: 16px;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.cus-p-0{
+    padding:0px  !important;
+}
+
+.btn {
+	font-size: .875rem;
+	font-family: Mukta, sans-serif;
+	padding: .625rem 1.25rem;
+	outline: none
+}
+
+
+/* NAVBAR */
+
+.navbar{
+  padding:0px !important;
+}
+
+.navbar .navbar-menu-wrapper .navbar-nav .nav-link {
+    font-size: 1.2rem;
+}
+
+.header-small .navbar.fixed-top {
+    top: -50px !important;
+    margin-top: 50px  !important;
+    transition: margin-top 2s ease  !important;
+}
+
+.notification-count{
+  position: absolute;
+  top: -10px;
+  right: 13px;
+  text-align: center;
+  font-size: 23px;
+  padding: 2px 3px;
+  line-height: .9;
+  background-color: #a90000;
+  color: white;
+}
+.notification-icon{
+  padding-right: 15px;
+}
+.notification-date{
+  padding-left: 30px;
+}
+
+.menu{
+  padding-left: 5px;
+}
+
+.dropdown-item{
+  border-bottom: 1px solid #f4f4f4;
+  padding: 10px;
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+	color: #212529;
+	text-decoration: none;
+	background-color: transparent;
+  
+}
+
+
+/** **/
+.cus-info-parent {
+    top: -30px;
+    position: relative;
+}
+
+.cus-how {
+    background-color: #dae5e9;
+    color: #0c6291;
+    -webkit-box-shadow: 0 10px 0 -6px rgb(0 0 0 / 30%);
+    -moz-box-shadow: 0 10px 0 -6px rgba(0,0,0,.3);
+    box-shadow: 0 10px 0 -6px rgb(0 0 0 / 30%);
+}
+
+.cus-search {
+    background-color: #0c6291;
+    color: #FFFFFF;
+}
+
+
+
 
 .cus-border-bottom {
   border-bottom: 1px solid var(--clr-secondary) !important;
@@ -77,26 +171,10 @@ body {
   background-color: var(--clr-primary);
 }
 
-.cus-info-parent {
-  top: -138px;
-  position: relative;
-}
-
-.cus-how {
-  background-color: var(--clr-light);
-  color: var(--clr-secondary);
-  -webkit-box-shadow: 0px 10px 0px -6px rgba(0, 0, 0, 0.3); /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
-  -moz-box-shadow: 0px 10px 0px -6px rgba(0, 0, 0, 0.3); /* Firefox 3.5 - 3.6 */
-  box-shadow: 0px 10px 0px -6px rgba(0, 0, 0, 0.3);
-}
 .cus-how strong {
   font-size: var(--fs-h3);
 }
 
-.cus-search {
-  background-color: var(--clr-secondary);
-  color: var(--clr-white);
-}
 
 .cus-dropdown {
   padding: 5px 0px;
@@ -132,7 +210,7 @@ body {
 .cus-logo {
   padding: 0px !important;
   border: 0px !important;
-  max-width: 60% !important;
+  
 }
 
 .cus-hor-border {
