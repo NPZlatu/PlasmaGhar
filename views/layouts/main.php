@@ -10,6 +10,9 @@ use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 
+use cybercog\yii\googleanalytics\widgets\GATracking;
+
+
 AppAsset::register($this);
 ?>
 <?php $this->beginPage(); ?>
@@ -22,6 +25,11 @@ AppAsset::register($this);
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
+
+    <?= GATracking::widget([
+    'trackingId' => 'UA-121215099-1',
+    ]) ?>
+<script src="https://www.googleoptimize.com/optimize.js?id=OPT-K75WMSD"></script>
 </head>
 <body>
 <?php $this->beginBody() ?>
