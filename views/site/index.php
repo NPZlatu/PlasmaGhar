@@ -12,6 +12,25 @@ $this->registerJsFile('//cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.m
     ]
 ]);
 
+
+$this->registerJsFile('//cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js',[
+    'depends' => [
+        \yii\web\JqueryAsset::className()
+    ]
+]);
+
+$this->registerJsFile('//cdn.rawgit.com/michalsnik/aos/2.1.1/dist/aos.js',[
+    'depends' => [
+        \yii\web\JqueryAsset::className()
+    ]
+]);
+
+$this->registerJsFile('@web/js/dist/build-landingpage.js',[
+    'depends' => [
+        \yii\web\JqueryAsset::className()
+    ]
+]);
+
 ?>
 
 <?php

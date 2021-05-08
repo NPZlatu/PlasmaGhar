@@ -121,7 +121,6 @@ class UserController extends \yii\web\Controller
 
     public function actionIndex()
     {
-        
         //check if user is not logged in
         if(Yii::$app->user->isGuest) {
             throw new NotFoundHttpException;
