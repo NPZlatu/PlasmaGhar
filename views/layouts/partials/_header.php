@@ -33,7 +33,7 @@ use yii\helpers\Html;
                     <li class="nav-item">
                         <a class="nav-link" href="#">Oxygen Suppliers</a>
                     </li>
-                    
+
 
 
                     <li class="nav-item btn-contact-us pl-4 pl-lg-0">
@@ -42,13 +42,66 @@ use yii\helpers\Html;
                         ?>
                             <a class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#signinModal">Sign In</a>
                             <a class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#signupModal">Sign up</a>
-                        <?php } else {?>
-                            
+
+                        <?php } else { ?>
+
+                            <div class="btn-group ">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-bell-o"></i>
+                                    <span class="label notification-count">13</span>
+                                </a>
+
+                                <div class="dropdown-menu">
+                                    <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications</p>
+                                    <ul class="menu">
+                                        <li class="dropdown-item">
+
+                                            <a href="#">
+                                                <div class="preview-item-content">
+                                                    <h6 class="preview-subject font-weight-bold"> <i class="fa fa-dot-circle-o  notification-icon"> </i>5 new members joined today</h6>
+                                                    <p class="font-weight-light small-text mb-0 text-muted notification-date">
+                                                        2 days ago
+                                                    </p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="dropdown-item">
+                                            <a href="#">
+
+                                                <div class="preview-item-content">
+                                                    <h6 class="preview-subject font-weight-bold"> <i class="fa fa-dot-circle-o  notification-icon"> </i>5 new members joined today</h6>
+                                                    <p class="font-weight-light small-text mb-0 text-muted notification-date">
+                                                        2 days ago
+                                                    </p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="dropdown-item">
+                                            <a href="#">
+
+                                                <div class="preview-item-content">
+                                                    <h6 class="preview-subject font-weight-normal"> <i class="fa fa-dot-circle-o  notification-icon"> </i>5 new members joined today</h6>
+                                                    <p class="font-weight-light small-text mb-0 text-muted notification-date">
+                                                        2 days ago
+                                                    </p>
+                                                </div>
+                                            </a>
+                                        </li>
+
+
+                                    </ul>
+                                    <p class="mb-0 font-weight-normal float-left dropdown-header"><a href="#">View All</a></p>
+                                </div>
+                            </div>
+
+
+
                             <?php
                             echo Html::a('Sign out', ['/user/logout'], ['data-method' => 'post', 'class' => 'btn btn-sm btn-outline-secondary']);
 
-                        ?>
+                            ?>
                             <a class="btn btn-sm btn-outline-secondary" href="/dashboard">Dashboard</a>
+
 
                         <?php }
                         ?>
