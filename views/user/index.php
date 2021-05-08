@@ -23,8 +23,11 @@ $this->registerJsFile('//cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.m
                             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
                                 <h1 class="h2 pt-4">Dashboard</h1>
                             </div>
-                        
-                    
+                        </div>
+                       <?php 
+                       echo $this->render('partials/_notification.php');
+                       ?>
+                    </div>
                     <div class="row">
                         <?php
 

@@ -62,9 +62,36 @@ class SiteController extends Controller
     {
         \Yii::$app->view->registerMetaTag([
             'name' => 'description',
-            'content' => 'Donate plasma and become a hero',
+            'content' => 'Plasma ghar is a place where you can seek the plasma, register to donate plasma.',
         ]);
-        \Yii::$app->view->title = 'Plasma Ghar | Donate and become a hero';
+        \Yii::$app->view->title = 'PlasmaGhar | Place for plasma donors and seekers';
+        \Yii::$app->view->registerMetaTag([
+            'name' => 'author',
+            'content' => 'Lakuri Samaj',
+        ]);
+        \Yii::$app->view->registerMetaTag([
+            'name' => 'keywords',
+            'content' => 'plasma, plasmadonate, covid19, covid19Nepal, fight, covid, plasmaghar, plasmaconnect',
+        ]);
+        \Yii::$app->view->registerMetaTag([
+            'name' => 'og:image',
+            'content' => 'https://plasmaghar.org/images/doctor.png',
+        ]);
+
+        \Yii::$app->view->registerMetaTag([
+            'name' => 'twitter:image',
+            'content' => 'https://plasmaghar.org/images/doctor.png',
+        ]);
+
+        \Yii::$app->view->registerMetaTag([
+            'name' => 'og:title',
+            'content' => 'PlasmaGhar | Place for plasma donors and seekers',
+        ]);
+
+        \Yii::$app->view->registerMetaTag([
+            'name' => 'og:type',
+            'content' => 'website',
+        ]);
 
         return $this->render('index');
     }
@@ -77,6 +104,7 @@ class SiteController extends Controller
      */
     public function actionTerms()
     {
+        \Yii::$app->view->title = 'Terms and Conditions | PlasmaGhar';
         return $this->render('terms');
     }
 
