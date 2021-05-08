@@ -518,7 +518,6 @@ class UserController extends \yii\web\Controller
         ->bindValue(':district' , $filter['district'])
         ->queryAll();
 
-
         if(!$request->isAjax) {
             if(Yii::$app->user->identity->user_role === 0) {
                 return $this->redirect('/');
@@ -571,7 +570,10 @@ class UserController extends \yii\web\Controller
 
                 $message = 'URGENT URGENT!! A seeker with the identity Requester-'.$receiverId.' is in need of your plasma. Please go to the link and accept his/her request to share your number with him/her -> '.$link;
 
-                if(!$this->saveNotification($message, $donorId)) {
+                if(!$this->saveNotification(
+                    
+                    '<a href="' . $link . '">' . "A requester $receiverId is in need of your plasma. View in dashboard." . '</a>'
+                    , $donorId)) {
                     return $this->asJson(array(
                         'success' => false,
                         'error' => "Error while saving notification to db."

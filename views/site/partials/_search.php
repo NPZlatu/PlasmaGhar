@@ -12,7 +12,7 @@ $states = States::find()
             <div class="card plasma-info-cards">
                 <div class="card-body cus-p-0">
                     <div class="text-center">
-                        <h2 class="font-weight-semibold">How Your Plasma Helps</h2>
+                        <h2 class="font-weight-semibold">Your Plasma Helps</h2>
                         <p class="m-0 py-3 text-muted">When you recover from COVID-19, you develop antibodies
                             against
                             the virus, which are present in your plasma. This is known as convalescent plasma. By

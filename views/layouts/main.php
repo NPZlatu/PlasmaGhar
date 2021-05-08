@@ -11,7 +11,6 @@ use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 
 use cybercog\yii\googleanalytics\widgets\GATracking;
-$this->registerJs($script);
 
 
 AppAsset::register($this);
