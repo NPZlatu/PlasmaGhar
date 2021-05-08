@@ -22,7 +22,7 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'terms'],
+                'only' => ['index', 'terms', 'covid'],
                 'rules' => [
                     [
                         'allow' => true
@@ -106,6 +106,13 @@ class SiteController extends Controller
     {
         \Yii::$app->view->title = 'Privacy Policies | PlasmaGhar';
         return $this->render('terms');
+    }
+
+
+    public function actionCovid()
+    {
+        \Yii::$app->view->title = 'Covid | PlasmaGhar';
+        return $this->render('covid');
     }
 
 
