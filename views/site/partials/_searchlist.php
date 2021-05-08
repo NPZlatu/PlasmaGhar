@@ -8,7 +8,7 @@
 
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-md-12 order-md-1 ">
+                            <div class="col-md-12 order-md-1 pl-4">
                                 <br />
                                 <h4 class="d-flex justify-content-between align-items-center mb-3">
                                     <span class="text-muted">Available Donors </span>

@@ -2997,7 +2997,7 @@ input[type=submit].btn-block {
 	display: inline-block;
 	margin-left: .255em;
 	vertical-align: .255em;
-	content: "";
+	content: none !important;
 	border-top: .3em solid;
 	border-right: .3em solid transparent;
 	border-bottom: 0;
@@ -5586,6 +5586,8 @@ a.close.disabled {
 .toast-body {
 	padding: .75rem
 }
+
+
 
 .modal-open {
 	overflow: hidden

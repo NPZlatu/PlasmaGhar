@@ -125,7 +125,6 @@ $allTables = [['pendingApprovals', 'Pending Approvals'], ['acceptedLists', 'Dono
                         <th>Blood</th>
                         <th>Status </th>
                         <th>Options</th>
-
                     </tr>
                 </thead>
                 <tbody>

@@ -24,9 +24,7 @@ $this->registerJsFile('//cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.m
                                 <h1 class="h2 pt-4">Dashboard</h1>
                             </div>
                         </div>
-                       <?php 
-                       echo $this->render('partials/_notification.php');
-                       ?>
+                       
                     </div>
                     <div class="row">
                         <?php

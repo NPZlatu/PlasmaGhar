@@ -63,6 +63,14 @@ p{
 	outline: none
 }
 
+.modal {
+	font-size:16px !important;
+}
+
+.modal-content .modal-body {
+  padding: 0px !important;
+}
+
 
 /* NAVBAR */
 
@@ -80,6 +88,21 @@ p{
     transition: margin-top 2s ease  !important;
 }
 
+.navbar .navbar-menu-wrapper .navbar-nav .btn-notification {
+  margin-left: 148px;
+  white-space: nowrap;
+}
+
+.navbar .navbar-menu-wrapper .navbar-nav .btn-sign {
+  margin-left: 10px;
+  white-space: nowrap;
+}
+
+
+
+.notification-button{
+  padding: 0px 15px;
+}
 
 .notification-count{
   position: absolute;
@@ -99,10 +122,19 @@ p{
   padding-left: 30px;
 }
 
+
+@media (max-width: 992px){
+  .btn-notification {
+    margin-left: 0px !important;
+  }
+  }
+
 .menu{
   padding-left: 5px;
 }
-
+.dropdown-toggle, .dropdown-toggle::after {
+  content: none !important;
+}
 .dropdown-item{
   border-bottom: 1px solid #f4f4f4;
   padding: 10px;
@@ -114,6 +146,19 @@ p{
 	text-decoration: none;
 	background-color: transparent;
   
+}
+
+.dropdown-menu.show {
+  display: block;
+  position: absolute;
+    top: 33px;
+    right: -99px;
+    max-width: 320px;
+    min-width: 320px;
+}
+
+.table {
+  font-size: 14px !important;
 }
 
 
@@ -228,6 +273,7 @@ p{
   color: var(--clr-secondary);
   margin-left: 0px;
   margin-right: 0px;
+  
 }
 
 .cus-feedback h3 {

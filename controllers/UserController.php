@@ -572,7 +572,7 @@ class UserController extends \yii\web\Controller
 
                 if(!$this->saveNotification(
                     
-                    '<a href="' . $link . '">' . "A requester $receiverId is in need of your plasma. View in dashboard." . '</a>'
+                    '<a href="' . $link . '">' . "A requester $receiverId is in need of your <br/> plasma. View in dashboard." . '</a>'
                     , $donorId)) {
                     return $this->asJson(array(
                         'success' => false,
@@ -629,7 +629,7 @@ class UserController extends \yii\web\Controller
                     ));
                 }
                 $donorPhone = Yii::$app->user->identity->phone_number;
-                $message = 'Congratulations, A donar with the identity Donor-'.$donorId.' has just accepted your blood request. You can call donor on this number '.$donorPhone.'. If the blood is confirmed or there are some problems on confirmation, please update your status on our dashboard';
+                $message = 'Congratulations, A donar with the <br/> identity Donor-'.$donorId.'has just accepted <br/> your blood request. You can call<br/> donor on this number '.$donorPhone.'. <br/> If the blood is confirmed or there<br/> are some problems on confirmation,<br/> please update your status on our<br/> dashboard';
                 
                 if(!$this->saveNotification($message, $params['p_receiver_id'])) {
                     return $this->asJson(array(
