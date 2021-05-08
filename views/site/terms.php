@@ -1,2 +1,2 @@
 <?php ?>
-<h1> Terms and Conditions  </h1>
+<h1> Privacy Policies </h1>
