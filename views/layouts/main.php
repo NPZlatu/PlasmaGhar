@@ -11,6 +11,7 @@ use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 
 use cybercog\yii\googleanalytics\widgets\GATracking;
+$this->registerJs($script);
 
 
 AppAsset::register($this);
@@ -29,7 +30,25 @@ AppAsset::register($this);
     <?= GATracking::widget([
     'trackingId' => 'UA-121215099-1',
     ]) ?>
-<script src="https://www.googleoptimize.com/optimize.js?id=OPT-K75WMSD"></script>
+    <script src="https://www.googleoptimize.com/optimize.js?id=OPT-K75WMSD"></script>
+    <script>
+        window.fbAsyncInit = function() {
+          FB.init({
+            xfbml            : true,
+            version          : 'v10.0'
+          });
+        };
+
+        (function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+          js = d.createElement(s); js.id = id;
+          js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+          fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+      </script>
+
+
 </head>
 <body>
 <?php $this->beginBody() ?>
@@ -45,6 +64,11 @@ AppAsset::register($this);
 <?php $this->endBody() ?>
 <?php echo $this->render('modals/_signinmodal.php');  ?>
 <?php echo $this->render('modals/_signupmodal.php');  ?>
+
+<div class="fb-customerchat"
+        attribution="page_inbox"
+        page_id="104998591532944">
+</div>
 
 </body>
 </html>
