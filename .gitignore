@@ -34,6 +34,6 @@ tests/_support/_generated
 
 node_modules
 
-web/js
+web/js/dist
 
 config/db.php
