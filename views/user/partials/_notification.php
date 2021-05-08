@@ -14,7 +14,9 @@ $count = count($notifications);
 <div class="btn-group ">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
         <i class="fa fa-bell-o"></i>
-        <span class="label notification-count"><?php echo $count > 0 ? $count:'' ?></span>
+        <?php if($count> 0): ?>
+        <span class="label notification-count"><?php echo $count; ?></span>
+        <?php endif; ?>
     </a>
 
     <div class="dropdown-menu">
@@ -41,7 +43,6 @@ $count = count($notifications);
            
 
         </ul>
-        <p class="mb-0 font-weight-normal float-left dropdown-header"><a href="#">View All</a></p>
     </div>
 </div>
 <br /><br />
