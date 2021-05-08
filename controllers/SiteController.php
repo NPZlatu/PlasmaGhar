@@ -104,7 +104,7 @@ class SiteController extends Controller
      */
     public function actionTerms()
     {
-        \Yii::$app->view->title = 'Terms and Conditions | PlasmaGhar';
+        \Yii::$app->view->title = 'Privacy Policies | PlasmaGhar';
         return $this->render('terms');
     }
 

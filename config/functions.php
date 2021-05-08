@@ -28,7 +28,6 @@ function dd($var)
 
 
 function rq($requestQuery){
-    dd($requestQuery);
     echo '
     <pre>';
      

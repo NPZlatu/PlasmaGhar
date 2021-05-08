@@ -151,7 +151,7 @@
                                     <div class="form-check">
                                       <input class="form-check-input" type="checkbox" name="terms" id="terms" value="option1">
                                       <label class="form-check-label" for="terms">
-                                        I agree to <a target="_blank" href="/terms-and-conditions">terms and conditions</a>
+                                        I agree to <a target="_blank" href="/privacy-policies">privacy policies</a>
                                       </label>
                                     </div>
                                     </div>
