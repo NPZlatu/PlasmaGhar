@@ -56,9 +56,9 @@
                         </div>
                         <div class="col-md-5 offset-md-1 rounded cus-process text-center">
                             <img src="./images/three.png" alt="..." class="img-thumbnail cus-icon">
-                            <strong class="d-inline-block mb-2">2. APPLY UPTO 3 AVAILABLE DONORS</strong>
-                            <p>Once you sign in, you'll be able to apply to <strong>3 different donors</strong>. Now,
-                                wait for a response from 3 donors. Since, there might be lot of request on the donor
+                            <strong class="d-inline-block mb-2">2. APPLY UPTO 32 AVAILABLE DONORS</strong>
+                            <p>Once you sign in, you'll be able to apply to <strong>32 different donors</strong>. Now,
+                                wait for a response from 32 donors. Since, there might be lot of request on the donor
                                 side, there's a chance of rejection. For every rejection you'll get your 1 quota back.
                             </p>
                         </div>
