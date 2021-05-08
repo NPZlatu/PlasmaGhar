@@ -60,6 +60,7 @@ $config = [
             'rules' => [
                 '' => 'site/index',
                 'privacy-policies' => 'site/terms',
+                'covid' => 'site/covid',
                 'dashboard' => 'user/index',
                 'user/confirm/<token:[\w\-]+>'=>'user/confirm',
                 'user/register' => 'user/save',

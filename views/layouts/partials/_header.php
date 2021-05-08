@@ -25,16 +25,18 @@ use yii\helpers\Html;
                         </button>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Home </a>
+                        <a class="nav-link active" href="/">Home </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Ambulance</a>
+                        <a class="nav-link" target="_blank" href="https://bpazes.com/p/ambulance">Ambulance</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Oxygen Suppliers</a>
+                        <a class="nav-link" target="_blank" href="https://bpazes.com/p/blood-banks">Blood</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/covid">Covid19</a>
                     </li>
                     
-
 
                     <li class="nav-item btn-contact-us pl-4 pl-lg-0">
                         <?php

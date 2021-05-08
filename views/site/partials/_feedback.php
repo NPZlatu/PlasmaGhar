@@ -7,18 +7,34 @@
   </div>
   <div class="container">
     <div class="row">
-      <div class="col-12">
-        <a href="https://bpazes.com" target="_blank">
-          <img src="./images/logo.jpg" alt="..." style="width: 192px; height: 192px;" class="img-thumbnail cus-logo rounded mx-auto d-block">
+
+    <div class="col-md-3"> </div>
+
+    <div class="col-md-3">
+        <a href="https://www.facebook.com/Lakuri-Samaj-104998591532944" target="_blank">
+          <img src="./images/lakuri.jpeg" alt="..."  class="img-thumbnail cus-logo rounded mx-auto d-block">
         </a>
-        <p class="text-center"><a href="https://bpazes.com" target="_blank">
-            Business Pazes
-            <br>New Baneshwor, Kathmandu
+        <!-- <p class="text-center"><a href="" target="_blank">
+            Lakuri Samaj
+            <br>Lamatar, Lalitpur
           </a>
 
-        </p>
+        </p> -->
+      </div>
+
+      <div class="col-md-3">
+        <a href="https://bpazes.com" target="_blank">
+          <img src="./images/logo.jpg" alt="..." style="width: 200px; height: 200px;" class="img-thumbnail cus-logo rounded mx-auto d-block">
+        </a>
+      
+      </div>
+
+      <div class="col-md-3">
+
       </div>
     </div>
+
+   
   </div>
 
 </section>
