@@ -2,17 +2,17 @@
 /* @var $this yii\web\View */
 ?>
 <section class="partners" id="partners-section">
-  <div class="col-12 text-center pt-5 pb-5 content-header " >
+  <div class="col-12 text-center pt-5 pb-5 content-header ">
     <h2>Our Supporting Partners</h2>
   </div>
   <div class="container">
     <div class="row">
 
-    <div class="col-md-3"> </div>
+      <div class="col-md-3"> </div>
 
-    <div class="col-md-3">
+      <div class="col-md-3">
         <a href="https://www.facebook.com/Lakuri-Samaj-104998591532944" target="_blank">
-          <img src="./images/lakuri.jpeg" alt="..."  class="img-thumbnail cus-logo rounded mx-auto d-block">
+          <img src="./images/lakuri.jpeg" alt="..." class="img-thumbnail cus-logo rounded mx-auto d-block">
         </a>
         <!-- <p class="text-center"><a href="" target="_blank">
             Lakuri Samaj
@@ -26,7 +26,7 @@
         <a href="https://bpazes.com" target="_blank">
           <img src="./images/logo.jpg" alt="..." style="width: 200px; height: 200px;" class="img-thumbnail cus-logo rounded mx-auto d-block">
         </a>
-      
+
       </div>
 
       <div class="col-md-3">
@@ -34,13 +34,13 @@
       </div>
     </div>
 
-   
+
   </div>
 
 </section>
 
 <section>
-  <div class="col-12 text-center pt-5 pb-5 content-header" data-aos="zoom-out-down">
+  <div class="col-12 text-center pt-5 pb-5 content-header" data-aos="fade-up">
     <h2>Send us a feedback</h2>
   </div>
   <div class="col-md-6 offset-md-3" data-aos="zoom-out-up">

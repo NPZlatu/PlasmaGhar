@@ -8,7 +8,7 @@
         <div class="container ">
             <div class="row">
                 <div class="col-md-6 aos-init" data-aos="fade-right">
-                    <h3 class="pb-4 mb-4 text-right cus-border-bottom">
+                    <h3 class="pb-4 mb-4 text-center cus-border-bottom">
                         How an interested donor applies?
                     </h3>
                     <div class="container row">
@@ -45,7 +45,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 cus-hor-border aos-init" data-aos="fade-left">
-                    <h3 class="pb-4 mb-4 cus-border-bottom">
+                    <h3 class="pb-4 mb-4 text-center cus-border-bottom">
                         How search can be done?
                     </h3>
                     <div class="container row">
