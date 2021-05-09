@@ -31,7 +31,8 @@ $count = count($notifications);
                             <a>
                                 <div class="preview-item-content">
                                     <h6 class="preview-subject font-weight-bold"> <i class="fa fa-dot-circle-o  notification-icon">
-                                        </i><?= html_entity_decode($notification->notification); ?></h6>
+                                        </i>
+                                        <span>I am Niraj Paudel and I love to play basketball, volleyball and badminton.</span>
                                     <p class="font-weight-light small-text mb-0 text-muted notification-date">
                                         <?= $notification->created_time ?>
                                     </p>

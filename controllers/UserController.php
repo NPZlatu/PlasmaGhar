@@ -572,7 +572,7 @@ class UserController extends \yii\web\Controller
 
                 if(!$this->saveNotification(
                     
-                    '<a href="' . $link . '">' . "A requester $receiverId is in need of your <br/> plasma. View in dashboard." . '</a>'
+                    '<a href="' . $link . '">' . "A requester $receiverId is in need of your plasma. View in dashboard." . '</a>'
                     , $donorId)) {
                     return $this->asJson(array(
                         'success' => false,

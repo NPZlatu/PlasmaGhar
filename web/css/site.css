@@ -138,6 +138,7 @@ p{
 .dropdown-item{
   border-bottom: 1px solid #f4f4f4;
   padding: 10px;
+  overflow-x: auto;
 }
 
 .dropdown-item.active,
@@ -153,8 +154,8 @@ p{
   position: absolute;
     top: 33px;
     right: -99px;
-    max-width: 320px;
-    min-width: 320px;
+    max-width: 350px;
+    min-width: 350px;
 }
 
 .table {

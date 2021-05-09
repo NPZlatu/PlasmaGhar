@@ -37,12 +37,7 @@ use yii\helpers\Html;
                     <li class="nav-item">
                         <a class="nav-link" target="_blank" href="https://bpazes.com/p/blood-banks">Blood</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/covid">Covid19</a>
-                    </li>
-
-
-
+              
                     
                         <?php
                         if (\Yii::$app->user->isGuest) {
