@@ -396,11 +396,16 @@ class UserController extends \yii\web\Controller
 
             $accountConfirmed = Users::isAccountConfirmed($user['email']);
 
-            if(!$accountConfirmed) {
+            if($accountConfirmed == 0) {
                 return $this->asJson(array(
                     'success' => false,
                     'error' => 'account not confirmed'
                 )); 
+            } else if($accountConfirmed == 2) {
+                return $this->asJson(array(
+                    'success' => false,
+                    'error' => 'email does not exist'
+                ));   
             }
             
             if($model->login()) {

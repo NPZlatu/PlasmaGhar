@@ -75,6 +75,7 @@
             <footer class="border-top">
                 <div class="d-flex justify-content-between">
                     <p class="text-center text-muted pt-4">Copyright © 2021 | PlasmaGhar | All rights reserved.</p>
+                    <a style="font-size:16px;" href="/privacy-policies" class="text-center text-muted pt-4 float-right">Privacy Policies</a>
 
                 </div>
             </footer>

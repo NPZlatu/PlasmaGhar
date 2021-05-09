@@ -197,9 +197,13 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      * Checks if user with the phone already exist
      */
     public static function isAccountConfirmed($email) {
-        $confirmed = false;
+        $confirmed = 0;
         $count = self::find()->where(['email' => $email, 'phone_confirmation_status' => 1])->count();
-        if($count > 0) $confirmed = true;
+        if($count > 0) $confirmed = 1;
+        else {
+            $count = self::find()->where(['email' => $email])->count();
+            if($count == 0) $confirmed = 2;
+        }
         return $confirmed;
     }
 
