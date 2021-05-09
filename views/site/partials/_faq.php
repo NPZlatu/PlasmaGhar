@@ -21,7 +21,7 @@
                         </div>
                         <div class="col-md-5 offset-md-1 rounded cus-process text-center">
                             <strong class="d-inline-block mb-2">2. RECEIVE NOTIFICATIONS</strong>
-                            <p>When a person is in need of plasma, you’ll get a <strong>phone notification</strong>.
+                            <p>When a person is in need of plasma, you’ll get a <strong>email notification</strong>.
                                 You’re details are <strong>confidential</strong>. You’ll have the choice to accept the
                                 person available in the list if you are ready for the donation. You have the right to
                                 reject the call.</p>
@@ -50,15 +50,15 @@
                     </h3>
                     <div class="container row">
                         <div class="col-md-5 offset-md-1 rounded cus-process text-center">
-                            <strong class="d-inline-block mb-2">1. SEARCH BLOOD GROUP BY LOCATION</strong>
+                            <strong class="d-inline-block mb-2">1. SEARCH BLOOD GROUP</strong>
                             <p>Enter the <strong>blood group and location</strong>. List of available donors will be
                                 shown. In order to apply you need to <strong>sign in</strong>. Signing in is mandatory
                                 in order to prevent searcher from applying to all available donors.</p>
                         </div>
                         <div class="col-md-5 offset-md-1 rounded cus-process text-center">
-                            <strong class="d-inline-block mb-2">2. APPLY UPTO 35 AVAILABLE DONORS</strong>
-                            <p>Once you sign in, you'll be able to apply to <strong>35 different donors</strong>. Now,
-                                wait for a response from 35 donors. Since, there might be lot of request on the donor
+                            <strong class="d-inline-block mb-2">2. SEND REQUEST TO DONORS</strong>
+                            <p>Once you sign in, you'll be able to apply to <strong>different donors</strong>. Now,
+                                wait for a response from those donors. Since, there might be lot of request on the donor
                                 side, there's a chance of rejection. For every rejection you'll get your 1 quota back.
                             </p>
                         </div>
@@ -67,7 +67,7 @@
                     <div class="container row">
                         <div class="col-md-5 offset-md-1  rounded cus-process text-center">
                             <strong class="d-inline-block mb-2">3. MAKE A CALL TO THE DONOR</strong>
-                            <p>If a <strong>donor accepts</strong>, you'll <strong>get a message</strong> and you can
+                            <p>If a <strong>donor accepts</strong>, you'll <strong>get a email</strong> and you can
                                 make a call to the donor.</p>
                         </div>
                         <div class="col-md-5 offset-md-1  rounded cus-process text-center">
