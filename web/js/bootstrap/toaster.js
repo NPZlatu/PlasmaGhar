@@ -89,7 +89,7 @@
         top: "10px",
         right: "10px",
         width: "300px",
-        zIndex: 50000,
+        zIndex: 999999999,
       },
     },
 

@@ -75,11 +75,12 @@ $allTables = [['pendingApprovals', 'Pending Approvals'], ['acceptedLists', 'Acce
                                 <td><?= $receiver['requested_date'] ?></td>
 
 
-                                <?php if ($receiver['receiver_status'] != 9) { ?>
+                                <?php if ($receiver['receiver_status'] != 9 && $receiver['receiver_status'] != 2) { ?>
                                     <td>
                                         <?php if ($table[0] === 'acceptedLists' || $table[0] === 'pendingApprovals') {
 
-                                            if ($table[0] === 'pendingApprovals' && (in_array($donorStatus, [1, 2, 9]))) { ?>
+                                            if ($table[0] === 'pendingApprovals' && (in_array($donorStatus, [1, 2, 9]))) {                                                
+                                                ?>
                                                 <button disabled type="button" class="btn btn-sm btn-outline-secondary">
                                                     Accept
                                                 </button>
@@ -100,7 +101,12 @@ $allTables = [['pendingApprovals', 'Pending Approvals'], ['acceptedLists', 'Acce
 
                                     </td>
                                 <?php } else { ?>
-                                    <td> <button class="btn btn-sm btn-outline-danger">NOT ACTIVE </button> </td>
+                                    <td>
+                                    <?php if($receiver['receiver_status'] == 9) { ?>
+                                     <button class="btn btn-sm btn-outline-danger">Not Active</button>
+                                    <?php }  ?>
+                                        
+                                      </td>
                                 <?php } ?>
                             </tr>
                         <?php } ?>

@@ -39,8 +39,10 @@ class SignIn {
         window.location.href = "/user/register";
       }
     });
+
     this.setUpOnBlurListeners();
     this.setModalListeners();
+    this.setForgotPasswordListeners();
   }
 
   setModalListeners() {
@@ -65,6 +67,68 @@ class SignIn {
       $(`#${selector}`).blur(function () {
         if (self.clicked) self.showError(selector, rules, index);
       });
+    });
+  }
+
+  setForgotPasswordListeners() {
+    $(".fpwd-signin").click(function () {
+      $("#signinModal").modal("hide");
+      $("#forgotPasswordModal").modal("show");
+    });
+
+    $(".confirm-fpwd").click(function () {
+      const email = $("#fpwdEmail").val();
+      if (!email || !new RegExp(/\S+@\S+\.\S+/).test(email)) {
+        $.toaster({ settings: { timeout: 5000 } });
+        $.toaster({
+          priority: "danger",
+          title: "Error",
+          message: `Valid email address is required`,
+        });
+      } else {
+        $(".confirm-fpwd").text("Submitting");
+        $(".confirm-fpwd").attr("disabled", true);
+        axios
+          .post("/user/resetpassword", { email: email })
+          .then(({ data: response }) => {
+            if (response && response.success) {
+              $.toaster({ settings: { timeout: 10000 } });
+
+              $.toaster({
+                priority: "success",
+                title: "Success",
+                message: `A new password has been send to the email. You can change password, after logging in.`,
+              });
+              $("#forgotPasswordModal").modal("hide");
+              $("#signinModal").modal("show");
+              $(".confirm-fpwd").text("Submit");
+              $(".confirm-fpwd").attr("disabled", false);
+            } else {
+              $.toaster({ settings: { timeout: 10000 } });
+
+              $.toaster({
+                priority: "danger",
+                title: "Failed",
+                message: `Some thing is wrong. Please try again later.`,
+              });
+              $(".confirm-fpwd").text("Submit");
+              $(".confirm-fpwd").attr("disabled", false);
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+            console.log("Error while saving the data");
+            $.toaster({ settings: { timeout: 10000 } });
+
+            $.toaster({
+              priority: "danger",
+              title: "Failed",
+              message: `Some thing is wrong. Please try again later.`,
+            });
+            $(".confirm-fpwd").text("Submit");
+            $(".confirm-fpwd").attr("disabled", false);
+          });
+      }
     });
   }
 
@@ -136,7 +200,6 @@ class SignIn {
     axios
       .post("/user/login", data)
       .then(({ data: response }) => {
-        console.log(response);
         if (response && response.success) {
           if (typeof $(".confirm-signin").data("nexturl") !== "undefined") {
             const nextUrl = $(".confirm-signin").attr("data-nexturl");

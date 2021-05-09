@@ -14,7 +14,7 @@ use yii\helpers\Html;
                     <span class="mdi mdi-menu navbar-toggler-icon"></span>
                 </button>
             </div>
-            <div class="collapse navbar-collapse navbar-menu-wrapper" id="navbarSupportedContent">
+            <div class="collapse navbar-collapse navbar-menu-wrapper" id="navbarSupportedContent" style="z-index: 9999999;">
                 <ul class="navbar-nav align-items-lg-center align-items-center ml-auto">
                     <li class="d-flex align-items-center justify-content-between pl-4 pl-lg-0">
                         

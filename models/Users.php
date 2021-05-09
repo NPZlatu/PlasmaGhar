@@ -218,6 +218,19 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
+     * Get status
+     * @param $user_id string
+     */
+    public static function getStatus($user_id) {
+        $return = null;
+        $user = self::findOne(['id' => $user_id]);
+        if($user && $user['user_status']) {
+            $return = $user['user_status'];
+        }
+        return $return;
+    }
+
+    /**
      * Get Email
      * @param $user_id string
      */

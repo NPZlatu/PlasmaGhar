@@ -21,7 +21,15 @@ $count = count($notifications);
         </a>
 
         <div class="dropdown-menu" >
-            <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications</p>
+            <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications
+            </p>
+           
+            <?php if ($count > 0) : ?>
+            <p
+            class="mb-0 font-weight-normal float-right dropdown-header clear-all"
+            ><a style="cursor:pointer; padding-right:5px;">Clear All</a> </p>
+            <?php endif; ?>
+
             <ul class="menu">
 
                 <?php if ($count > 0) {
@@ -32,7 +40,7 @@ $count = count($notifications);
                                 <div class="preview-item-content">
                                     <h6 class="preview-subject font-weight-bold"> <i class="fa fa-dot-circle-o  notification-icon">
                                         </i>
-                                        <span>I am Niraj Paudel and I love to play basketball, volleyball and badminton.</span>
+                                        <?= html_entity_decode($notification->notification); ?></h6>
                                     <p class="font-weight-light small-text mb-0 text-muted notification-date">
                                         <?= $notification->created_time ?>
                                     </p>

@@ -28,7 +28,7 @@ class UserController extends \yii\web\Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout', 'index', 'save', 'login'],
+                'only' => ['logout', 'index', 'save', 'login', 'reset-password'],
                 'rules' => [
                     [
                         'actions' => ['logout'],
@@ -77,6 +77,11 @@ class UserController extends \yii\web\Controller
                     ],
                     [
                         'actions' => ['login'],
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'actions' => ['reset-password'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
@@ -163,6 +168,12 @@ class UserController extends \yii\web\Controller
             }
 
             $model = Users::find()->where(['id' => $user['id']])->one();
+            if(!$model) {
+                return array(
+                    'success' => false,
+                    'error' => 'user is not found'
+                );
+            }
             $model->blood_group = $user['blood_group'];
             $model->state = $user['state'];
             $model->district = $user['district'];
@@ -343,6 +354,7 @@ class UserController extends \yii\web\Controller
         if($mail->send()) {
             return true;
         } else {
+
             return false;
         }
         
@@ -617,6 +629,14 @@ class UserController extends \yii\web\Controller
             if($donorId != $params['p_donor_id']) {
                 throw new NotFoundHttpException;
             }
+
+            $userStatus = Users::getStatus($params['p_receiver_id']);
+            if($userStatus == 2 || $userStatus == 9) {
+                return $this->asJson(array(
+                    'error' => 'The user is either deactivated or has already received plasma'
+                ));
+            }
+
             $result = Users::setStatus($params); 
 
 
@@ -630,9 +650,8 @@ class UserController extends \yii\web\Controller
                 }
                 $donorPhone = Yii::$app->user->identity->phone_number;
                 
-               
-                $message = 'Congratulations, A donar with the identity Donor-'.$donorId.' has just accepted your blood request. You can call donor on this number '.$donorPhone.'. If the blood is confirmed or there are some problems on confirmation, please update your status on our dashboard';
                 $link = Url::home(true).'dashboard';
+                $message = "Congratulations, A donar with the identity Donor-'.$donorId.' has just accepted your blood request. You can call donor on this number '.$donorPhone.'. If the blood is confirmed or there are some problems on confirmation, please update your status on our dashboard $link";
                 if(!$this->saveNotification(
                     '<a href="' . $link . '">' . "A donor (phone: $donorPhone) has accepted your plasma request.",
                     $params['p_receiver_id'])) {
@@ -792,6 +811,59 @@ class UserController extends \yii\web\Controller
                 'error' => $exception->getMessage()
             ));
     }  
+    }
+
+
+     /**
+     * Clear all notification
+     */
+    public function actionClearNotification() {
+        try {
+            $request = Yii::$app->request;
+            $userId = Yii::$app->user->id;
+            if(!$request->isAjax ||  !userId) {
+                throw new NotFoundHttpException;
+            }
+            Yii::$app->db->createCommand("UPDATE user_notifications SET is_read=1 WHERE user_id=$userId")->execute();
+            return $this->asJson(array(
+                'success' => true
+            ));
+        } catch(\Exception $exception) {
+            return $this->asJson(array(
+                'success' => false,
+                'error' => $exception->getMessage()
+            ));
+        }  
+    }
+
+
+    public function actionResetPassword() {
+        try {
+            $request = Yii::$app->request;
+            $user = $request->post();
+            $return = array('success' => false, 'error' => 'something is wrong');
+
+            if(!$request->isAjax || !$user['email'] ) {
+                throw new NotFoundHttpException;
+            }
+            $password = bin2hex(openssl_random_pseudo_bytes(3));
+            $model = Users::find()->where(['email' => $user['email']])->one();
+            if($model) {
+                $model->password = Yii::$app->security->generatePasswordHash($password);
+                if($model->save()) {
+                    if($this->sendEmail("Your new password for plasmaghar is: $password", $user['email'], 'New Password')) {
+                        $return['success'] = true;
+                        $return['error'] = '';
+                    }
+                }
+            }
+            return $this->asJson($return);
+        } catch(\Exception $exception) {
+            return $this->asJson(array(
+                'success' => false,
+                'error' => $exception->getMessage()
+            )); 
+        }
     }
 
 }

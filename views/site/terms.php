@@ -12,7 +12,7 @@
 </blockquote>
 
 
-<h2>Contacting Blood Donor</h2>
+<h2>Contacting Plasma Donor</h2>
 <blockquote>
     <p> The plasma requesters shall raise a request on the website searching from the available list of donors. The quote for the requester for a day will be 35. He/she can request upto 35 donors. The request made will be notified to donors via email. Once they approve the request, the seeker will be notified with the phone number of donor. </p>
     <p> We also have volunteers who will arrange the donor data (upon his consent) to the requester. </p>

@@ -291,6 +291,16 @@ p{
   padding: 3px;
 }
 
+.modal.show {
+  z-index:999999999!important;
+}
+
+@media (max-width: 575px) {
+.modal-content {
+    width: 100%;
+}
+}
+
 
 
 /*SUPPORTING PARTNERS */

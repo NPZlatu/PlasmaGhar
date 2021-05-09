@@ -60,6 +60,10 @@
                                 If you have no account, please <a class="register-signin" href="javascript:void(0);">click here</a> to register
                                 </div>
 
+                                <div style="margin-top: 10px;"class="alert alert-light" role="alert">
+                                If you forgot your password, please <a class="fpwd-signin" href="javascript:void(0);">click here</a> to reset
+                                </div>
+
                                 </form>
                               </div>  
                              

@@ -64,10 +64,9 @@ class SignUp {
       {
         selector: "password",
         rules: {
-          regex: {
-            value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
-            error:
-              "Password must be minimum eight characters, at least one letter and one number",
+          required: {
+            value: true,
+            error: "Password is required.",
           },
         },
         value: "",
@@ -253,8 +252,8 @@ class SignUp {
       $.toaster({ settings: { timeout: 5000 } });
       $.toaster({
         priority: "danger",
-        title: "Terms and Conditions",
-        message: `You must agree to our terms and conditions to proceed further.`,
+        title: "Privacy Policies",
+        message: `You must agree to our privacy policies to proceed further.`,
       });
       agree = false;
     }
@@ -379,4 +378,14 @@ $(document).ready(function () {
   axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
   new SignUp();
+
+  $(".clear-all").click(function () {
+    axios.post("/notification/clear", {}).then(({ data: response }) => {
+      if (response.success) {
+        $(".notification-count").hide();
+        $(".dropdown-item").hide();
+        $(".clear-all").hide();
+      }
+    });
+  });
 });

@@ -63,6 +63,7 @@ AppAsset::register($this);
 <?php $this->endBody() ?>
 <?php echo $this->render('modals/_signinmodal.php');  ?>
 <?php echo $this->render('modals/_signupmodal.php');  ?>
+<?php echo $this->render('modals/_forgotpasswordmodal.php');  ?>
 
 <div class="fb-customerchat"
         attribution="page_inbox"

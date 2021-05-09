@@ -6,7 +6,7 @@ $states = States::find()
 
 $donorStatus = array(
     0 => "AVAILABLE",
-    1 => "WAITING FOR YOUR CALL",
+    1 => "WAITING FOR THE CALL",
     2 => "BLOOD CONFIRMED",
     9 => "NOT INTERESTED"
 );

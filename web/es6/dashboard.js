@@ -355,12 +355,16 @@ class Dashboard {
     axios
       .post("/accept/requester", model)
       .then(({ data }) => {
-        localStorage.setItem(
-          "message",
-          data.t_result +
-            ` Your number is now sent to the accepted requester. Please expect a call from him/her. If he/she doesn't call,reject the request. If he/she calls and blood is confirmed, please change the status to Blood Confirmed.
+        if (data.error) {
+          localStorage.setItem("message", data.error);
+        } else {
+          localStorage.setItem(
+            "message",
+            data.t_result +
+              ` Your number is now sent to the accepted requester. Please expect a call from him/her. If he/she doesn't call,reject the request. If he/she calls and blood is confirmed, please change the status to Blood Confirmed.
             `
-        );
+          );
+        }
         location.reload();
       })
       .catch((error) => {
