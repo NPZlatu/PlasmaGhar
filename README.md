@@ -1,7 +1,7 @@
 # PlasmaGhar
 
 ## Description
-This project was created during COVID to connect plasma donors with plasma seekers. The main objective was to facilitate the process of finding plasma donors for COVID-19 patients. The project was hosted on plasmaghar.org, but it's currently inactive and not being used.
+This project was created during COVID to connect plasma donors with plasma seekers in Kathmandu, Nepal. The main objective was to facilitate the process of finding plasma donors for COVID-19 patients. The project was hosted on plasmaghar.org, but it's currently inactive and not being used.
 
 ## Installation Instructions
 ### Prerequisites
