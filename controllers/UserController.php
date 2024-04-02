@@ -342,12 +342,12 @@ class UserController extends \yii\web\Controller
         $mail->SMTPAuth = true;
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; 
         $mail->Port = 465;
-        $mail->Username = 'testniraj1234@gmail.com';
-        $mail->Password = 'NirazPaudel62';
+        $mail->Username = 'EMAIL';
+        $mail->Password = 'PASSWORD';
 
-        $mail->setFrom('testniraj1234@gmail.com', 'Plasma Ghar');
+        $mail->setFrom('EMAIL', 'Plasma Ghar');
         $mail->addAddress($email, $email);
-        $mail->addReplyTo('testniraj1234@gmail.com', 'Plasma Ghar');
+        $mail->addReplyTo('EMAIL', 'Plasma Ghar');
         $mail->IsHTML(true);
         $mail->Subject = $subject;
         $mail->Body = $message;
